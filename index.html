@@ -6,7 +6,7 @@
 <title>Sign in · FACE Prep Campus Help Desk</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&family=Poppins:wght@600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -17,24 +17,27 @@
   --brand-3: #F6A968;   /* warm orange    */
   --brand-gradient: linear-gradient(120deg, var(--brand-1) 0%, var(--brand-2) 55%, var(--brand-3) 100%);
 
+  --page-bg: #EEEFF3;
   --ink: #14151A;
   --text: #14151A;
   --text-light: #5B6270;
   --text-faint: #9199A6;
   --card: #FFFFFF;
+  --illustration-bg: #FBF1F1;
   --border: #E7E9EC;
   --red: #DC2626;
-  --shadow-md: 0 4px 16px -6px rgba(20,21,26,0.10);
-  --shadow-lg: 0 24px 60px -20px rgba(140,30,110,0.28);
+  --shadow-card: 0 30px 60px -24px rgba(30,20,40,0.18), 0 10px 24px -12px rgba(30,20,40,0.10);
 }
 body[data-theme="dark"] {
+  --page-bg: #101116;
   --ink: #F5F1F8;
   --text: #EDEEF2;
   --text-light: #ABB0BC;
   --text-faint: #767C88;
   --card: #1B1620;
+  --illustration-bg: #221A22;
   --border: #322A38;
-  --shadow-lg: 0 24px 60px -18px rgba(0,0,0,0.65);
+  --shadow-card: 0 30px 60px -24px rgba(0,0,0,0.6), 0 10px 24px -12px rgba(0,0,0,0.4);
 }
 
 html, body { height: 100%; }
@@ -48,86 +51,90 @@ body {
 button, input, select { font-family: inherit; }
 :focus-visible { outline: 2px solid var(--brand-2); outline-offset: 2px; }
 
-/* ── Backdrop: sky, with a warm brand glow instead of generic blobs ── */
+/* ── Page backdrop: quiet and light, so the card reads as its own object ── */
 .auth-wrap {
-  min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;
-  position: relative; overflow: hidden;
-  background: linear-gradient(180deg, #BFE0F5 0%, #D8ECFA 35%, #EAF4FB 65%, #F7FBFE 100%);
+  min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 24px;
+  position: relative;
+  background: var(--page-bg);
 }
-body[data-theme="dark"] .auth-wrap {
-  background: linear-gradient(180deg, #120E17 0%, #170F1B 45%, #1B1420 100%);
-}
-.auth-wrap::before {
-  content:''; position:absolute; left:0; right:0; bottom:-40px; height:240px; pointer-events:none;
-  background: radial-gradient(ellipse 60% 100% at 20% 100%, rgba(255,255,255,0.95), transparent 60%),
-              radial-gradient(ellipse 50% 100% at 60% 100%, rgba(255,255,255,0.9), transparent 55%),
-              radial-gradient(ellipse 70% 100% at 90% 100%, rgba(255,255,255,0.85), transparent 60%);
-}
-body[data-theme="dark"] .auth-wrap::before { opacity: 0.05; }
 
-.auth-blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5; pointer-events: none; animation: blobFloat 20s ease-in-out infinite; }
-.auth-blob.b1 { width: 420px; height: 420px; top: -110px; left: -120px; background: var(--brand-1); animation-duration: 19s; }
-.auth-blob.b2 { width: 460px; height: 460px; bottom: -130px; right: -110px; background: var(--brand-3); animation-duration: 23s; animation-delay: -4s; }
-body[data-theme="dark"] .auth-blob { opacity: 0.4; }
-@keyframes blobFloat {
-  0%, 100% { transform: translate(0,0) scale(1); }
-  33%      { transform: translate(28px,-22px) scale(1.07); }
-  66%      { transform: translate(-20px,16px) scale(0.96); }
+.theme-toggle-auth {
+  position: absolute; top: 20px; right: 20px; z-index: 5;
+  width: 36px; height: 36px; border-radius: 10px; border: 1px solid rgba(20,21,26,0.10); background: rgba(255,255,255,0.7);
+  display: flex; align-items: center; justify-content: center; cursor: pointer; color: rgba(20,21,26,0.65);
+  box-shadow: 0 2px 8px -2px rgba(20,21,26,0.12); transition: transform .15s, color .15s, background .15s;
 }
-/* ── Googly character companions — grouped & aligned like the reference,
-   colored from the FACE Prep brand palette (magenta / coral-orange / violet / gold).
-   Sits inside .auth-stage, bottom-aligned right next to the login card, exactly
-   like the illustration panel sits next to the form in the reference. ── */
-.auth-stage {
-  position: relative; z-index: 1;
+.theme-toggle-auth:hover { color: var(--ink); background: rgba(255,255,255,1); transform: translateY(-1px); }
+.theme-toggle-auth svg { width: 16px; height: 16px; }
+body[data-theme="dark"] .theme-toggle-auth { border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8); }
+body[data-theme="dark"] .theme-toggle-auth:hover { color: #fff; background: rgba(255,255,255,0.14); }
+
+/* ── The card: one object, two zones ── */
+.auth-card {
+  width: 100%; max-width: 920px;
+  background: var(--card);
+  border-radius: 28px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  overflow: hidden;
+  animation: authRise .6s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes authRise { from { opacity: 0; transform: translateY(16px) scale(0.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+/* ── Left zone: illustration ── */
+.auth-card-illustration {
+  flex: 0 0 42%;
+  background: var(--illustration-bg);
   display: flex; align-items: flex-end; justify-content: center;
-  gap: 46px;
+  padding: 40px 24px 0;
+  position: relative;
+  min-height: 560px;
 }
+@media (max-width: 820px) { .auth-card-illustration { display: none; } }
+
 .char-crew {
-  position: relative; flex-shrink: 0;
-  width: 200px; height: 190px;
+  position: relative;
+  width: 240px; height: 230px;
   pointer-events: none;
 }
-@media (max-width: 900px) { .char-crew { display: none; } }
 .char { position: absolute; bottom: 0; animation: charBob 3.4s ease-in-out infinite; transform-origin: bottom center; }
-.char.tall  { left: 0px;   z-index: 1; }
-.char.mid   { left: 58px;  z-index: 2; }
-.char.dome  { left: -16px; z-index: 3; }
-.char.small { left: 108px; z-index: 4; }
+.char.tall  { left: 4px;   z-index: 1; }
+.char.mid   { left: 78px;  z-index: 2; }
+.char.small { left: 176px; z-index: 3; }
+.char.dome  { left: 24px;  z-index: 4; }
 .char:nth-child(2) { animation-delay: -0.6s; }
 .char:nth-child(3) { animation-delay: -1.4s; }
 .char:nth-child(4) { animation-delay: -2.1s; }
 @keyframes charBob {
   0%, 100% { transform: translateY(0) rotate(0deg); }
-  50%      { transform: translateY(-8px) rotate(-1deg); }
+  50%      { transform: translateY(-7px) rotate(-1deg); }
 }
 .char-body {
   border-radius: 34px 34px 10px 10px;
-  box-shadow: 0 18px 30px -14px rgba(20,21,26,0.35);
+  box-shadow: 0 14px 26px -12px rgba(20,21,26,0.30);
   position: relative;
 }
-.char.tall .char-body  { width: 92px;  height: 190px; background: #7C5CFC; }                 /* violet — back */
-.char.mid .char-body   { width: 82px;  height: 148px; background: var(--brand-1); border-radius: 30px 30px 8px 8px; } /* magenta */
-.char.dome .char-body  { width: 160px; height: 92px;  background: var(--brand-3); border-radius: 90px 90px 8px 8px; } /* warm orange */
-.char.small .char-body { width: 72px;  height: 122px; background: #F6C445; border-radius: 30px 30px 8px 8px; }       /* gold */
-.char-eyes { position: absolute; top: 34%; left: 50%; transform: translateX(-50%); display: flex; gap: 13px; }
-.char.dome .char-eyes { top: 42%; gap: 11px; }
+.char.tall .char-body  { width: 108px; height: 226px; background: #7C5CFC; }
+.char.mid .char-body   { width: 96px;  height: 176px; background: var(--brand-1); border-radius: 30px 30px 8px 8px; }
+.char.dome .char-body  { width: 190px; height: 108px; background: var(--brand-3); border-radius: 100px 100px 8px 8px; }
+.char.small .char-body { width: 82px;  height: 150px; background: #F6C445; border-radius: 30px 30px 8px 8px; }
+
+.char-eyes { position: absolute; top: 32%; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; }
+.char.dome .char-eyes { top: 38%; gap: 13px; }
 .eye {
-  width: 14px; height: 14px; border-radius: 50%; background: #fff;
+  width: 16px; height: 16px; border-radius: 50%; background: #fff;
   display: flex; align-items: center; justify-content: center;
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.15); transition: transform .12s ease;
 }
 .eye.blink { transform: scaleY(0.12) !important; }
-.pupil { width: 5.5px; height: 5.5px; border-radius: 50%; background: #14151A; transition: transform .05s linear; }
-.char-mouth { position: absolute; top: 58%; left: 50%; transform: translateX(-50%); width: 15px; height: 2px; background: #14151A; border-radius: 2px; opacity: 0.75; }
-.char.tall .char-mouth  { width: 2px; height: 15px; top: 32%; }
-.char.mid .char-mouth   { top: 56%; }
-.char.dome .char-mouth  { width: 18px; height: 9px; border: 2px solid #14151A; border-top: none; border-radius: 0 0 18px 18px; background: none; top: 50%; }
-.char.small .char-mouth { width: 16px; top: 55%; transform: translateX(-50%) rotate(-18deg); }
-body[data-theme="dark"] .char-body { filter: brightness(0.88); }
+.pupil { width: 6px; height: 6px; border-radius: 50%; background: #14151A; transition: transform .05s linear; }
+.char-mouth { position: absolute; top: 56%; left: 50%; transform: translateX(-50%); width: 16px; height: 2px; background: #14151A; border-radius: 2px; opacity: 0.75; }
+.char.tall .char-mouth  { width: 2px; height: 16px; top: 30%; }
+.char.mid .char-mouth   { top: 54%; }
+.char.dome .char-mouth  { width: 20px; height: 10px; border: 2px solid #14151A; border-top: none; border-radius: 0 0 20px 20px; background: none; top: 48%; }
+.char.small .char-mouth { width: 17px; top: 53%; transform: translateX(-50%) rotate(-18deg); }
+body[data-theme="dark"] .char-body { filter: brightness(0.9); }
 
-/* ── Moods — driven from the login script: sad on a wrong PIN,
-   happy on a successful sign-in, curious when switching KAM / Campus Manager ── */
 @keyframes crewHappyJump {
   0%, 100% { transform: translateY(0) rotate(0deg); }
   30%      { transform: translateY(-20px) rotate(-6deg); }
@@ -163,54 +170,31 @@ body[data-theme="dark"] .char-body { filter: brightness(0.88); }
 #char-crew.mood-curious .char { animation: crewCurious .9s ease-in-out; }
 #char-crew.mood-curious .eye { transform: scale(1.05); }
 
-/* Faint staircase motif — echoes the logomark, used once, quietly */
-.stair-motif {
-  position: absolute; width: 260px; height: 260px; opacity: 0.06; pointer-events: none;
-  bottom: -40px; left: -40px; transform: rotate(-6deg);
-}
-body[data-theme="dark"] .stair-motif { opacity: 0.09; }
-
-.theme-toggle-auth {
-  position: absolute; top: 20px; right: 20px; z-index: 5;
-  width: 36px; height: 36px; border-radius: 10px; border: 1px solid rgba(20,21,26,0.12); background: rgba(255,255,255,0.55);
-  backdrop-filter: blur(10px);
-  display: flex; align-items: center; justify-content: center; cursor: pointer; color: rgba(20,21,26,0.7);
-  box-shadow: var(--shadow-md); transition: transform .15s, color .15s, background .15s;
-}
-.theme-toggle-auth:hover { color: var(--ink); background: rgba(255,255,255,0.85); transform: translateY(-1px); }
-.theme-toggle-auth svg { width: 16px; height: 16px; }
-body[data-theme="dark"] .theme-toggle-auth { border: 1px solid rgba(255,255,255,0.22); background: rgba(255,255,255,0.10); color: rgba(255,255,255,0.85); }
-body[data-theme="dark"] .theme-toggle-auth:hover { color: #fff; background: rgba(255,255,255,0.18); }
-
-.auth-box { width: 100%; max-width: 400px; position: relative; z-index: 1; animation: authRise .65s cubic-bezier(.16,1,.3,1) both; display: flex; flex-direction: column; align-items: center; }
-@keyframes authRise { from { opacity: 0; transform: translateY(18px) scale(0.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
-
-.auth-logo-wrap { position: relative; margin-bottom: 22px; display: flex; align-items: center; justify-content: center; }
-.auth-logo-glow {
-  position: absolute; width: 180px; height: 90px; border-radius: 50%; filter: blur(30px); opacity: 0.55;
-  background: var(--brand-gradient);
-}
-.auth-logo { position: relative; height: 46px; width: auto; display: block; filter: drop-shadow(0 6px 18px rgba(140,30,110,0.20)); }
-
-.auth-panel {
-  width: 100%;
-  background: rgba(255,255,255,0.85);
-  backdrop-filter: blur(20px) saturate(140%);
-  border: 1px solid rgba(255,255,255,0.6);
-  border-radius: 26px; padding: 34px 28px 26px;
-  box-shadow: var(--shadow-lg); position: relative; overflow: hidden;
-}
-body[data-theme="dark"] .auth-panel { background: rgba(24,19,28,0.88); border-color: rgba(255,255,255,0.08); }
-.auth-panel::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: var(--brand-gradient);
+@media (prefers-reduced-motion: reduce) {
+  .auth-card, .char, #char-crew.mood-happy .char, #char-crew.mood-sad .char, #char-crew.mood-curious .char {
+    animation: none !important;
+  }
 }
 
-.auth-header { text-align: center; margin-bottom: 22px; }
-.auth-header h1 { font-family: 'Poppins','Inter',sans-serif; font-size: 20px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
-.auth-header p  { font-size: 13px; color: var(--text-light); margin-top: 6px; line-height: 1.5; }
+/* ── Right zone: the form ── */
+.auth-card-form {
+  flex: 1 1 58%;
+  background: var(--card);
+  padding: 52px 56px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+@media (max-width: 820px) { .auth-card-form { flex: 1 1 100%; padding: 44px 30px; } }
 
-.auth-role-toggle { display: flex; gap: 8px; margin-bottom: 20px; background: rgba(20,21,26,0.05); padding: 4px; border-radius: 13px; }
+.auth-logo-wrap { display: flex; justify-content: center; margin-bottom: 26px; }
+.auth-logo { height: 38px; width: auto; display: block; }
+
+.auth-header { text-align: center; margin-bottom: 26px; }
+.auth-header h1 { font-family: 'Poppins','Inter',sans-serif; font-size: 24px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
+.auth-header p  { font-size: 13.5px; color: var(--text-light); margin-top: 7px; line-height: 1.5; }
+
+.auth-form-inner { max-width: 340px; width: 100%; margin: 0 auto; }
+
+.auth-role-toggle { display: flex; gap: 8px; margin-bottom: 22px; background: rgba(20,21,26,0.05); padding: 4px; border-radius: 13px; }
 body[data-theme="dark"] .auth-role-toggle { background: rgba(255,255,255,0.06); }
 .role-tab {
   flex: 1; padding: 9px 8px; border-radius: 10px; border: none;
@@ -218,7 +202,6 @@ body[data-theme="dark"] .auth-role-toggle { background: rgba(255,255,255,0.06); 
   cursor: pointer; transition: background .15s, color .15s, box-shadow .15s; text-align: center;
 }
 .role-tab.active { background: var(--card); color: var(--ink); box-shadow: 0 2px 8px -2px rgba(20,21,26,0.18); }
-.role-tab.active::before { content: ''; }
 
 .field-label { display: block; font-size: 12px; font-weight: 600; color: var(--text-light); margin-bottom: 7px; }
 .field-group { margin-bottom: 14px; }
@@ -245,17 +228,16 @@ input[type=password] { letter-spacing: 0.12em; }
   color: #fff; font-size: 14px; font-weight: 700; letter-spacing: 0.01em;
   border: none; border-radius: 13px; cursor: pointer;
   transition: transform .1s, box-shadow .18s, background-position .4s ease;
-  box-shadow: 0 10px 22px -8px rgba(209,26,179,0.45);
+  box-shadow: 0 10px 22px -8px rgba(209,26,179,0.40);
 }
-.btn-auth:hover { background-position: 100% 0; box-shadow: 0 14px 28px -8px rgba(209,26,179,0.55); }
+.btn-auth:hover { background-position: 100% 0; box-shadow: 0 14px 28px -8px rgba(209,26,179,0.5); }
 .btn-auth:active { transform: scale(0.97); }
 .btn-auth:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 .btn-auth .arrow { transition: transform .18s; }
 .btn-auth:hover .arrow { transform: translateX(3px); }
 
-.auth-footnote { text-align: center; font-size: 11.5px; color: var(--text-faint); margin-top: 18px; }
+.auth-footnote { text-align: center; font-size: 11.5px; color: var(--text-faint); margin-top: 20px; }
 
-/* ── Success state (shown after a valid PIN) ── */
 .success-icon {
   width: 54px; height: 54px; border-radius: 50%; background: var(--brand-gradient);
   display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;
@@ -272,119 +254,103 @@ input[type=password] { letter-spacing: 0.12em; }
 .btn-secondary:hover { color: var(--text); border-color: var(--brand-2); }
 
 .hidden { display: none !important; }
-
-@media (prefers-reduced-motion: reduce) {
-  .auth-blob, .auth-panel::before, .auth-box,
-  .char, #char-crew.mood-happy .char, #char-crew.mood-sad .char, #char-crew.mood-curious .char {
-    animation: none !important;
-  }
-}
-
-@media (min-width: 480px) {
-  .auth-box { max-width: 420px; }
-  .auth-panel { padding: 40px 36px 30px; }
-  .auth-header h1 { font-size: 22px; }
-}
 </style>
 </head>
 <body>
 
 <div class="auth-wrap">
-  <div class="auth-blob b1"></div>
-  <div class="auth-blob b2"></div>
-  <svg class="stair-motif" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
-    <path d="M10 90 V70 H30 V50 H50 V30 H70 V10 H90" />
-  </svg>
-
   <button class="theme-toggle-auth" onclick="toggleTheme()" id="theme-toggle-btn" title="Toggle dark mode" aria-label="Toggle dark mode">
     <svg id="theme-toggle-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="3.2"/><path d="M8 1.5v1.4M8 13.1v1.4M2.6 8H1.2M14.8 8h-1.4M3.9 3.9l1 1M11.1 11.1l1 1M11.1 3.9l-1 1M3.9 11.1l1 1"/></svg>
   </button>
 
-  <div class="auth-stage">
-  <div class="char-crew" id="char-crew" aria-hidden="true">
-    <div class="char tall">
-      <div class="char-body">
-        <div class="char-eyes"><span class="eye"><span class="pupil"></span></span><span class="eye"><span class="pupil"></span></span></div>
-        <div class="char-mouth"></div>
-      </div>
-    </div>
-    <div class="char mid">
-      <div class="char-body">
-        <div class="char-eyes"><span class="eye"><span class="pupil"></span></span><span class="eye"><span class="pupil"></span></span></div>
-        <div class="char-mouth"></div>
-      </div>
-    </div>
-    <div class="char dome">
-      <div class="char-body">
-        <div class="char-eyes"><span class="eye"><span class="pupil"></span></span><span class="eye"><span class="pupil"></span></span></div>
-        <div class="char-mouth"></div>
-      </div>
-    </div>
-    <div class="char small">
-      <div class="char-body">
-        <div class="char-eyes"><span class="eye"><span class="pupil"></span></span><span class="eye"><span class="pupil"></span></span></div>
-        <div class="char-mouth"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="auth-box">
-    <div class="auth-logo-wrap">
-      <div class="auth-logo-glow"></div>
-      <img class="auth-logo" src="data:image/png;base64,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" alt="FACE Prep Campus" />
-    </div>
-
-    <!-- ── LOGIN PANEL ── -->
-    <div class="auth-panel" id="login-panel">
-      <div class="auth-header">
-        <h1>Campus Help Desk</h1>
-        <p>Sign in to manage tickets &amp; daily activity logs.</p>
-      </div>
-
-      <div class="auth-role-toggle">
-        <button type="button" class="role-tab active" id="role-tab-kam" onclick="setAuthRole('kam')">KAM</button>
-        <button type="button" class="role-tab" id="role-tab-manager" onclick="setAuthRole('manager')">Campus Manager</button>
-      </div>
-
-      <div id="kam-login-block">
-        <div class="field-group">
-          <label class="field-label">Login as</label>
-          <select id="kam-select"></select>
+  <div class="auth-card">
+    <div class="auth-card-illustration">
+      <div class="char-crew" id="char-crew" aria-hidden="true">
+        <div class="char tall">
+          <div class="char-body">
+            <div class="char-eyes"><span class="eye"><span class="pupil"></span></span><span class="eye"><span class="pupil"></span></span></div>
+            <div class="char-mouth"></div>
+          </div>
         </div>
-        <div class="field-group">
-          <label class="field-label">PIN</label>
-          <input id="kam-pin-input" type="password" inputmode="numeric" maxlength="6" placeholder="Enter your PIN" />
+        <div class="char mid">
+          <div class="char-body">
+            <div class="char-eyes"><span class="eye"><span class="pupil"></span></span><span class="eye"><span class="pupil"></span></span></div>
+            <div class="char-mouth"></div>
+          </div>
+        </div>
+        <div class="char small">
+          <div class="char-body">
+            <div class="char-eyes"><span class="eye"><span class="pupil"></span></span><span class="eye"><span class="pupil"></span></span></div>
+            <div class="char-mouth"></div>
+          </div>
+        </div>
+        <div class="char dome">
+          <div class="char-body">
+            <div class="char-eyes"><span class="eye"><span class="pupil"></span></span><span class="eye"><span class="pupil"></span></span></div>
+            <div class="char-mouth"></div>
+          </div>
         </div>
       </div>
+    </div>
 
-      <div id="manager-login-block" class="hidden">
-        <div class="field-group">
-          <label class="field-label">College</label>
-          <select id="manager-college-select"></select>
+    <div class="auth-card-form">
+      <div class="auth-form-inner">
+        <div class="auth-logo-wrap">
+          <img class="auth-logo" src="__LOGO_SRC__" alt="FACE Prep Campus" />
         </div>
-        <div class="field-group">
-          <label class="field-label">Manager PIN</label>
-          <input id="manager-pin-input" type="password" inputmode="numeric" maxlength="6" placeholder="Enter your PIN" />
+
+        <!-- ── LOGIN PANEL ── -->
+        <div id="login-panel">
+          <div class="auth-header">
+            <h1>Campus Help Desk</h1>
+            <p>Sign in to manage tickets &amp; daily activity logs.</p>
+          </div>
+
+          <div class="auth-role-toggle">
+            <button type="button" class="role-tab active" id="role-tab-kam" onclick="setAuthRole('kam')">KAM</button>
+            <button type="button" class="role-tab" id="role-tab-manager" onclick="setAuthRole('manager')">Campus Manager</button>
+          </div>
+
+          <div id="kam-login-block">
+            <div class="field-group">
+              <label class="field-label">Login as</label>
+              <select id="kam-select"></select>
+            </div>
+            <div class="field-group">
+              <label class="field-label">PIN</label>
+              <input id="kam-pin-input" type="password" inputmode="numeric" maxlength="6" placeholder="Enter your PIN" />
+            </div>
+          </div>
+
+          <div id="manager-login-block" class="hidden">
+            <div class="field-group">
+              <label class="field-label">College</label>
+              <select id="manager-college-select"></select>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Manager PIN</label>
+              <input id="manager-pin-input" type="password" inputmode="numeric" maxlength="6" placeholder="Enter your PIN" />
+            </div>
+          </div>
+
+          <div id="pin-error" class="error-msg hidden"></div>
+
+          <button class="btn-auth" id="submit-btn" onclick="submitLogin()">
+            <span id="submit-btn-label">Enter dashboard</span> <span class="arrow">→</span>
+          </button>
         </div>
+
+        <!-- ── SUCCESS PANEL ── -->
+        <div class="hidden" id="success-panel">
+          <div class="success-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"/></svg></div>
+          <div class="success-role" id="success-role">Signed in</div>
+          <div class="success-name" id="success-name">—</div>
+          <button class="btn-secondary" onclick="doLogout()">Log out</button>
+        </div>
+
+        <div class="auth-footnote">Authorized personnel only · FACE Prep Campus</div>
       </div>
-
-      <div id="pin-error" class="error-msg hidden"></div>
-
-      <button class="btn-auth" id="submit-btn" onclick="submitLogin()">
-        <span id="submit-btn-label">Enter dashboard</span> <span class="arrow">→</span>
-      </button>
     </div>
-
-    <!-- ── SUCCESS PANEL (demo state — wire handleLoginSuccess() into your router) ── -->
-    <div class="auth-panel hidden" id="success-panel">
-      <div class="success-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"/></svg></div>
-      <div class="success-role" id="success-role">Signed in</div>
-      <div class="success-name" id="success-name">—</div>
-      <button class="btn-secondary" onclick="doLogout()">Log out</button>
-    </div>
-
-    <div class="auth-footnote">Authorized personnel only · FACE Prep Campus</div>
-  </div>
   </div>
 </div>
 
@@ -396,9 +362,7 @@ input[type=password] { letter-spacing: 0.12em; }
    Campus Manager logins stay in sync with one source of truth.
 
    To integrate: replace handleLoginSuccess() below with
-   whatever you use to route into the rest of your app
-   (e.g. show your platform-select screen), instead of the
-   built-in success panel used for this demo.
+   whatever you use to route into the rest of your app.
    ═══════════════════════════════════════════════════════════ */
 
 const SUPABASE_URL      = 'https://rysajbwcuieovbsllaas.supabase.co';
@@ -454,7 +418,7 @@ applyThemeIcon();
   tick();
 })();
 
-/* ── Character crew: occasional blink, per-eye, so it never looks frozen ── */
+/* ── Character crew: occasional blink, per-eye ── */
 function startCrewBlinking(){
   const eyes = document.querySelectorAll('#char-crew .eye');
   eyes.forEach(eye => {
@@ -470,16 +434,13 @@ function startCrewBlinking(){
 }
 startCrewBlinking();
 
-/* ── Character crew: mood engine ──
-   'happy' on a correct PIN, 'sad' on a wrong PIN / missing field,
-   'curious' when switching KAM ↔ Campus Manager, and it also fires
-   quietly on its own every so often so the crew always feels alive. */
+/* ── Character crew: mood engine ── */
 let crewMoodTimer = null;
 function setCrewMood(mood, duration){
   const crew = $('char-crew');
   if(!crew) return;
   crew.classList.remove('mood-happy','mood-sad','mood-curious');
-  void crew.offsetWidth; // restart the CSS animation even if the same mood fires twice in a row
+  void crew.offsetWidth;
   crew.classList.add('mood-' + mood);
   if(crewMoodTimer) clearTimeout(crewMoodTimer);
   crewMoodTimer = setTimeout(() => { crew.classList.remove('mood-' + mood); }, duration || 1000);
@@ -591,11 +552,9 @@ function failPin(inputId, msg){
   setCrewMood('sad', 1100);
 }
 
-/* ── What happens after a valid PIN ──
-   Replace the body of this function with your own routing —
-   e.g. hide('login-panel'); showPlatformSelect();            */
+/* ── What happens after a valid PIN ── */
 function handleLoginSuccess(session){
-  window.FacePrepSession = session; // { role, name, colleges }
+  window.FacePrepSession = session;
   setCrewMood('happy', 1300);
   setTimeout(() => {
     hide('login-panel');
