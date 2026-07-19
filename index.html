@@ -75,29 +75,38 @@ button, input, select { font-family: inherit; }
 }
 @media (max-width: 820px) { .auth-card-illustration { display: none; } }
 
-/* ── Floating bokeh dots — soft brand-colored circles for depth ── */
-.bokeh { position: absolute; border-radius: 50%; pointer-events: none; opacity: 0.85; animation: bokehDrift ease-in-out infinite; }
-.bokeh-1 { width: 18px; height: 18px; top: 14%; left: 18%; background: var(--brand-3); animation-duration: 6.5s; }
-.bokeh-2 { width: 12px; height: 12px; top: 9%;  left: 62%; background: var(--brand-2); animation-duration: 5.5s; animation-delay: .4s; }
-.bokeh-3 { width: 26px; height: 26px; top: 8%;  left: 84%; background: var(--brand-4); opacity: 0.7; animation-duration: 7.2s; animation-delay: .8s; }
-.bokeh-4 { width: 14px; height: 14px; top: 26%; left: 80%; background: var(--brand-5); animation-duration: 6s; animation-delay: .2s; }
-.bokeh-5 { width: 10px; height: 10px; top: 30%; left: 40%; background: var(--brand-4); opacity: 0.6; animation-duration: 5s; animation-delay: 1s; }
-.bokeh-6 { width: 15px; height: 15px; top: 20%; left: 8%;  background: var(--brand-2); opacity: 0.5; animation-duration: 6.8s; animation-delay: .6s; }
+/* ── Floating bokeh dots — soft, out-of-focus brand-colored lights ── */
+.bokeh { position: absolute; border-radius: 50%; pointer-events: none; animation: bokehDrift ease-in-out infinite; }
+.bokeh-1 { width: 20px; height: 20px; top: 12%; left: 16%; background: var(--brand-3); opacity: 0.55; animation-duration: 6.5s; filter: blur(2px); }
+.bokeh-2 { width: 10px; height: 10px; top: 8%;  left: 60%; background: var(--brand-2); opacity: 0.8;  animation-duration: 5.5s; animation-delay: .4s; filter: blur(0.5px); }
+.bokeh-3 { width: 38px; height: 38px; top: 5%;  left: 82%; background: var(--brand-4); opacity: 0.35; animation-duration: 7.2s; animation-delay: .8s; filter: blur(4px); }
+.bokeh-4 { width: 13px; height: 13px; top: 25%; left: 79%; background: var(--brand-5); opacity: 0.7;  animation-duration: 6s;   animation-delay: .2s; filter: blur(1px); }
+.bokeh-5 { width: 9px;  height: 9px;  top: 30%; left: 39%; background: var(--brand-4); opacity: 0.5;  animation-duration: 5s;   animation-delay: 1s;  filter: blur(0.5px); }
+.bokeh-6 { width: 30px; height: 30px; top: 17%; left: 5%;  background: var(--brand-2); opacity: 0.28; animation-duration: 6.8s; animation-delay: .6s; filter: blur(3.5px); }
+.bokeh-7 { width: 7px;  height: 7px;  top: 38%; left: 60%; background: var(--brand-3); opacity: 0.65; animation-duration: 5.8s; animation-delay: .3s; filter: blur(0.5px); }
 @keyframes bokehDrift {
   0%, 100% { transform: translateY(0) scale(1); }
   50%      { transform: translateY(-10px) scale(1.06); }
 }
 @media (prefers-reduced-motion: reduce) { .bokeh { animation: none !important; } }
 
-.illo-copy { position: relative; z-index: 1; text-align: center; margin-bottom: 22px; padding: 0 8px; }
-.illo-copy h2 { font-family: 'Poppins','Inter',sans-serif; font-size: 21px; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; }
+/* ── Soft glow grounding the scene ── */
+.illo-glow {
+  position: absolute; left: 50%; bottom: 40px;
+  width: 280px; height: 200px; transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgba(209,26,179,0.16) 0%, rgba(209,26,179,0) 70%);
+  pointer-events: none; z-index: 0;
+}
+
+.illo-copy { position: relative; z-index: 1; text-align: center; margin-bottom: 18px; padding: 0 8px; }
+.illo-copy h2 { font-family: 'Poppins','Inter',sans-serif; font-size: 22px; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; }
 .illo-copy p  { font-size: 13px; color: var(--text-light); margin-top: 6px; line-height: 1.5; }
 
 .illo-scene {
   position: relative;
   z-index: 1;
-  width: 210px;
-  margin-bottom: 56px;
+  width: 232px;
+  margin-bottom: 48px;
   pointer-events: none;
   animation: illoFloat 4s ease-in-out infinite;
   transform-origin: bottom center;
@@ -227,12 +236,17 @@ input[type=password] { letter-spacing: 0.12em; }
       <span class="bokeh bokeh-4" aria-hidden="true"></span>
       <span class="bokeh bokeh-5" aria-hidden="true"></span>
       <span class="bokeh bokeh-6" aria-hidden="true"></span>
+      <span class="bokeh bokeh-7" aria-hidden="true"></span>
+
+      <div class="illo-glow" aria-hidden="true"></div>
 
       <div class="illo-copy">
+        <h2>Welcome back</h2>
+        <p>Manage tickets in one place</p>
       </div>
 
       <div class="illo-scene" id="illo-scene" aria-hidden="true">
-        <svg class="illo-svg" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+        <svg class="illo-svg" viewBox="0 0 240 220" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="roofGrad" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0%" stop-color="#E11FBE"/>
@@ -248,43 +262,51 @@ input[type=password] { letter-spacing: 0.12em; }
             </linearGradient>
           </defs>
 
-          <ellipse cx="105" cy="196" rx="72" ry="8" fill="#14151A" opacity="0.08"/>
+          <ellipse cx="115" cy="196" rx="82" ry="8" fill="#14151A" opacity="0.08"/>
+
+          <!-- small potted plant for scene depth -->
+          <g>
+            <rect x="10" y="176" width="20" height="18" rx="3" fill="#EF6E5C" opacity="0.9"/>
+            <path d="M20 176c-8-6-10-16-2-22 2 8 2 16 2 22z" fill="#7C5CFC"/>
+            <path d="M20 176c8-4 12-14 6-21-4 7-6 15-6 21z" fill="#8A6BFF"/>
+            <path d="M20 176c-2-9 2-18 8-22-1 8-3 16-8 22z" fill="#6F4CF0"/>
+          </g>
 
           <!-- house -->
           <g>
-            <polygon points="62,58 12,96 112,96" fill="url(#roofGrad)"/>
-            <rect x="55" y="66" width="14" height="12" rx="2" fill="#F6A968"/>
-            <rect x="20" y="96" width="84" height="70" rx="5" fill="url(#wallGrad)"/>
-            <rect x="20" y="96" width="84" height="13" fill="#EF6E5C"/>
-            <rect x="30" y="119" width="16" height="18" rx="2" fill="#fff" opacity="0.92"/>
-            <rect x="54" y="119" width="16" height="18" rx="2" fill="#fff" opacity="0.92"/>
-            <rect x="78" y="119" width="16" height="18" rx="2" fill="#fff" opacity="0.92"/>
-            <rect x="30" y="142" width="16" height="18" rx="2" fill="#fff" opacity="0.92"/>
-            <rect x="54" y="142" width="16" height="18" rx="2" fill="#fff" opacity="0.92"/>
-            <rect x="78" y="142" width="16" height="18" rx="2" fill="#fff" opacity="0.92"/>
+            <polygon points="72,58 22,96 122,96" fill="url(#roofGrad)"/>
+            <rect x="65" y="66" width="14" height="12" rx="2" fill="#F6A968"/>
+            <rect x="30" y="96" width="84" height="70" rx="5" fill="url(#wallGrad)"/>
+            <rect x="30" y="96" width="84" height="13" fill="#EF6E5C"/>
+            <rect x="40" y="119" width="16" height="18" rx="2" fill="#fff" opacity="0.92"/>
+            <rect x="64" y="119" width="16" height="18" rx="2" fill="#fff" opacity="0.92"/>
+            <rect x="88" y="119" width="16" height="18" rx="2" fill="#fff" opacity="0.92"/>
+            <rect x="40" y="142" width="16" height="18" rx="2" fill="#fff" opacity="0.92"/>
+            <rect x="64" y="142" width="16" height="18" rx="2" fill="#fff" opacity="0.92"/>
+            <rect x="88" y="142" width="16" height="18" rx="2" fill="#fff" opacity="0.92"/>
           </g>
 
           <!-- chat bubble -->
           <g>
-            <path d="M132 62h60a12 12 0 0 1 12 12v26a12 12 0 0 1-12 12h-36l-18 16v-16h-6a12 12 0 0 1-12-12V74a12 12 0 0 1 12-12z" fill="url(#bubbleGrad)"/>
-            <rect x="146" y="82" width="42" height="5" rx="2.5" fill="#fff" opacity="0.9"/>
-            <rect x="146" y="93" width="28" height="5" rx="2.5" fill="#fff" opacity="0.65"/>
+            <path d="M142 62h60a12 12 0 0 1 12 12v26a12 12 0 0 1-12 12h-36l-18 16v-16h-6a12 12 0 0 1-12-12V74a12 12 0 0 1 12-12z" fill="url(#bubbleGrad)"/>
+            <rect x="156" y="82" width="42" height="5" rx="2.5" fill="#fff" opacity="0.9"/>
+            <rect x="156" y="93" width="28" height="5" rx="2.5" fill="#fff" opacity="0.65"/>
           </g>
 
           <!-- notepad card -->
           <g>
-            <rect x="104" y="112" width="58" height="80" rx="10" fill="#fff" stroke="#D11AB3" stroke-width="3"/>
-            <rect x="104" y="112" width="58" height="16" rx="10" fill="#D11AB3"/>
-            <rect x="114" y="140" width="30" height="4.5" rx="2.25" fill="#EF6E5C"/>
-            <rect x="114" y="150" width="38" height="4.5" rx="2.25" fill="#F6A968"/>
-            <rect x="114" y="160" width="22" height="4.5" rx="2.25" fill="#7C5CFC"/>
-            <rect x="114" y="170" width="34" height="4.5" rx="2.25" fill="#EF6E5C"/>
+            <rect x="114" y="112" width="58" height="80" rx="10" fill="#fff" stroke="#D11AB3" stroke-width="3"/>
+            <rect x="114" y="112" width="58" height="16" rx="10" fill="#D11AB3"/>
+            <rect x="124" y="140" width="30" height="4.5" rx="2.25" fill="#EF6E5C"/>
+            <rect x="124" y="150" width="38" height="4.5" rx="2.25" fill="#F6A968"/>
+            <rect x="124" y="160" width="22" height="4.5" rx="2.25" fill="#7C5CFC"/>
+            <rect x="124" y="170" width="34" height="4.5" rx="2.25" fill="#EF6E5C"/>
           </g>
 
           <!-- checkmark badge -->
           <g>
-            <circle cx="172" cy="192" r="21" fill="#F6A968"/>
-            <path d="M162 192l7 7 13-13" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="182" cy="192" r="21" fill="#F6A968"/>
+            <path d="M172 192l7 7 13-13" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
           </g>
         </svg>
       </div>
