@@ -53,9 +53,10 @@ button, input, select { font-family: inherit; }
 
 /* ── Page backdrop: quiet and light, so the card reads as its own object ── */
 .auth-wrap {
-  min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 24px;
+  height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px 24px;
   position: relative;
   background: var(--page-bg);
+  overflow: hidden;
 }
 
 .theme-toggle-auth {
@@ -72,6 +73,7 @@ body[data-theme="dark"] .theme-toggle-auth:hover { color: #fff; background: rgba
 /* ── The card: one object, two zones ── */
 .auth-card {
   width: 100%; max-width: 920px;
+  max-height: calc(100vh - 40px);
   background: var(--card);
   border-radius: 28px;
   box-shadow: var(--shadow-card);
@@ -83,161 +85,53 @@ body[data-theme="dark"] .theme-toggle-auth:hover { color: #fff; background: rgba
 
 /* ── Left zone: illustration ── */
 .auth-card-illustration {
-  flex: 0 0 46%;
+  flex: 0 0 42%;
   background: var(--illustration-bg);
   display: flex; align-items: flex-end; justify-content: center;
-  padding: 56px 32px 0;
+  padding: 32px 24px 0;
   position: relative;
-  min-height: 620px;
+  min-height: 400px;
   overflow: hidden;
 }
 @media (max-width: 820px) { .auth-card-illustration { display: none; } }
 
-.char-crew {
+.illo-scene {
   position: relative;
-  width: 344px; height: 320px;
-  margin-bottom: 46px;
+  width: 240px;
+  margin-bottom: 28px;
   pointer-events: none;
+  animation: illoFloat 4s ease-in-out infinite;
+  transform-origin: bottom center;
 }
-.char-crew::after {
-  /* contact shadow grounding the group */
-  content: ''; position: absolute; left: 50%; bottom: -30px; transform: translateX(-50%);
-  width: 260px; height: 26px; border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(20,15,20,0.20) 0%, rgba(20,15,20,0.10) 45%, rgba(20,15,20,0) 75%);
-  filter: blur(1px);
+.illo-svg { width: 100%; height: auto; display: block; }
+@keyframes illoFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
 }
-body[data-theme="dark"] .char-crew::after {
-  background: radial-gradient(ellipse at center, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.22) 45%, rgba(0,0,0,0) 75%);
-}
-.char { position: absolute; bottom: 0; animation: charBob 3.4s ease-in-out infinite; transform-origin: bottom center; }
-.char.tall  { left: 6px;   z-index: 1; }
-.char.mid   { left: 150px; z-index: 2; }
-.char.small { left: 226px; z-index: 3; }
-.char.dome  { left: 18px;  z-index: 4; }
-.char:nth-child(2) { animation-delay: -0.6s; }
-.char:nth-child(3) { animation-delay: -1.4s; }
-.char:nth-child(4) { animation-delay: -2.1s; }
-@keyframes charBob {
+
+@keyframes illoHappyJump {
   0%, 100% { transform: translateY(0) rotate(0deg); }
-  50%      { transform: translateY(-7px) rotate(-1deg); }
+  30%      { transform: translateY(-14px) rotate(-3deg); }
+  55%      { transform: translateY(2px) rotate(2deg); }
+  78%      { transform: translateY(-6px) rotate(-1deg); }
 }
-.char-body {
-  border-radius: 44px 44px 14px 14px;
-  box-shadow: 0 20px 34px -14px rgba(20,21,26,0.35), inset 0 -14px 20px -6px rgba(0,0,0,0.14), inset 0 10px 16px -4px rgba(255,255,255,0.30);
-  position: relative;
+@keyframes illoSadShake {
+  0%, 100% { transform: translateY(2px) rotate(0deg); }
+  20%      { transform: translateY(2px) rotate(-3deg); }
+  40%      { transform: translateY(2px) rotate(3deg); }
+  60%      { transform: translateY(4px) rotate(-2deg); }
+  80%      { transform: translateY(4px) rotate(2deg); }
 }
-/* glossy highlight streak, gives the plastic/toy a rounded, lit-from-above feel */
-.char-body::before {
-  content: '';
-  position: absolute; top: 10%; left: 14%;
-  width: 30%; height: 22%;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.45);
-  filter: blur(3px);
-  transform: rotate(-18deg);
-}
-/* soft blush, using two round shadows either side of the mouth */
-.char-body::after {
-  content: '';
-  position: absolute; top: 46%; left: 50%; transform: translateX(-50%);
-  width: 2px; height: 2px;
-  box-shadow:
-    -19px 0 0 9px rgba(255,255,255,0.16),
-     19px 0 0 9px rgba(255,255,255,0.16);
-  border-radius: 50%;
-  filter: blur(2px);
-  opacity: 0.7;
-}
-
-.char.tall .char-body  {
-  width: 146px; height: 300px;
-  background: linear-gradient(160deg, #9581FF 0%, #7C5CFC 55%, #6947E8 100%);
-}
-.char.mid .char-body   {
-  width: 130px; height: 234px;
-  background: linear-gradient(160deg, #ED4FCB 0%, var(--brand-1) 55%, #B3128F 100%);
-  border-radius: 40px 40px 12px 12px;
-}
-.char.dome .char-body  {
-  width: 254px; height: 144px;
-  background: linear-gradient(160deg, #FFC48A 0%, var(--brand-3) 55%, #E8944C 100%);
-  border-radius: 132px 132px 12px 12px;
-}
-.char.small .char-body {
-  width: 110px; height: 200px;
-  background: linear-gradient(160deg, #FFDA76 0%, #F6C445 55%, #E0A81F 100%);
-  border-radius: 40px 40px 12px 12px;
-}
-
-/* stubby little arms, tucked at the sides, for a friendlier "real" character silhouette */
-.char.tall .char-body::before { top: 8%; }
-.char-arm {
-  position: absolute; top: 46%; width: 22px; height: 46px; border-radius: 16px;
-  box-shadow: inset 0 6px 10px -4px rgba(255,255,255,0.28), inset 0 -6px 10px -4px rgba(0,0,0,0.16);
-}
-.char.tall .char-arm.left   { left: -12px; background: linear-gradient(160deg, #9581FF, #7C5CFC); transform: rotate(8deg); }
-.char.tall .char-arm.right  { right: -12px; background: linear-gradient(160deg, #9581FF, #7C5CFC); transform: rotate(-8deg); }
-.char.mid .char-arm.left    { left: -11px; top: 42%; width: 20px; height: 40px; background: linear-gradient(160deg, #ED4FCB, var(--brand-1)); transform: rotate(10deg); }
-.char.mid .char-arm.right   { right: -11px; top: 42%; width: 20px; height: 40px; background: linear-gradient(160deg, #ED4FCB, var(--brand-1)); transform: rotate(-10deg); }
-.char.small .char-arm.left  { left: -10px; top: 40%; width: 18px; height: 36px; background: linear-gradient(160deg, #FFDA76, #F6C445); transform: rotate(12deg); }
-.char.small .char-arm.right { right: -10px; top: 40%; width: 18px; height: 36px; background: linear-gradient(160deg, #FFDA76, #F6C445); transform: rotate(-12deg); }
-.char.dome .char-arm { display: none; }
-
-.char-eyes { position: absolute; top: 32%; left: 50%; transform: translateX(-50%); display: flex; gap: 21px; }
-.char.dome .char-eyes { top: 38%; gap: 18px; }
-.eye {
-  width: 22px; height: 22px; border-radius: 50%; background: #fff;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: inset 0 2px 3px rgba(0,0,0,0.18), 0 1px 1px rgba(255,255,255,0.6);
-  transition: transform .12s ease;
-}
-.eye.blink { transform: scaleY(0.12) !important; }
-.pupil { width: 9px; height: 9px; border-radius: 50%; background: #14151A; transition: transform .05s linear; position: relative; }
-.pupil::after { content: ''; position: absolute; top: 1px; left: 1px; width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,0.85); }
-.char-mouth { position: absolute; top: 56%; left: 50%; transform: translateX(-50%); width: 22px; height: 3px; background: #14151A; border-radius: 3px; opacity: 0.75; }
-.char.tall .char-mouth  { width: 3px; height: 22px; top: 30%; }
-.char.mid .char-mouth   { top: 54%; }
-.char.dome .char-mouth  { width: 27px; height: 14px; border: 3px solid #14151A; border-top: none; border-radius: 0 0 27px 27px; background: none; top: 48%; }
-.char.small .char-mouth { width: 23px; top: 53%; transform: translateX(-50%) rotate(-18deg); }
-body[data-theme="dark"] .char-body { filter: brightness(0.92); }
-
-@keyframes crewHappyJump {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  30%      { transform: translateY(-20px) rotate(-6deg); }
-  55%      { transform: translateY(3px) rotate(4deg); }
-  78%      { transform: translateY(-9px) rotate(-2deg); }
-}
-@keyframes crewSadShake {
-  0%, 100% { transform: translateY(4px) rotate(0deg); }
-  20%      { transform: translateY(4px) rotate(-4deg); }
-  40%      { transform: translateY(4px) rotate(4deg); }
-  60%      { transform: translateY(6px) rotate(-3deg); }
-  80%      { transform: translateY(6px) rotate(3deg); }
-}
-@keyframes crewCurious {
+@keyframes illoCurious {
   0%, 100% { transform: rotate(0deg) translateY(0); }
-  50%      { transform: rotate(-5deg) translateY(-4px); }
+  50%      { transform: rotate(-3deg) translateY(-4px); }
 }
-#char-crew.mood-happy .char { animation: crewHappyJump .7s ease-in-out; }
-#char-crew.mood-happy .char:nth-child(2) { animation-delay: .06s; }
-#char-crew.mood-happy .char:nth-child(3) { animation-delay: .12s; }
-#char-crew.mood-happy .char:nth-child(4) { animation-delay: .18s; }
-#char-crew.mood-happy .eye { transform: scale(1.18); }
-#char-crew.mood-happy .char-mouth { transform: translateX(-50%) scaleX(1.4); background: #14151A; }
-#char-crew.mood-happy .char.dome .char-mouth { transform: scale(1.2); }
-#char-crew.mood-happy .char.small .char-mouth { transform: translateX(-50%) rotate(-18deg) scaleX(1.3); }
-
-#char-crew.mood-sad .char { animation: crewSadShake .6s ease-in-out; }
-#char-crew.mood-sad .eye { transform: scaleY(0.55) translateY(2px); }
-#char-crew.mood-sad .char-mouth { transform: translateX(-50%) rotate(180deg); }
-#char-crew.mood-sad .char.dome .char-mouth { transform: rotate(180deg) translateY(-2px); }
-#char-crew.mood-sad .char.small .char-mouth { transform: translateX(-50%) rotate(198deg); }
-
-#char-crew.mood-curious .char { animation: crewCurious .9s ease-in-out; }
-#char-crew.mood-curious .eye { transform: scale(1.05); }
+#illo-scene.mood-happy  { animation: illoHappyJump .7s ease-in-out; }
+#illo-scene.mood-sad    { animation: illoSadShake .6s ease-in-out; }
+#illo-scene.mood-curious{ animation: illoCurious .9s ease-in-out; }
 
 @media (prefers-reduced-motion: reduce) {
-  .auth-card, .char, #char-crew.mood-happy .char, #char-crew.mood-sad .char, #char-crew.mood-curious .char {
+  .auth-card, .illo-scene, #illo-scene.mood-happy, #illo-scene.mood-sad, #illo-scene.mood-curious {
     animation: none !important;
   }
 }
@@ -246,10 +140,12 @@ body[data-theme="dark"] .char-body { filter: brightness(0.92); }
 .auth-card-form {
   flex: 1 1 58%;
   background: var(--card);
-  padding: 52px 56px;
+  padding: 40px 52px;
   display: flex; flex-direction: column; justify-content: center;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
 }
-@media (max-width: 820px) { .auth-card-form { flex: 1 1 100%; padding: 44px 30px; } }
+@media (max-width: 820px) { .auth-card-form { flex: 1 1 100%; padding: 36px 28px; } }
 
 .auth-logo-wrap { display: flex; justify-content: center; margin-bottom: 26px; }
 .auth-logo { height: 38px; width: auto; display: block; }
@@ -331,41 +227,35 @@ input[type=password] { letter-spacing: 0.12em; }
 
   <div class="auth-card">
     <div class="auth-card-illustration">
-      <div class="char-crew" id="char-crew" aria-hidden="true">
-        <div class="char tall">
-          <div class="char-body">
-            <span class="char-arm left"></span><span class="char-arm right"></span>
-            <div class="char-eyes"><span class="eye"><span class="pupil"></span></span><span class="eye"><span class="pupil"></span></span></div>
-            <div class="char-mouth"></div>
-          </div>
-        </div>
-        <div class="char mid">
-          <div class="char-body">
-            <span class="char-arm left"></span><span class="char-arm right"></span>
-            <div class="char-eyes"><span class="eye"><span class="pupil"></span></span><span class="eye"><span class="pupil"></span></span></div>
-            <div class="char-mouth"></div>
-          </div>
-        </div>
-        <div class="char small">
-          <div class="char-body">
-            <span class="char-arm left"></span><span class="char-arm right"></span>
-            <div class="char-eyes"><span class="eye"><span class="pupil"></span></span><span class="eye"><span class="pupil"></span></span></div>
-            <div class="char-mouth"></div>
-          </div>
-        </div>
-        <div class="char dome">
-          <div class="char-body">
-            <div class="char-eyes"><span class="eye"><span class="pupil"></span></span><span class="eye"><span class="pupil"></span></span></div>
-            <div class="char-mouth"></div>
-          </div>
-        </div>
+      <div class="illo-scene" id="illo-scene" aria-hidden="true">
+        <svg class="illo-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="100" cy="170" rx="60" ry="8" fill="#14151A" opacity="0.08"/>
+          <rect x="30" y="86" width="90" height="66" rx="4" fill="#7C5CFC"/>
+          <rect x="30" y="86" width="90" height="14" fill="#EF6E5C"/>
+          <rect x="42" y="108" width="16" height="18" fill="#fff" opacity="0.9"/>
+          <rect x="67" y="108" width="16" height="18" fill="#fff" opacity="0.9"/>
+          <rect x="92" y="108" width="16" height="18" fill="#fff" opacity="0.9"/>
+          <rect x="42" y="132" width="16" height="18" fill="#fff" opacity="0.9"/>
+          <rect x="67" y="132" width="16" height="18" fill="#fff" opacity="0.9"/>
+          <rect x="92" y="132" width="16" height="18" fill="#fff" opacity="0.9"/>
+          <polygon points="75,50 22,86 128,86" fill="#D11AB3"/>
+          <rect x="66" y="56" width="18" height="16" rx="2" fill="#F6A968"/>
+          <rect x="120" y="94" width="58" height="76" rx="6" fill="#fff" stroke="#D11AB3" stroke-width="3"/>
+          <rect x="120" y="94" width="58" height="16" rx="6" fill="#D11AB3"/>
+          <rect x="130" y="120" width="30" height="4" rx="2" fill="#7C5CFC"/>
+          <rect x="130" y="130" width="38" height="4" rx="2" fill="#EF6E5C"/>
+          <rect x="130" y="140" width="24" height="4" rx="2" fill="#F6A968"/>
+          <rect x="130" y="150" width="34" height="4" rx="2" fill="#7C5CFC"/>
+          <circle cx="149" cy="180" r="18" fill="#F6A968"/>
+          <path d="M141 180l5 5 9-9" stroke="#fff" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </div>
     </div>
 
     <div class="auth-card-form">
       <div class="auth-form-inner">
         <div class="auth-logo-wrap">
-          <img class="auth-logo" src="__LOGO_SRC__" alt="FACE Prep Campus" />
+          <img class="auth-logo" src="Face prep logo3.png" alt="FACE Prep Campus" />
         </div>
 
         <!-- ── LOGIN PANEL ── -->
@@ -467,58 +357,22 @@ function toggleTheme(){
 }
 applyThemeIcon();
 
-/* ── Character crew: eyes follow the cursor ── */
-(function(){
-  const crew = $('char-crew');
-  if(!crew) return;
-  const pupils = crew.querySelectorAll('.pupil');
-  let targetX = 0, targetY = 0, curX = 0, curY = 0;
-  document.addEventListener('mousemove', e => {
-    const w = window.innerWidth, h = window.innerHeight;
-    targetX = (e.clientX / w - 0.5) * 2;
-    targetY = (e.clientY / h - 0.5) * 2;
-  });
-  function tick(){
-    curX += (targetX - curX) * 0.12;
-    curY += (targetY - curY) * 0.12;
-    pupils.forEach(p => { p.style.transform = `translate(${curX*3}px, ${curY*2.8}px)`; });
-    requestAnimationFrame(tick);
-  }
-  tick();
-})();
-
-/* ── Character crew: occasional blink, per-eye ── */
-function startCrewBlinking(){
-  const eyes = document.querySelectorAll('#char-crew .eye');
-  eyes.forEach(eye => {
-    (function loopBlink(){
-      const delay = 1800 + Math.random() * 3200;
-      setTimeout(() => {
-        eye.classList.add('blink');
-        setTimeout(() => eye.classList.remove('blink'), 130);
-        loopBlink();
-      }, delay);
-    })();
-  });
-}
-startCrewBlinking();
-
-/* ── Character crew: mood engine ── */
+/* ── Illustration: mood engine (bounce/shake/tilt on login events) ── */
 let crewMoodTimer = null;
 function setCrewMood(mood, duration){
-  const crew = $('char-crew');
-  if(!crew) return;
-  crew.classList.remove('mood-happy','mood-sad','mood-curious');
-  void crew.offsetWidth;
-  crew.classList.add('mood-' + mood);
+  const scene = $('illo-scene');
+  if(!scene) return;
+  scene.classList.remove('mood-happy','mood-sad','mood-curious');
+  void scene.offsetWidth;
+  scene.classList.add('mood-' + mood);
   if(crewMoodTimer) clearTimeout(crewMoodTimer);
-  crewMoodTimer = setTimeout(() => { crew.classList.remove('mood-' + mood); }, duration || 1000);
+  crewMoodTimer = setTimeout(() => { scene.classList.remove('mood-' + mood); }, duration || 1000);
 }
 (function idleGestureLoop(){
   const delay = 9000 + Math.random() * 9000;
   setTimeout(() => {
-    const crew = $('char-crew');
-    if(crew && !crew.classList.contains('mood-happy') && !crew.classList.contains('mood-sad')){
+    const scene = $('illo-scene');
+    if(scene && !scene.classList.contains('mood-happy') && !scene.classList.contains('mood-sad')){
       setCrewMood('curious', 900);
     }
     idleGestureLoop();
