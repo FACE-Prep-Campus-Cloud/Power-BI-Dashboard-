@@ -76,14 +76,25 @@ body[data-theme="dark"] .auth-blob { opacity: 0.4; }
 }
 
 /* ── Googly character companions — grouped & aligned like the reference,
-   colored from the FACE Prep brand palette (magenta / coral-orange / violet / gold) ── */
+   colored from the FACE Prep brand palette (magenta / coral-orange / violet / gold).
+   Sits inside .auth-stage, bottom-aligned right next to the login card, exactly
+   like the illustration panel sits next to the form in the reference. ── */
+.auth-stage {
+  position: relative; z-index: 1;
+  display: flex; align-items: flex-end; justify-content: center;
+  gap: 46px;
+}
 .char-crew {
-  position: absolute; left: 5%; bottom: 0; z-index: 2; pointer-events: none;
-  display: flex; align-items: flex-end;
+  position: relative; flex-shrink: 0;
+  width: 200px; height: 190px;
+  pointer-events: none;
 }
 @media (max-width: 900px) { .char-crew { display: none; } }
-.char { position: relative; animation: charBob 3.4s ease-in-out infinite; transform-origin: bottom center; }
-.char + .char { margin-left: -22px; }
+.char { position: absolute; bottom: 0; animation: charBob 3.4s ease-in-out infinite; transform-origin: bottom center; }
+.char.tall  { left: 0px;   z-index: 1; }
+.char.mid   { left: 58px;  z-index: 2; }
+.char.dome  { left: -16px; z-index: 3; }
+.char.small { left: 108px; z-index: 4; }
 .char:nth-child(2) { animation-delay: -0.6s; }
 .char:nth-child(3) { animation-delay: -1.4s; }
 .char:nth-child(4) { animation-delay: -2.1s; }
@@ -96,10 +107,10 @@ body[data-theme="dark"] .auth-blob { opacity: 0.4; }
   box-shadow: 0 18px 30px -14px rgba(20,21,26,0.35);
   position: relative;
 }
-.char.tall .char-body  { width: 84px;  height: 176px; background: #7C5CFC; }                 /* violet — back */
-.char.mid .char-body   { width: 78px;  height: 138px; background: var(--brand-1); border-radius: 30px 30px 8px 8px; } /* magenta */
-.char.dome .char-body  { width: 138px; height: 88px;  background: var(--brand-3); border-radius: 84px 84px 8px 8px; } /* warm orange */
-.char.small .char-body { width: 68px;  height: 116px; background: #F6C445; border-radius: 30px 30px 8px 8px; }       /* gold */
+.char.tall .char-body  { width: 92px;  height: 190px; background: #7C5CFC; }                 /* violet — back */
+.char.mid .char-body   { width: 82px;  height: 148px; background: var(--brand-1); border-radius: 30px 30px 8px 8px; } /* magenta */
+.char.dome .char-body  { width: 160px; height: 92px;  background: var(--brand-3); border-radius: 90px 90px 8px 8px; } /* warm orange */
+.char.small .char-body { width: 72px;  height: 122px; background: #F6C445; border-radius: 30px 30px 8px 8px; }       /* gold */
 .char-eyes { position: absolute; top: 34%; left: 50%; transform: translateX(-50%); display: flex; gap: 13px; }
 .char.dome .char-eyes { top: 42%; gap: 11px; }
 .eye {
@@ -286,6 +297,11 @@ input[type=password] { letter-spacing: 0.12em; }
     <path d="M10 90 V70 H30 V50 H50 V30 H70 V10 H90" />
   </svg>
 
+  <button class="theme-toggle-auth" onclick="toggleTheme()" id="theme-toggle-btn" title="Toggle dark mode" aria-label="Toggle dark mode">
+    <svg id="theme-toggle-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="3.2"/><path d="M8 1.5v1.4M8 13.1v1.4M2.6 8H1.2M14.8 8h-1.4M3.9 3.9l1 1M11.1 11.1l1 1M11.1 3.9l-1 1M3.9 11.1l1 1"/></svg>
+  </button>
+
+  <div class="auth-stage">
   <div class="char-crew" id="char-crew" aria-hidden="true">
     <div class="char tall">
       <div class="char-body">
@@ -312,10 +328,6 @@ input[type=password] { letter-spacing: 0.12em; }
       </div>
     </div>
   </div>
-
-  <button class="theme-toggle-auth" onclick="toggleTheme()" id="theme-toggle-btn" title="Toggle dark mode" aria-label="Toggle dark mode">
-    <svg id="theme-toggle-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="3.2"/><path d="M8 1.5v1.4M8 13.1v1.4M2.6 8H1.2M14.8 8h-1.4M3.9 3.9l1 1M11.1 11.1l1 1M11.1 3.9l-1 1M3.9 11.1l1 1"/></svg>
-  </button>
 
   <div class="auth-box">
     <div class="auth-logo-wrap">
@@ -373,6 +385,7 @@ input[type=password] { letter-spacing: 0.12em; }
     </div>
 
     <div class="auth-footnote">Authorized personnel only · FACE Prep Campus</div>
+  </div>
   </div>
 </div>
 
