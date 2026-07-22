@@ -1536,16 +1536,6 @@ body[data-theme="dark"] .dlog-topbar {
   object-fit: cover;
   border-radius: inherit;
 }
-
-/* ── Mentor performance snapshot (bar chart, added) ── */
-/* Reuses .insight-bar-row / .insight-bar-track / .insight-bar-fill from the ticket insights panel */
-
-/* ── Rating trend over time (line chart, added) ── */
-.trend-chart-wrap { padding: 6px 0 4px; }
-.trend-chart-svg { width: 100%; height: 190px; display: block; }
-.trend-chart-empty { font-size: 12.5px; color: var(--text-faint); padding: 6px 0; }
-.trend-chart-legend { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-light); margin-top: 6px; }
-.trend-chart-legend .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 </style>
 </head>
 <body>
@@ -1878,20 +1868,6 @@ body[data-theme="dark"] .dlog-topbar {
           <span>✓ Reviewed</span>
         </div>
         <div style="font-size:11px;color:var(--text-faint);margin-top:8px;">Click a day to see that day's snaps.</div>
-
-        <div class="ledger-card" id="csnap-metrics-card" style="margin-top:14px;">
-          <div class="ledger-card-title">Mentor performance snapshot</div>
-          <div id="csnap-metrics-empty" class="hidden" style="font-size:12.5px;color:var(--text-faint);padding:6px 0;">No ratings recorded yet for this view.</div>
-          <div id="csnap-metrics-dims"></div>
-          <div class="ledger-section-label" style="margin-top:14px;">By mentor — overall average (lowest first)</div>
-          <div id="csnap-metrics-mentors"></div>
-        </div>
-
-        <div class="ledger-card" id="csnap-trend-card" style="margin-top:14px;">
-          <div class="ledger-card-title">Rating trend over time</div>
-          <div id="csnap-trend-empty" class="hidden trend-chart-empty">No rated snaps yet to chart a trend.</div>
-          <div class="trend-chart-wrap" id="csnap-trend-chart-wrap"></div>
-        </div>
       </div>
 
       <!-- RIGHT (narrow) column: form -->
@@ -1997,6 +1973,28 @@ body[data-theme="dark"] .dlog-topbar {
                       <option value="3">3 — Occasional tasks, inconsistent follow-up</option>
                       <option value="2">2 — Rarely assigned/reviewed</option>
                       <option value="1">1 — No tasks, no review, no feedback</option>
+                    </select>
+                  </div>
+                  <div class="form-group full">
+                    <label class="field-label" title="Whether the mentor conducted the session according to the weekly plan submitted; whether the planned topic was covered; any justified deviations">Session Plan Adherence</label>
+                    <select id="snap-session-plan-adherence">
+                      <option value="">Rate 1–5</option>
+                      <option value="5">5 — Fully adhered to the weekly plan; planned topic &amp; activities completed as scheduled</option>
+                      <option value="4">4 — Mostly adhered, only minor deviations that did not affect session objectives</option>
+                      <option value="3">3 — Partially adhered; some planned topics or activities not completed</option>
+                      <option value="2">2 — Limited adherence; significant deviations from planned topic/activities</option>
+                      <option value="1">1 — Did not adhere; session substantially different from submitted plan without valid justification</option>
+                    </select>
+                  </div>
+                  <div class="form-group full">
+                    <label class="field-label" title="Whether study material was shared after the session, covered the topics discussed, and supported revision/assigned activities">Study Material Sharing</label>
+                    <select id="snap-study-material-sharing">
+                      <option value="">Rate 1–5</option>
+                      <option value="5">5 — Shared promptly after the session, fully covering the topics taught</option>
+                      <option value="4">4 — Shared after the session, covered most topics, minor gaps</option>
+                      <option value="3">3 — Shared but incomplete or covered only part of the session content</option>
+                      <option value="2">2 — Shared with significant gaps, difficult for students to revise/complete tasks</option>
+                      <option value="1">1 — Not shared after the session</option>
                     </select>
                   </div>
                   <div class="form-group full">
@@ -4290,7 +4288,8 @@ async function enterClassroomSnap(){
     populateSnapDepartmentSelect();
     ['snap-teacher','snap-course-type','snap-subject',
      'snap-punctuality','snap-professionalism','snap-class-handling',
-     'snap-skill-development','snap-student-engagement','snap-tasks-followup','snap-notes'
+     'snap-skill-development','snap-student-engagement','snap-tasks-followup',
+     'snap-session-plan-adherence','snap-study-material-sharing','snap-notes'
     ].forEach(id => { const el = $(id); if(el) el.value = ''; });
   } else {
     populateSnapCollegeSelect();
@@ -4344,6 +4343,8 @@ const RATING_LABELS = {
   rating_skill_development: 'Skill Development',
   rating_student_engagement: 'Student Engagement',
   rating_tasks_followup: 'Tasks & Follow-up',
+  rating_session_plan_adherence: 'Session Plan Adherence',
+  rating_study_material_sharing: 'Study Material Sharing',
 };
 function ratingBadgeTone(v){
   const n = Number(v);
@@ -4351,161 +4352,6 @@ function ratingBadgeTone(v){
   if(n >= 4) return 'good';
   if(n <= 2) return 'warn';
   return '';
-}
-
-/* ── Mentor performance snapshot chart (added) ── */
-function renderMentorMetricsChart(){
-  const dimsEl = $('csnap-metrics-dims');
-  const mentorsEl = $('csnap-metrics-mentors');
-  if(!dimsEl || !mentorsEl) return;
-
-  const RATING_KEYS = Object.keys(RATING_LABELS);
-  const rated = classroomSnaps.filter(s => RATING_KEYS.some(k => s[k]));
-
-  if(!rated.length){
-    dimsEl.innerHTML = '';
-    mentorsEl.innerHTML = '';
-    show('csnap-metrics-empty');
-    return;
-  }
-  hide('csnap-metrics-empty');
-
-  const barColor = avg => avg >= 4 ? 'var(--green)' : avg <= 2.5 ? 'var(--red)' : 'var(--amber)';
-
-  // Average per rating dimension, across all currently loaded snaps
-  const dimAverages = RATING_KEYS.map(k => {
-    const vals = rated.map(s => Number(s[k])).filter(v => v > 0);
-    if(!vals.length) return null;
-    const avg = vals.reduce((a,b)=>a+b,0) / vals.length;
-    return { label: RATING_LABELS[k], avg };
-  }).filter(Boolean);
-
-  dimsEl.innerHTML = dimAverages.map(d => `
-    <div class="insight-bar-row">
-      <span class="insight-bar-label" title="${escHTML(d.label)}">${escHTML(d.label)}</span>
-      <span class="insight-bar-track"><span class="insight-bar-fill" style="width:${(d.avg/5)*100}%;background:${barColor(d.avg)}"></span></span>
-      <span class="insight-bar-val">${d.avg.toFixed(1)}</span>
-    </div>`).join('');
-
-  // Average overall score per mentor, lowest first so attention-needed mentors surface
-  const byMentor = {};
-  rated.forEach(s => {
-    const name = (s.teacher_name || s.mentor_name || '').trim() || 'Unnamed mentor';
-    const vals = RATING_KEYS.map(k => Number(s[k])).filter(v => v > 0);
-    if(!vals.length) return;
-    const avg = vals.reduce((a,b)=>a+b,0) / vals.length;
-    if(!byMentor[name]) byMentor[name] = { total: 0, count: 0 };
-    byMentor[name].total += avg;
-    byMentor[name].count += 1;
-  });
-
-  const mentorRows = Object.entries(byMentor)
-    .map(([name, v]) => ({ name, avg: v.total / v.count, count: v.count }))
-    .sort((a,b) => a.avg - b.avg)
-    .slice(0, 8);
-
-  mentorsEl.innerHTML = mentorRows.length ? mentorRows.map(m => `
-    <div class="insight-bar-row">
-      <span class="insight-bar-label" title="${escHTML(m.name)} (${m.count} observation${m.count===1?'':'s'})">${escHTML(m.name)}</span>
-      <span class="insight-bar-track"><span class="insight-bar-fill" style="width:${(m.avg/5)*100}%;background:${barColor(m.avg)}"></span></span>
-      <span class="insight-bar-val">${m.avg.toFixed(1)}</span>
-    </div>`).join('') : '<div style="font-size:12px;color:var(--text-faint)">No mentors rated yet</div>';
-}
-
-/* ── Rating trend over time chart (line chart, added) ── */
-function renderRatingTrendChart(){
-  const wrap = $('csnap-trend-chart-wrap');
-  const emptyEl = $('csnap-trend-empty');
-  if(!wrap || !emptyEl) return;
-
-  const RATING_KEYS = Object.keys(RATING_LABELS);
-  const rated = classroomSnaps.filter(s => RATING_KEYS.some(k => s[k]));
-
-  if(!rated.length){
-    wrap.innerHTML = '';
-    show('csnap-trend-empty');
-    return;
-  }
-  hide('csnap-trend-empty');
-
-  // Average overall rating per day (uses observation_date if present, else created_at)
-  const byDate = {};
-  rated.forEach(s => {
-    const key = snapDateKey(s);
-    const vals = RATING_KEYS.map(k => Number(s[k])).filter(v => v > 0);
-    if(!vals.length) return;
-    const avg = vals.reduce((a,b)=>a+b,0) / vals.length;
-    if(!byDate[key]) byDate[key] = { total: 0, count: 0 };
-    byDate[key].total += avg;
-    byDate[key].count += 1;
-  });
-
-  const points = Object.entries(byDate)
-    .map(([date, v]) => ({ date, avg: v.total / v.count }))
-    .sort((a,b) => new Date(a.date) - new Date(b.date))
-    .slice(-14); // last 14 logged days
-
-  if(points.length < 2){
-    if(points.length === 1){
-      const only = new Date(points[0].date+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short'});
-      wrap.innerHTML = `<div style="font-size:12.5px;color:var(--text-faint);padding:10px 0;">Only one day of rated data so far (${only}) — the trend line will appear once more days are logged.</div>`;
-    } else {
-      wrap.innerHTML = '';
-    }
-    return;
-  }
-
-  const w = 640, h = 190, padL = 30, padR = 14, padT = 14, padB = 26;
-  const plotW = w - padL - padR, plotH = h - padT - padB;
-  const minV = 1, maxV = 5;
-  const xStep = plotW / (points.length - 1 || 1);
-
-  const xy = (i, v) => {
-    const x = padL + i * xStep;
-    const y = padT + plotH - ((v - minV) / (maxV - minV)) * plotH;
-    return [x, y];
-  };
-
-  const linePts = points.map((p,i) => xy(i, p.avg).join(',')).join(' ');
-  const areaPts = `${padL},${padT+plotH} ${linePts} ${padL+plotW},${padT+plotH}`;
-
-  const gridLines = [1,2,3,4,5].map(v => {
-    const [,y] = xy(0, v);
-    return `<line x1="${padL}" y1="${y}" x2="${padL+plotW}" y2="${y}" stroke="var(--border-soft)" stroke-width="1"/>
-      <text x="${padL-8}" y="${y+3}" font-size="9.5" text-anchor="end" fill="var(--text-faint)">${v}</text>`;
-  }).join('');
-
-  const showEvery = Math.max(1, Math.ceil(points.length / 6));
-  const xLabels = points.map((p,i) => {
-    if(i % showEvery !== 0 && i !== points.length-1) return '';
-    const [x] = xy(i, p.avg);
-    const label = new Date(p.date+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short'});
-    return `<text x="${x}" y="${h-6}" font-size="9.5" text-anchor="middle" fill="var(--text-faint)">${escHTML(label)}</text>`;
-  }).join('');
-
-  const dots = points.map((p,i) => {
-    const [x,y] = xy(i, p.avg);
-    const color = p.avg >= 4 ? 'var(--green)' : p.avg <= 2.5 ? 'var(--red)' : 'var(--amber)';
-    const label = new Date(p.date+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short'});
-    return `<circle cx="${x}" cy="${y}" r="3.4" fill="${color}" stroke="var(--card)" stroke-width="1.5"><title>${escHTML(label)}: ${p.avg.toFixed(1)}/5</title></circle>`;
-  }).join('');
-
-  wrap.innerHTML = `
-    <svg class="trend-chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
-      <defs>
-        <linearGradient id="trendAreaGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="var(--blue)" stop-opacity="0.22"/>
-          <stop offset="100%" stop-color="var(--blue)" stop-opacity="0"/>
-        </linearGradient>
-      </defs>
-      ${gridLines}
-      <polygon points="${areaPts}" fill="url(#trendAreaGrad)"/>
-      <polyline points="${linePts}" fill="none" stroke="var(--blue)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-      ${dots}
-      ${xLabels}
-    </svg>
-    <div class="trend-chart-legend"><span class="dot" style="background:var(--blue)"></span>Average overall rating per day (last ${points.length} logged days)</div>
-  `;
 }
 
  function buildSnapCardHtml(s){
@@ -4531,6 +4377,8 @@ function renderRatingTrendChart(){
     ['Skill development', s.rating_skill_development ? s.rating_skill_development+'/5' : null],
     ['Student engagement', s.rating_student_engagement ? s.rating_student_engagement+'/5' : null],
     ['Tasks & follow-up', s.rating_tasks_followup ? s.rating_tasks_followup+'/5' : null],
+    ['Session plan adherence', s.rating_session_plan_adherence ? s.rating_session_plan_adherence+'/5' : null],
+    ['Study material sharing', s.rating_study_material_sharing ? s.rating_study_material_sharing+'/5' : null],
     ['Remarks', s.notes],
   ].filter(([,v]) => v);
   const detailsHtml = detailFields.length ? `
@@ -4570,9 +4418,8 @@ function renderClassroomSnaps(){
     hide('csnap-empty');
   }
   renderCsnapCalendar();
-  renderCsnapSidebarSummary();
-  renderMentorMetricsChart();
-  renderRatingTrendChart();
+   renderCsnapSidebarSummary();   // ← add this line
+
 }
 
  function snapDateKey(s){
@@ -4690,6 +4537,8 @@ function openSnapDetailModal(id){
       ${snapDetailRow('Skill development', s.rating_skill_development ? s.rating_skill_development+'/5' : '')}
       ${snapDetailRow('Student engagement', s.rating_student_engagement ? s.rating_student_engagement+'/5' : '')}
       ${snapDetailRow('Tasks & follow-up', s.rating_tasks_followup ? s.rating_tasks_followup+'/5' : '')}
+      ${snapDetailRow('Session plan adherence', s.rating_session_plan_adherence ? s.rating_session_plan_adherence+'/5' : '')}
+      ${snapDetailRow('Study material sharing', s.rating_study_material_sharing ? s.rating_study_material_sharing+'/5' : '')}
       <div class="snap-detail-item full">${snapDetailRow('Remarks', s.notes)}</div>
       ${s.photo_lat ? snapDetailRow('Photo location', `${Number(s.photo_lat).toFixed(5)}, ${Number(s.photo_lng).toFixed(5)}`) : ''}
     </div>
@@ -4722,6 +4571,8 @@ async function saveClassroomSnap(){
   const skillDevelopment   = $('snap-skill-development').value || null;
   const studentEngagement  = $('snap-student-engagement').value || null;
   const tasksFollowup      = $('snap-tasks-followup').value || null;
+  const sessionPlanAdherence = $('snap-session-plan-adherence').value || null;
+  const studyMaterialSharing = $('snap-study-material-sharing').value || null;
   const notes = $('snap-notes').value.trim();
   const obsDate = new Date().toISOString().slice(0,10);
 
@@ -4761,12 +4612,15 @@ async function saveClassroomSnap(){
       rating_skill_development: skillDevelopment,
       rating_student_engagement: studentEngagement,
       rating_tasks_followup: tasksFollowup,
+      rating_session_plan_adherence: sessionPlanAdherence,
+      rating_study_material_sharing: studyMaterialSharing,
     };
     const { error } = await sb.from('classroom_snaps').insert(payload);
     if(error) throw error;
     $('snap-teacher').value=''; $('snap-course-type').value=''; $('snap-subject').value='';
     $('snap-punctuality').value=''; $('snap-professionalism').value=''; $('snap-class-handling').value='';
     $('snap-skill-development').value=''; $('snap-student-engagement').value=''; $('snap-tasks-followup').value='';
+    $('snap-session-plan-adherence').value=''; $('snap-study-material-sharing').value='';
     $('snap-notes').value='';
     populateSnapDepartmentSelect();
     $('snap-photo-input').value=''; snapSelectedFile=null; snapLocation=null; hide('snap-photo-preview-wrap');
