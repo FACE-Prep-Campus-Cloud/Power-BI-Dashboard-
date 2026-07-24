@@ -205,7 +205,7 @@
           <p class="hero-sub">Daily task tracker — stay organized, complete tasks, hit deadlines.</p>
         </div>
         <div style="display:flex;gap:8px;">
-          <button class="btn-secondary" id="exportCompletedBtn" title="Export completed tasks to Excel">⬇ Export completed (.xlsx)</button>
+          <button class="btn-secondary" id="exportCompletedBtn" title="Export all tasks to Excel">⬇ Export tasks (.xlsx)</button>
           <button class="primary-btn" id="addTaskBtn">+ Assign task</button>
         </div>
       </div>
@@ -593,14 +593,29 @@
     return true;
   }
 
-  // ---------- Excel export (completed tasks) ----------
-  function exportCompletedTasks(){
-    const completed = state.tasks
-      .filter(t => t.status === 'completed')
-      .sort((a,b) => new Date(b.due_time) - new Date(a.due_time));
+  // ---------- Excel export (all tasks, one sheet per status) ----------
+  const STATUS_LABELS = { pending: 'Pending', in_progress: 'In Progress', completed: 'Completed' };
 
-    if(completed.length === 0){
-      alert('No completed tasks yet — nothing to export.');
+  function tasksToRows(tasks){
+    return tasks
+      .slice()
+      .sort((a,b) => new Date(a.due_time) - new Date(b.due_time))
+      .map(t => {
+        const m = memberById(t.member_id);
+        return {
+          'Task': t.title,
+          'Description': t.description || '',
+          'Assigned to': m ? m.name : 'Unassigned',
+          'Start': t.start_time ? new Date(t.start_time).toLocaleString() : '',
+          'Due': t.due_time ? new Date(t.due_time).toLocaleString() : '',
+          'Status': STATUS_LABELS[t.status] || t.status
+        };
+      });
+  }
+
+  function exportAllTasks(){
+    if(state.tasks.length === 0){
+      alert('No tasks yet — nothing to export.');
       return;
     }
     if(typeof XLSX === 'undefined'){
@@ -608,28 +623,29 @@
       return;
     }
 
-    const rows = completed.map(t => {
-      const m = memberById(t.member_id);
-      return {
-        'Task': t.title,
-        'Description': t.description || '',
-        'Assigned to': m ? m.name : 'Unassigned',
-        'Start': t.start_time ? new Date(t.start_time).toLocaleString() : '',
-        'Due': t.due_time ? new Date(t.due_time).toLocaleString() : '',
-        'Status': 'Completed'
-      };
+    const wb = XLSX.utils.book_new();
+    const colWidths = [ {wch:32}, {wch:42}, {wch:18}, {wch:20}, {wch:20}, {wch:12} ];
+
+    COLUMN_DEFS.forEach(col => {
+      const rows = tasksToRows(state.tasks.filter(t => t.status === col.status));
+      const ws = rows.length
+        ? XLSX.utils.json_to_sheet(rows)
+        : XLSX.utils.aoa_to_sheet([['Task','Description','Assigned to','Start','Due','Status']]);
+      ws['!cols'] = colWidths;
+      XLSX.utils.book_append_sheet(wb, ws, col.title);
     });
 
-    const ws = XLSX.utils.json_to_sheet(rows);
-    ws['!cols'] = [ {wch:32}, {wch:42}, {wch:18}, {wch:20}, {wch:20}, {wch:12} ];
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Completed Tasks');
+    // Combined sheet with everything, in one place
+    const allRows = tasksToRows(state.tasks);
+    const wsAll = XLSX.utils.json_to_sheet(allRows);
+    wsAll['!cols'] = colWidths;
+    XLSX.utils.book_append_sheet(wb, wsAll, 'All Tasks');
 
     const stamp = new Date().toISOString().slice(0,10);
-    XLSX.writeFile(wb, `completed-tasks-${stamp}.xlsx`);
+    XLSX.writeFile(wb, `operations-tasks-${stamp}.xlsx`);
   }
 
-  $('#exportCompletedBtn').addEventListener('click', exportCompletedTasks);
+  $('#exportCompletedBtn').addEventListener('click', exportAllTasks);
 
   $('#addMemberBtn').addEventListener('click', () => {
     const row = $('#addMemberRow');
