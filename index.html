@@ -73,6 +73,14 @@
   .member-stats{display:flex;justify-content:space-between;margin-top:5px;font-size:10.5px;color:var(--muted);}
   .member-stats b{color:var(--text);font-weight:600;}
 
+  .member-chips{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:10px;}
+  .member-chip{border-radius:7px;padding:5px 2px 4px;text-align:center;font-size:8.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;line-height:1.3;}
+  .member-chip .n{display:block;font-size:13px;font-weight:800;font-family:'Plus Jakarta Sans';letter-spacing:0;text-transform:none;line-height:1.15;margin-bottom:1px;}
+  .member-chip.chip-pending{background:var(--pending-dim);color:var(--pending);}
+  .member-chip.chip-progress{background:var(--progress-dim);color:var(--progress);}
+  .member-chip.chip-done{background:var(--success-dim);color:var(--success);}
+  .member-chip.chip-overdue{background:var(--danger-dim);color:var(--danger);}
+
   .add-member-row{display:flex;gap:6px;}
   .add-member-row input{flex:1;background:var(--panel-2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-size:13px;}
   .add-member-row input:focus{outline:none;border-color:var(--accent);}
@@ -210,6 +218,7 @@
         </div>
       </div>
 
+      <h2 style="margin:0 0 10px 2px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;">Team overview — all members</h2>
       <div class="stats-row">
         <div class="stat pending"><div class="num" id="statPending">0</div><div class="lbl">Pending</div></div>
         <div class="stat progress"><div class="num" id="statProgress">0</div><div class="lbl">In progress</div></div>
@@ -377,8 +386,10 @@
     list.innerHTML = '';
     state.members.forEach(m => {
       const tasks = state.tasks.filter(t => t.member_id === m.id);
-      const completed = tasks.filter(t => t.status === 'completed').length;
-      const pct = tasks.length ? Math.round((completed/tasks.length)*100) : 0;
+      const pendingCount = tasks.filter(t => t.status === 'pending').length;
+      const progressCount = tasks.filter(t => t.status === 'in_progress').length;
+      const completedCount = tasks.filter(t => t.status === 'completed').length;
+      const overdueCount = tasks.filter(t => taskProgressInfo(t).isOverdue).length;
       const initials = m.name.split(' ').map(p=>p[0]).slice(0,2).join('').toUpperCase();
 
       const card = document.createElement('div');
@@ -392,8 +403,12 @@
             <div class="member-role">${tasks.length} task${tasks.length===1?'':'s'}</div>
           </div>
         </div>
-        <div class="mbar-track"><div class="mbar-fill" style="width:${pct}%"></div></div>
-        <div class="member-stats"><span>Complete</span><b>${pct}%</b></div>
+        <div class="member-chips">
+          <div class="member-chip chip-pending"><span class="n">${pendingCount}</span>Pending</div>
+          <div class="member-chip chip-progress"><span class="n">${progressCount}</span>Active</div>
+          <div class="member-chip chip-done"><span class="n">${completedCount}</span>Done</div>
+          <div class="member-chip chip-overdue"><span class="n">${overdueCount}</span>Late</div>
+        </div>
       `;
       card.addEventListener('click', (e) => {
         if(e.target.closest('[data-del-member]')) return;
