@@ -62,7 +62,6 @@
   .member-card:hover{border-color:#c9cee6;}
   .member-card.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent-dim) inset;background:#fff;}
   .member-top{display:flex;align-items:center;gap:9px;}
-  .avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#12161d;flex-shrink:0;}
   .member-name{font-weight:600;font-size:13px;}
   .member-role{font-size:10.5px;color:var(--muted);}
   .member-del{position:absolute;top:8px;right:8px;font-size:11px;color:var(--muted);opacity:0;transition:opacity .15s;}
@@ -72,14 +71,6 @@
   .mbar-fill{height:100%;background:linear-gradient(90deg,var(--success),#7fd6a4);}
   .member-stats{display:flex;justify-content:space-between;margin-top:5px;font-size:10.5px;color:var(--muted);}
   .member-stats b{color:var(--text);font-weight:600;}
-
-  .member-chips{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:10px;}
-  .member-chip{border-radius:7px;padding:5px 2px 4px;text-align:center;font-size:8.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;line-height:1.3;}
-  .member-chip .n{display:block;font-size:13px;font-weight:800;font-family:'Plus Jakarta Sans';letter-spacing:0;text-transform:none;line-height:1.15;margin-bottom:1px;}
-  .member-chip.chip-pending{background:var(--pending-dim);color:var(--pending);}
-  .member-chip.chip-progress{background:var(--progress-dim);color:var(--progress);}
-  .member-chip.chip-done{background:var(--success-dim);color:var(--success);}
-  .member-chip.chip-overdue{background:var(--danger-dim);color:var(--danger);}
 
   .add-member-row{display:flex;gap:6px;}
   .add-member-row input{flex:1;background:var(--panel-2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text);font-size:13px;}
@@ -386,29 +377,21 @@
     list.innerHTML = '';
     state.members.forEach(m => {
       const tasks = state.tasks.filter(t => t.member_id === m.id);
-      const pendingCount = tasks.filter(t => t.status === 'pending').length;
-      const progressCount = tasks.filter(t => t.status === 'in_progress').length;
-      const completedCount = tasks.filter(t => t.status === 'completed').length;
-      const overdueCount = tasks.filter(t => taskProgressInfo(t).isOverdue).length;
-      const initials = m.name.split(' ').map(p=>p[0]).slice(0,2).join('').toUpperCase();
+      const completed = tasks.filter(t => t.status === 'completed').length;
+      const pct = tasks.length ? Math.round((completed/tasks.length)*100) : 0;
 
       const card = document.createElement('div');
       card.className = 'member-card' + (currentMemberFilter === m.id ? ' active' : '');
       card.innerHTML = `
         <div class="member-del" data-del-member="${m.id}">✕</div>
         <div class="member-top">
-          <div class="avatar" style="background:${m.color}">${initials}</div>
           <div>
             <div class="member-name">${escapeHtml(m.name)}</div>
             <div class="member-role">${tasks.length} task${tasks.length===1?'':'s'}</div>
           </div>
         </div>
-        <div class="member-chips">
-          <div class="member-chip chip-pending"><span class="n">${pendingCount}</span>Pending</div>
-          <div class="member-chip chip-progress"><span class="n">${progressCount}</span>Active</div>
-          <div class="member-chip chip-done"><span class="n">${completedCount}</span>Done</div>
-          <div class="member-chip chip-overdue"><span class="n">${overdueCount}</span>Late</div>
-        </div>
+        <div class="mbar-track"><div class="mbar-fill" style="width:${pct}%"></div></div>
+        <div class="member-stats"><span>Complete</span><b>${pct}%</b></div>
       `;
       card.addEventListener('click', (e) => {
         if(e.target.closest('[data-del-member]')) return;
