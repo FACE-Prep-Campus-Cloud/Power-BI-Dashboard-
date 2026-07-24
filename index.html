@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   :root{
     --bg:#eef1fa;
@@ -187,7 +188,7 @@
 
   <div class="main-col">
     <div class="topbar">
-      <button class="icon-btn" id="refreshBtn" title="Refresh">Refresh</button>
+      <button class="icon-btn" id="refreshBtn" title="Refresh">⟳</button>
       <div id="syncIndicator" class="sync-indicator" title="Sync status">
         <span class="sync-dot"></span><span id="syncLabel">Connecting…</span>
       </div>
@@ -203,7 +204,10 @@
           <h1>Operations Team</h1>
           <p class="hero-sub">Daily task tracker — stay organized, complete tasks, hit deadlines.</p>
         </div>
-        <button class="primary-btn" id="addTaskBtn">+ Assign task</button>
+        <div style="display:flex;gap:8px;">
+          <button class="btn-secondary" id="exportCompletedBtn" title="Export completed tasks to Excel">⬇ Export completed (.xlsx)</button>
+          <button class="primary-btn" id="addTaskBtn">+ Assign task</button>
+        </div>
       </div>
 
       <div class="stats-row">
@@ -588,6 +592,44 @@
     setSyncStatus('ok', 'Synced with Supabase');
     return true;
   }
+
+  // ---------- Excel export (completed tasks) ----------
+  function exportCompletedTasks(){
+    const completed = state.tasks
+      .filter(t => t.status === 'completed')
+      .sort((a,b) => new Date(b.due_time) - new Date(a.due_time));
+
+    if(completed.length === 0){
+      alert('No completed tasks yet — nothing to export.');
+      return;
+    }
+    if(typeof XLSX === 'undefined'){
+      alert('The Excel export library failed to load. Check your connection and try again.');
+      return;
+    }
+
+    const rows = completed.map(t => {
+      const m = memberById(t.member_id);
+      return {
+        'Task': t.title,
+        'Description': t.description || '',
+        'Assigned to': m ? m.name : 'Unassigned',
+        'Start': t.start_time ? new Date(t.start_time).toLocaleString() : '',
+        'Due': t.due_time ? new Date(t.due_time).toLocaleString() : '',
+        'Status': 'Completed'
+      };
+    });
+
+    const ws = XLSX.utils.json_to_sheet(rows);
+    ws['!cols'] = [ {wch:32}, {wch:42}, {wch:18}, {wch:20}, {wch:20}, {wch:12} ];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Completed Tasks');
+
+    const stamp = new Date().toISOString().slice(0,10);
+    XLSX.writeFile(wb, `completed-tasks-${stamp}.xlsx`);
+  }
+
+  $('#exportCompletedBtn').addEventListener('click', exportCompletedTasks);
 
   $('#addMemberBtn').addEventListener('click', () => {
     const row = $('#addMemberRow');
