@@ -191,7 +191,6 @@
       <div id="syncIndicator" class="sync-indicator" title="Sync status">
         <span class="sync-dot"></span><span id="syncLabel">Connecting…</span>
       </div>
-      <button class="icon-btn" id="settingsBtn" title="Supabase setup">⚙</button>
       <div class="date-chip">
         <div class="day" id="clockDay">—</div>
         <div id="clockTime">—</div>
@@ -261,35 +260,6 @@
   </div>
 </div>
 
-<!-- Settings / Supabase setup Modal -->
-<div class="overlay" id="settingsOverlay">
-  <div class="modal" style="max-width:560px;">
-    <h3>Supabase connection</h3>
-    <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-top:-8px;">
-      This board reads and writes directly to your Supabase project. One-time setup, run once in your
-      project's <b style="color:var(--text)">SQL Editor</b>:
-    </p>
-    <div class="field">
-      <label>Setup SQL (run once)</label>
-      <textarea id="setupSql" readonly style="min-height:230px;font-family:'JetBrains Mono',monospace;font-size:11px;"></textarea>
-      <button class="btn-secondary" id="copySqlBtn" style="margin-top:8px;">Copy SQL</button>
-    </div>
-    <div class="field">
-      <label>Project</label>
-      <input type="text" id="projectUrlDisplay" readonly>
-    </div>
-    <p style="font-size:11px;color:var(--muted);line-height:1.6;">
-      The SQL above creates the <span class="mono">members</span> and <span class="mono">tasks</span> tables
-      and opens them to the anon key (row level security policies allowing read/write). Because this app uses
-      the public anon key from the browser, anyone with that key can read and write this data — same tradeoff
-      as any client-only setup. For anything sensitive, add proper auth and tighter RLS policies later.
-    </p>
-    <div class="modal-actions">
-      <button class="btn-secondary" id="closeSettingsBtn">Close</button>
-      <button class="primary-btn" id="retryConnectBtn">Retry connection</button>
-    </div>
-  </div>
-</div>
 
 <script>
 (function(){
@@ -304,37 +274,6 @@
   const SUPABASE_PROJECT_ID = 'rfzhifhvtopdayhaiuct';
   const SUPABASE_URL = `https://${SUPABASE_PROJECT_ID}.supabase.co`;
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJmemhpZmh2dG9wZGF5aGFpdWN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4ODEyNzYsImV4cCI6MjEwMDQ1NzI3Nn0.X3vTyKA0f--0lQ4_CreXDAMVSHcvOBiWxFAVi2sGHmw';
-
-  const SETUP_SQL = `-- Ops Board schema
-create extension if not exists pgcrypto;
-
-create table if not exists members (
-  id uuid primary key default gen_random_uuid(),
-  name text not null,
-  color text not null
-);
-
-create table if not exists tasks (
-  id uuid primary key default gen_random_uuid(),
-  title text not null,
-  description text,
-  member_id uuid references members(id) on delete set null,
-  start_time timestamptz,
-  due_time timestamptz,
-  status text not null default 'pending'
-);
-
-alter table members enable row level security;
-alter table tasks enable row level security;
-
-drop policy if exists "public access" on members;
-create policy "public access" on members for all using (true) with check (true);
-
-drop policy if exists "public access" on tasks;
-create policy "public access" on tasks for all using (true) with check (true);
-
-alter publication supabase_realtime add table members;
-alter publication supabase_realtime add table tasks;`;
 
   let supabase = null;
   let state = { members: [], tasks: [] };
@@ -736,33 +675,6 @@ alter publication supabase_realtime add table tasks;`;
     renderAll();
   });
 
-  // ---------- Settings modal (Supabase setup) ----------
-  function openSettings(){
-    $('#setupSql').value = SETUP_SQL;
-    $('#projectUrlDisplay').value = SUPABASE_URL;
-    $('#settingsOverlay').classList.add('show');
-  }
-  function closeSettings(){ $('#settingsOverlay').classList.remove('show'); }
-  $('#settingsBtn').addEventListener('click', openSettings);
-  $('#closeSettingsBtn').addEventListener('click', closeSettings);
-  $('#settingsOverlay').addEventListener('click', (e) => { if(e.target.id === 'settingsOverlay') closeSettings(); });
-  $('#copySqlBtn').addEventListener('click', async () => {
-    try{
-      await navigator.clipboard.writeText(SETUP_SQL);
-      $('#copySqlBtn').textContent = 'Copied ✓';
-      setTimeout(() => { $('#copySqlBtn').textContent = 'Copy SQL'; }, 1500);
-    }catch(e){
-      $('#setupSql').select();
-      document.execCommand('copy');
-    }
-  });
-  $('#retryConnectBtn').addEventListener('click', async () => {
-    closeSettings();
-    const ok = await loadData();
-    if(ok) subscribeRealtime();
-    renderAll();
-  });
-
   // ---------- Init ----------
   async function init(){
     tickClock();
@@ -772,8 +684,6 @@ alter publication supabase_realtime add table tasks;`;
     renderAll();
     if(ok){
       subscribeRealtime();
-    } else {
-      openSettings(); // guide the user through table setup
     }
     setInterval(renderBoard, 30000); // keep countdowns live
   }
