@@ -6,7 +6,7 @@
 <title>Ops Board</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{
     --bg:#f5f6f8;
@@ -164,9 +164,9 @@
     </div>
     <div style="display:flex;align-items:center;gap:12px;">
       <div id="syncIndicator" class="sync-indicator" title="Sync status">
-        <span class="sync-dot"></span><span id="syncLabel">Not connected</span>
+        <span class="sync-dot"></span><span id="syncLabel">Connecting…</span>
       </div>
-      <button class="icon-btn" id="settingsBtn" title="Connect Google Sheet" style="width:22px;height:22px;font-size:12px;">⚙</button>
+      <button class="icon-btn" id="settingsBtn" title="Supabase setup" style="width:22px;height:22px;font-size:12px;">⚙</button>
       <div class="clock">
         <div class="day" id="clockDay">—</div>
         <div id="clockTime">—</div>
@@ -191,7 +191,7 @@
     <div class="stats-row">
       <div class="stat pending"><div class="num" id="statPending">0</div><div class="lbl">Pending</div></div>
       <div class="stat progress"><div class="num" id="statProgress">0</div><div class="lbl">In progress</div></div>
-      <div class="stat done"><div class="num" id="statDone">0</div><div class="lbl">Completed today</div></div>
+      <div class="stat done"><div class="num" id="statDone">0</div><div class="lbl">Completed</div></div>
       <div class="stat overdue"><div class="num" id="statOverdue">0</div><div class="lbl">Overdue</div></div>
     </div>
 
@@ -204,7 +204,6 @@
         <button data-status="in_progress">In progress</button>
         <button data-status="completed">Completed</button>
       </div>
-      <button class="btn-secondary" id="exportBtn">⬇ Export to Excel</button>
       <button class="primary-btn" id="addTaskBtn">+ Assign task</button>
     </div>
 
@@ -254,35 +253,32 @@
   </div>
 </div>
 
-<!-- Settings / Google Sheet connection Modal -->
+<!-- Settings / Supabase setup Modal -->
 <div class="overlay" id="settingsOverlay">
   <div class="modal" style="max-width:560px;">
-    <h3>Connect your Google Sheet</h3>
+    <h3>Supabase connection</h3>
     <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-top:-8px;">
-      This board can read and write directly to your sheet using a small Google Apps Script "Web app" —
-      no separate server needed. One-time setup:
+      This board reads and writes directly to your Supabase project. One-time setup, run once in your
+      project's <b style="color:var(--text)">SQL Editor</b>:
     </p>
-    <ol style="font-size:13px;color:var(--muted);line-height:1.8;padding-left:18px;">
-      <li>Open your sheet, then go to <b style="color:var(--text)">Extensions → Apps Script</b>.</li>
-      <li>Delete any starter code and paste in the script below.</li>
-      <li><b style="color:var(--text)">Deploy → New deployment</b> → type <b style="color:var(--text)">Web app</b> → Execute as <b style="color:var(--text)">Me</b>, Who has access: <b style="color:var(--text)">Anyone with the link</b> → Deploy (approve the permissions prompt).</li>
-      <li>Copy the Web app URL it gives you and paste it below.</li>
-    </ol>
     <div class="field">
-      <label>Apps Script code</label>
-      <textarea id="appsScriptCode" readonly style="min-height:110px;font-family:'JetBrains Mono',monospace;font-size:11px;"></textarea>
-      <button class="btn-secondary" id="copyScriptBtn" style="margin-top:8px;">Copy script</button>
+      <label>Setup SQL (run once)</label>
+      <textarea id="setupSql" readonly style="min-height:230px;font-family:'JetBrains Mono',monospace;font-size:11px;"></textarea>
+      <button class="btn-secondary" id="copySqlBtn" style="margin-top:8px;">Copy SQL</button>
     </div>
     <div class="field">
-      <label>Web app URL</label>
-      <input type="text" id="sheetEndpointInput" placeholder="https://script.google.com/macros/s/AKfycb.../exec">
+      <label>Project</label>
+      <input type="text" id="projectUrlDisplay" readonly>
     </div>
-    <p style="font-size:11px;color:var(--muted);line-height:1.5;">
-      Note: anyone with this URL can read and write this sheet's task data — keep it as private as you would the sheet itself.
+    <p style="font-size:11px;color:var(--muted);line-height:1.6;">
+      The SQL above creates the <span class="mono">members</span> and <span class="mono">tasks</span> tables
+      and opens them to the anon key (row level security policies allowing read/write). Because this app uses
+      the public anon key from the browser, anyone with that key can read and write this data — same tradeoff
+      as any client-only setup. For anything sensitive, add proper auth and tighter RLS policies later.
     </p>
     <div class="modal-actions">
       <button class="btn-secondary" id="closeSettingsBtn">Close</button>
-      <button class="primary-btn" id="saveEndpointBtn">Connect</button>
+      <button class="primary-btn" id="retryConnectBtn">Retry connection</button>
     </div>
   </div>
 </div>
@@ -290,64 +286,51 @@
 <script>
 (function(){
   const AVATAR_COLORS = ['#f0a83c','#5aa8ff','#46b278','#e5484d','#c792ea','#4dd0e1','#ff8a65','#9ccc65'];
-  const ENDPOINT_KEY = 'ops-board-sheet-endpoint';
-  const CACHE_KEY = 'ops-board-cache';
-  const DEFAULT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbydI4NdqKfRBrNL0ldG5pRNZB3Dpu9cS-iYv-ADgYYvSWvLn3JM0HlIwduAP6ankH1NEA/exec';
 
+  // ---------- Supabase connection ----------
+  const SUPABASE_PROJECT_ID = 'rfzhifhvtopdayhaiuct';
+  const SUPABASE_URL = `https://rfzhifhvtopdayhaiuct.supabase.co`;
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJmemhpZmh2dG9wZGF5aGFpdWN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4ODEyNzYsImV4cCI6MjEwMDQ1NzI3Nn0.X3vTyKA0f--0lQ4_CreXDAMVSHcvOBiWxFAVi2sGHmw';
+
+  const SETUP_SQL = `-- Ops Board schema
+create extension if not exists pgcrypto;
+
+create table if not exists members (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  color text not null
+);
+
+create table if not exists tasks (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  description text,
+  member_id uuid references members(id) on delete set null,
+  start_time timestamptz,
+  due_time timestamptz,
+  status text not null default 'pending'
+);
+
+alter table members enable row level security;
+alter table tasks enable row level security;
+
+drop policy if exists "public access" on members;
+create policy "public access" on members for all using (true) with check (true);
+
+drop policy if exists "public access" on tasks;
+create policy "public access" on tasks for all using (true) with check (true);
+
+alter publication supabase_realtime add table members;
+alter publication supabase_realtime add table tasks;`;
+
+  let supabase = null;
   let state = { members: [], tasks: [] };
-  let sheetEndpoint = '';
   let currentMemberFilter = null; // null = all
   let currentStatusFilter = 'all';
   let searchTerm = '';
 
   const $ = (sel) => document.querySelector(sel);
   const $$ = (sel) => Array.from(document.querySelectorAll(sel));
-  const uid = () => Math.random().toString(36).slice(2,10);
-
-  const APPS_SCRIPT_CODE = `function doGet(e) {
-  return ContentService.createTextOutput(JSON.stringify(getData()))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-function doPost(e) {
-  var body = JSON.parse(e.postData.contents);
-  saveData(body);
-  return ContentService.createTextOutput(JSON.stringify({status:'ok'}))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-function getData() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var membersSheet = ss.getSheetByName('Members') || ss.insertSheet('Members');
-  var tasksSheet = ss.getSheetByName('Tasks') || ss.insertSheet('Tasks');
-  return { members: sheetToObjects(membersSheet), tasks: sheetToObjects(tasksSheet) };
-}
-
-function sheetToObjects(sheet) {
-  var values = sheet.getDataRange().getValues();
-  if (values.length < 2) return [];
-  var headers = values[0];
-  return values.slice(1).map(function(row) {
-    var obj = {};
-    headers.forEach(function(h, i) { obj[h] = row[i]; });
-    return obj;
-  }).filter(function(o) { return o.id; });
-}
-
-function saveData(data) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  writeSheet(ss, 'Members', data.members || [], ['id','name','color']);
-  writeSheet(ss, 'Tasks', data.tasks || [], ['id','title','description','memberId','start','end','status']);
-}
-
-function writeSheet(ss, name, rows, headers) {
-  var sheet = ss.getSheetByName(name);
-  if (!sheet) { sheet = ss.insertSheet(name); } else { sheet.clear(); }
-  sheet.appendRow(headers);
-  rows.forEach(function(r) {
-    sheet.appendRow(headers.map(function(h) { return r[h] !== undefined ? r[h] : ''; }));
-  });
-}`;
 
   function setSyncStatus(mode, label){
     const el = $('#syncIndicator');
@@ -355,82 +338,41 @@ function writeSheet(ss, name, rows, headers) {
     $('#syncLabel').textContent = label;
   }
 
-  function seedData(){
-    const m1 = { id: uid(), name: 'Priya Nair', color: AVATAR_COLORS[0] };
-    const m2 = { id: uid(), name: 'Arjun Kumar', color: AVATAR_COLORS[1] };
-    const now = new Date();
-    const iso = (d) => d.toISOString().slice(0,16);
-    return {
-      members: [m1, m2],
-      tasks: [
-        { id: uid(), title: 'Verify vendor invoices', description: 'Cross-check against PO log for the week.', memberId: m1.id, start: iso(new Date(now.getTime()-2*3600000)), end: iso(new Date(now.getTime()+1*3600000)), status: 'in_progress' },
-        { id: uid(), title: 'Update inventory count', description: 'Warehouse B, aisles 4-9.', memberId: m2.id, start: iso(new Date(now.getTime()-1*3600000)), end: iso(new Date(now.getTime()-0.2*3600000)), status: 'pending' },
-      ]
-    };
-  }
-
-  async function loadEndpoint(){
-    try{
-      const res = await window.storage.get(ENDPOINT_KEY, true);
-      if(res && res.value){ sheetEndpoint = res.value; return; }
-    }catch(e){ /* not set yet */ }
-    // no saved endpoint — use the connected sheet's Web app URL by default
-    sheetEndpoint = DEFAULT_ENDPOINT;
-    try{ await window.storage.set(ENDPOINT_KEY, sheetEndpoint, true); }catch(e){}
-  }
-
-  async function saveEndpoint(url){
-    sheetEndpoint = url;
-    try{ await window.storage.set(ENDPOINT_KEY, url, true); }catch(e){ console.error(e); }
+  function initClient(){
+    if(typeof window.supabase === 'undefined'){
+      setSyncStatus('', 'Supabase library failed to load');
+      return false;
+    }
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    return true;
   }
 
   async function loadData(){
-    if(!sheetEndpoint){
-      setSyncStatus('', 'Not connected');
-      // fall back to a local cache so the board isn't empty pre-setup
-      try{
-        const res = await window.storage.get(CACHE_KEY, true);
-        if(res && res.value){ state = JSON.parse(res.value); return; }
-      }catch(e){ /* no cache yet */ }
-      state = seedData();
-      return;
-    }
     setSyncStatus('syncing', 'Syncing…');
     try{
-      const res = await fetch(sheetEndpoint + '?t=' + Date.now());
-      if(!res.ok) throw new Error('Sheet responded with ' + res.status);
-      const data = await res.json();
-      state = {
-        members: Array.isArray(data.members) ? data.members : [],
-        tasks: Array.isArray(data.tasks) ? data.tasks : []
-      };
-      setSyncStatus('ok', 'Synced with Sheet');
-      try{ await window.storage.set(CACHE_KEY, JSON.stringify(state), true); }catch(e){}
+      const [{ data: members, error: mErr }, { data: tasks, error: tErr }] = await Promise.all([
+        supabase.from('members').select('*').order('name'),
+        supabase.from('tasks').select('*')
+      ]);
+      if(mErr) throw mErr;
+      if(tErr) throw tErr;
+      state = { members: members || [], tasks: tasks || [] };
+      setSyncStatus('ok', 'Synced with Supabase');
+      return true;
     }catch(e){
-      console.error('Sheet load failed', e);
-      setSyncStatus('', 'Sync failed — check URL');
-      try{
-        const res = await window.storage.get(CACHE_KEY, true);
-        if(res && res.value) state = JSON.parse(res.value);
-      }catch(err){ state = seedData(); }
+      console.error('Supabase load failed', e);
+      const hint = /relation .* does not exist/i.test(e.message||'') ? ' — run setup SQL' : '';
+      setSyncStatus('', 'Sync failed' + hint);
+      return false;
     }
   }
 
-  async function saveData(){
-    try{ await window.storage.set(CACHE_KEY, JSON.stringify(state), true); }catch(e){}
-    if(!sheetEndpoint) return;
-    setSyncStatus('syncing', 'Saving…');
-    try{
-      await fetch(sheetEndpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // avoids CORS preflight on Apps Script
-        body: JSON.stringify(state)
-      });
-      setSyncStatus('ok', 'Synced with Sheet');
-    }catch(e){
-      console.error('Sheet save failed', e);
-      setSyncStatus('', 'Save failed — check URL');
-    }
+  function subscribeRealtime(){
+    supabase
+      .channel('ops-board-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'members' }, async () => { await loadData(); renderAll(); })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, async () => { await loadData(); renderAll(); })
+      .subscribe();
   }
 
   function memberById(id){ return state.members.find(m => m.id === id); }
@@ -453,8 +395,8 @@ function writeSheet(ss, name, rows, headers) {
 
   function taskProgressInfo(task){
     const now = new Date();
-    const start = new Date(task.start);
-    const end = new Date(task.end);
+    const start = new Date(task.start_time);
+    const end = new Date(task.due_time);
     const total = end - start;
     const done = task.status === 'completed';
     let pct, statusLabel, cls;
@@ -480,7 +422,7 @@ function writeSheet(ss, name, rows, headers) {
     const list = $('#rosterList');
     list.innerHTML = '';
     state.members.forEach(m => {
-      const tasks = state.tasks.filter(t => t.memberId === m.id);
+      const tasks = state.tasks.filter(t => t.member_id === m.id);
       const completed = tasks.filter(t => t.status === 'completed').length;
       const pct = tasks.length ? Math.round((completed/tasks.length)*100) : 0;
       const initials = m.name.split(' ').map(p=>p[0]).slice(0,2).join('').toUpperCase();
@@ -508,11 +450,7 @@ function writeSheet(ss, name, rows, headers) {
       list.querySelector(`[data-del-member="${m.id}"]`)?.addEventListener('click', async (e) => {
         e.stopPropagation();
         if(!confirm(`Remove ${m.name} and unassign their tasks?`)) return;
-        state.members = state.members.filter(x => x.id !== m.id);
-        state.tasks.forEach(t => { if(t.memberId === m.id) t.memberId = null; });
-        if(currentMemberFilter === m.id) currentMemberFilter = null;
-        await saveData();
-        renderAll();
+        await deleteMember(m.id);
       });
     });
     $('#allMembersBtn').classList.toggle('active', currentMemberFilter === null);
@@ -525,34 +463,30 @@ function writeSheet(ss, name, rows, headers) {
   }
 
   function renderStats(){
-    const startOfDay = new Date(); startOfDay.setHours(0,0,0,0);
-    let pending=0, inprog=0, doneToday=0, overdue=0;
+    let pending=0, inprog=0, done=0, overdue=0;
     state.tasks.forEach(t => {
       if(t.status === 'pending') pending++;
       if(t.status === 'in_progress') inprog++;
-      if(t.status === 'completed'){
-        // count as "today" loosely — no completedAt tracked, so count all completed
-        doneToday++;
-      }
+      if(t.status === 'completed') done++;
       const info = taskProgressInfo(t);
       if(info.isOverdue) overdue++;
     });
     $('#statPending').textContent = pending;
     $('#statProgress').textContent = inprog;
-    $('#statDone').textContent = doneToday;
+    $('#statDone').textContent = done;
     $('#statOverdue').textContent = overdue;
   }
 
   function visibleTasks(){
     return state.tasks.filter(t => {
-      if(currentMemberFilter && t.memberId !== currentMemberFilter) return false;
+      if(currentMemberFilter && t.member_id !== currentMemberFilter) return false;
       if(currentStatusFilter !== 'all' && t.status !== currentStatusFilter) return false;
       if(searchTerm){
         const hay = (t.title + ' ' + (t.description||'')).toLowerCase();
         if(!hay.includes(searchTerm.toLowerCase())) return false;
       }
       return true;
-    }).sort((a,b) => new Date(a.end) - new Date(b.end));
+    }).sort((a,b) => new Date(a.due_time) - new Date(b.due_time));
   }
 
   function renderTasks(){
@@ -570,7 +504,7 @@ function writeSheet(ss, name, rows, headers) {
 
     list.innerHTML = '';
     tasks.forEach(t => {
-      const m = memberById(t.memberId);
+      const m = memberById(t.member_id);
       const info = taskProgressInfo(t);
       const card = document.createElement('div');
       card.className = 'task-card' + (info.isOverdue ? ' overdue' : '');
@@ -598,8 +532,8 @@ function writeSheet(ss, name, rows, headers) {
         </div>
         <div class="gauge-wrap">
           <div class="gauge-labels">
-            <span>${fmtTime(t.start)}</span>
-            <span>${fmtTime(t.end)}</span>
+            <span>${fmtTime(t.start_time)}</span>
+            <span>${fmtTime(t.due_time)}</span>
           </div>
           <div class="gauge-track">
             <div class="gauge-fill ${fillCls}" style="width:${info.pct}%"></div>
@@ -615,12 +549,10 @@ function writeSheet(ss, name, rows, headers) {
       btn.addEventListener('click', async () => {
         const id = btn.dataset.id;
         const act = btn.dataset.act;
-        const task = state.tasks.find(x => x.id === id);
-        if(!task) return;
-        if(act === 'complete'){ task.status = 'completed'; await saveData(); renderAll(); }
-        else if(act === 'start'){ task.status = 'in_progress'; await saveData(); renderAll(); }
-        else if(act === 'delete'){ if(confirm('Delete this task?')){ state.tasks = state.tasks.filter(x => x.id !== id); await saveData(); renderAll(); } }
-        else if(act === 'edit'){ openTaskModal(task); }
+        if(act === 'complete') await updateTaskStatus(id, 'completed');
+        else if(act === 'start') await updateTaskStatus(id, 'in_progress');
+        else if(act === 'delete'){ if(confirm('Delete this task?')) await deleteTask(id); }
+        else if(act === 'edit'){ const task = state.tasks.find(x => x.id === id); openTaskModal(task); }
       });
     });
   }
@@ -637,7 +569,71 @@ function writeSheet(ss, name, rows, headers) {
     renderTasks();
   }
 
-  // ---------- Member add ----------
+  // ---------- Supabase-backed mutations ----------
+  async function addMemberFromInput(){
+    const input = $('#newMemberName');
+    const name = input.value.trim();
+    if(!name) return;
+    const color = AVATAR_COLORS[state.members.length % AVATAR_COLORS.length];
+    setSyncStatus('syncing', 'Saving…');
+    const { data, error } = await supabase.from('members').insert({ name, color }).select().single();
+    if(error){ console.error(error); setSyncStatus('', 'Save failed'); return; }
+    state.members.push(data);
+    input.value = '';
+    $('#addMemberRow').style.display = 'none';
+    setSyncStatus('ok', 'Synced with Supabase');
+    renderAll();
+  }
+
+  async function deleteMember(id){
+    setSyncStatus('syncing', 'Saving…');
+    const { error } = await supabase.from('members').delete().eq('id', id);
+    if(error){ console.error(error); setSyncStatus('', 'Delete failed'); return; }
+    state.members = state.members.filter(x => x.id !== id);
+    state.tasks.forEach(t => { if(t.member_id === id) t.member_id = null; });
+    if(currentMemberFilter === id) currentMemberFilter = null;
+    setSyncStatus('ok', 'Synced with Supabase');
+    renderAll();
+  }
+
+  async function updateTaskStatus(id, status){
+    setSyncStatus('syncing', 'Saving…');
+    const { data, error } = await supabase.from('tasks').update({ status }).eq('id', id).select().single();
+    if(error){ console.error(error); setSyncStatus('', 'Save failed'); return; }
+    const idx = state.tasks.findIndex(x => x.id === id);
+    if(idx > -1) state.tasks[idx] = data;
+    setSyncStatus('ok', 'Synced with Supabase');
+    renderAll();
+  }
+
+  async function deleteTask(id){
+    setSyncStatus('syncing', 'Saving…');
+    const { error } = await supabase.from('tasks').delete().eq('id', id);
+    if(error){ console.error(error); setSyncStatus('', 'Delete failed'); return; }
+    state.tasks = state.tasks.filter(x => x.id !== id);
+    setSyncStatus('ok', 'Synced with Supabase');
+    renderAll();
+  }
+
+  async function upsertTask(payload, id){
+    setSyncStatus('syncing', 'Saving…');
+    let result;
+    if(id){
+      result = await supabase.from('tasks').update(payload).eq('id', id).select().single();
+    } else {
+      result = await supabase.from('tasks').insert(payload).select().single();
+    }
+    if(result.error){ console.error(result.error); setSyncStatus('', 'Save failed'); return false; }
+    if(id){
+      const idx = state.tasks.findIndex(x => x.id === id);
+      if(idx > -1) state.tasks[idx] = result.data;
+    } else {
+      state.tasks.push(result.data);
+    }
+    setSyncStatus('ok', 'Synced with Supabase');
+    return true;
+  }
+
   $('#addMemberBtn').addEventListener('click', () => {
     const row = $('#addMemberRow');
     row.style.display = row.style.display === 'none' ? 'flex' : 'none';
@@ -645,16 +641,6 @@ function writeSheet(ss, name, rows, headers) {
   });
   $('#confirmAddMember').addEventListener('click', addMemberFromInput);
   $('#newMemberName').addEventListener('keydown', (e) => { if(e.key === 'Enter') addMemberFromInput(); });
-  async function addMemberFromInput(){
-    const input = $('#newMemberName');
-    const name = input.value.trim();
-    if(!name) return;
-    state.members.push({ id: uid(), name, color: AVATAR_COLORS[state.members.length % AVATAR_COLORS.length] });
-    input.value = '';
-    $('#addMemberRow').style.display = 'none';
-    await saveData();
-    renderAll();
-  }
 
   $('#allMembersBtn').addEventListener('click', () => { currentMemberFilter = null; renderAll(); });
 
@@ -688,17 +674,24 @@ function writeSheet(ss, name, rows, headers) {
     $('#taskId').value = task ? task.id : '';
     $('#taskTitle').value = task ? task.title : '';
     $('#taskDesc').value = task ? (task.description||'') : '';
-    $('#taskMember').value = task ? task.memberId : state.members[0].id;
-    $('#taskStart').value = task ? task.start : defaultDT(0);
-    $('#taskEnd').value = task ? task.end : defaultDT(2);
+    $('#taskMember').value = task ? task.member_id : state.members[0].id;
+    $('#taskStart').value = task ? toLocalInput(task.start_time) : defaultDT(0);
+    $('#taskEnd').value = task ? toLocalInput(task.due_time) : defaultDT(2);
     $('#taskStatus').value = task ? task.status : 'pending';
     $('#taskOverlay').classList.add('show');
     $('#taskTitle').focus();
+  }
+  function toLocalInput(iso){
+    if(!iso) return '';
+    const d = new Date(iso);
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0,16);
   }
   function defaultDT(hoursFromNow){
     const d = new Date(Date.now() + hoursFromNow*3600000);
     d.setSeconds(0,0);
     d.setMinutes(Math.round(d.getMinutes()/5)*5);
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
     return d.toISOString().slice(0,16);
   }
   function closeTaskModal(){ $('#taskOverlay').classList.remove('show'); }
@@ -710,9 +703,9 @@ function writeSheet(ss, name, rows, headers) {
   $('#saveTaskBtn').addEventListener('click', async () => {
     const title = $('#taskTitle').value.trim();
     if(!title){ $('#taskTitle').focus(); return; }
-    const start = $('#taskStart').value;
-    const end = $('#taskEnd').value;
-    if(start && end && new Date(end) <= new Date(start)){
+    const startLocal = $('#taskStart').value;
+    const endLocal = $('#taskEnd').value;
+    if(startLocal && endLocal && new Date(endLocal) <= new Date(startLocal)){
       alert('Due time must be after the start time.');
       return;
     }
@@ -720,89 +713,41 @@ function writeSheet(ss, name, rows, headers) {
     const payload = {
       title,
       description: $('#taskDesc').value.trim(),
-      memberId: $('#taskMember').value,
-      start, end,
+      member_id: $('#taskMember').value,
+      start_time: startLocal ? new Date(startLocal).toISOString() : null,
+      due_time: endLocal ? new Date(endLocal).toISOString() : null,
       status: $('#taskStatus').value
     };
-    if(id){
-      const task = state.tasks.find(x => x.id === id);
-      Object.assign(task, payload);
-    } else {
-      state.tasks.push({ id: uid(), ...payload });
-    }
-    await saveData();
+    const ok = await upsertTask(payload, id || null);
+    if(!ok) return;
     closeTaskModal();
     renderAll();
   });
 
-  // ---------- Excel export ----------
-  function exportExcel(){
-    if(typeof XLSX === 'undefined'){
-      alert('Export library failed to load. Check your connection and try again.');
-      return;
-    }
-    const rows = state.tasks
-      .slice()
-      .sort((a,b) => new Date(a.end) - new Date(b.end))
-      .map(t => {
-        const m = memberById(t.memberId);
-        const info = taskProgressInfo(t);
-        return {
-          'Task': t.title,
-          'Description': t.description || '',
-          'Assigned To': m ? m.name : 'Unassigned',
-          'Status': t.status.replace('_',' '),
-          'Start': t.start ? new Date(t.start).toLocaleString() : '',
-          'Due': t.end ? new Date(t.end).toLocaleString() : '',
-          'Time Status': info.statusLabel,
-          'Overdue': info.isOverdue ? 'Yes' : 'No'
-        };
-      });
-
-    if(rows.length === 0){
-      alert('There are no tasks to export yet.');
-      return;
-    }
-
-    const ws = XLSX.utils.json_to_sheet(rows);
-    ws['!cols'] = [
-      { wch: 28 }, { wch: 36 }, { wch: 18 }, { wch: 14 },
-      { wch: 20 }, { wch: 20 }, { wch: 22 }, { wch: 9 }
-    ];
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Tasks');
-
-    const stamp = new Date().toISOString().slice(0,10);
-    XLSX.writeFile(wb, `ops-board-tasks-${stamp}.xlsx`);
-  }
-  $('#exportBtn').addEventListener('click', exportExcel);
-
-  // ---------- Settings modal (Google Sheet connection) ----------
+  // ---------- Settings modal (Supabase setup) ----------
   function openSettings(){
-    $('#appsScriptCode').value = APPS_SCRIPT_CODE;
-    $('#sheetEndpointInput').value = sheetEndpoint;
+    $('#setupSql').value = SETUP_SQL;
+    $('#projectUrlDisplay').value = SUPABASE_URL;
     $('#settingsOverlay').classList.add('show');
   }
   function closeSettings(){ $('#settingsOverlay').classList.remove('show'); }
   $('#settingsBtn').addEventListener('click', openSettings);
   $('#closeSettingsBtn').addEventListener('click', closeSettings);
   $('#settingsOverlay').addEventListener('click', (e) => { if(e.target.id === 'settingsOverlay') closeSettings(); });
-  $('#copyScriptBtn').addEventListener('click', async () => {
+  $('#copySqlBtn').addEventListener('click', async () => {
     try{
-      await navigator.clipboard.writeText(APPS_SCRIPT_CODE);
-      $('#copyScriptBtn').textContent = 'Copied ✓';
-      setTimeout(() => { $('#copyScriptBtn').textContent = 'Copy script'; }, 1500);
+      await navigator.clipboard.writeText(SETUP_SQL);
+      $('#copySqlBtn').textContent = 'Copied ✓';
+      setTimeout(() => { $('#copySqlBtn').textContent = 'Copy SQL'; }, 1500);
     }catch(e){
-      $('#appsScriptCode').select();
+      $('#setupSql').select();
       document.execCommand('copy');
     }
   });
-  $('#saveEndpointBtn').addEventListener('click', async () => {
-    const url = $('#sheetEndpointInput').value.trim();
-    if(!url){ alert('Paste the Web app URL you got after deploying the script.'); return; }
-    await saveEndpoint(url);
+  $('#retryConnectBtn').addEventListener('click', async () => {
     closeSettings();
-    await loadData();
+    const ok = await loadData();
+    if(ok) subscribeRealtime();
     renderAll();
   });
 
@@ -810,16 +755,15 @@ function writeSheet(ss, name, rows, headers) {
   async function init(){
     tickClock();
     setInterval(tickClock, 1000);
-    await loadEndpoint();
-    await loadData();
+    if(!initClient()) return;
+    const ok = await loadData();
     renderAll();
-    if(!sheetEndpoint) openSettings(); // prompt setup on first run
+    if(ok){
+      subscribeRealtime();
+    } else {
+      openSettings(); // guide the user through table setup
+    }
     setInterval(renderTasks, 30000); // keep countdowns live
-    setInterval(async () => { // poll the sheet so changes made elsewhere show up
-      if(!sheetEndpoint) return;
-      await loadData();
-      renderAll();
-    }, 45000);
   }
   init();
 })();
