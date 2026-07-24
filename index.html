@@ -292,6 +292,7 @@
   const AVATAR_COLORS = ['#f0a83c','#5aa8ff','#46b278','#e5484d','#c792ea','#4dd0e1','#ff8a65','#9ccc65'];
   const ENDPOINT_KEY = 'ops-board-sheet-endpoint';
   const CACHE_KEY = 'ops-board-cache';
+  const DEFAULT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbydI4NdqKfRBrNL0ldG5pRNZB3Dpu9cS-iYv-ADgYYvSWvLn3JM0HlIwduAP6ankH1NEA/exec';
 
   let state = { members: [], tasks: [] };
   let sheetEndpoint = '';
@@ -303,7 +304,50 @@
   const $$ = (sel) => Array.from(document.querySelectorAll(sel));
   const uid = () => Math.random().toString(36).slice(2,10);
 
-  const APPS_SCRIPT_CODE = "https://script.google.com/macros/s/AKfycbydI4NdqKfRBrNL0ldG5pRNZB3Dpu9cS-iYv-ADgYYvSWvLn3JM0HlIwduAP6ankH1NEA/exec";
+  const APPS_SCRIPT_CODE = `function doGet(e) {
+  return ContentService.createTextOutput(JSON.stringify(getData()))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  var body = JSON.parse(e.postData.contents);
+  saveData(body);
+  return ContentService.createTextOutput(JSON.stringify({status:'ok'}))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function getData() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var membersSheet = ss.getSheetByName('Members') || ss.insertSheet('Members');
+  var tasksSheet = ss.getSheetByName('Tasks') || ss.insertSheet('Tasks');
+  return { members: sheetToObjects(membersSheet), tasks: sheetToObjects(tasksSheet) };
+}
+
+function sheetToObjects(sheet) {
+  var values = sheet.getDataRange().getValues();
+  if (values.length < 2) return [];
+  var headers = values[0];
+  return values.slice(1).map(function(row) {
+    var obj = {};
+    headers.forEach(function(h, i) { obj[h] = row[i]; });
+    return obj;
+  }).filter(function(o) { return o.id; });
+}
+
+function saveData(data) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  writeSheet(ss, 'Members', data.members || [], ['id','name','color']);
+  writeSheet(ss, 'Tasks', data.tasks || [], ['id','title','description','memberId','start','end','status']);
+}
+
+function writeSheet(ss, name, rows, headers) {
+  var sheet = ss.getSheetByName(name);
+  if (!sheet) { sheet = ss.insertSheet(name); } else { sheet.clear(); }
+  sheet.appendRow(headers);
+  rows.forEach(function(r) {
+    sheet.appendRow(headers.map(function(h) { return r[h] !== undefined ? r[h] : ''; }));
+  });
+}`;
 
   function setSyncStatus(mode, label){
     const el = $('#syncIndicator');
@@ -328,8 +372,11 @@
   async function loadEndpoint(){
     try{
       const res = await window.storage.get(ENDPOINT_KEY, true);
-      if(res && res.value) sheetEndpoint = res.value;
+      if(res && res.value){ sheetEndpoint = res.value; return; }
     }catch(e){ /* not set yet */ }
+    // no saved endpoint — use the connected sheet's Web app URL by default
+    sheetEndpoint = DEFAULT_ENDPOINT;
+    try{ await window.storage.set(ENDPOINT_KEY, sheetEndpoint, true); }catch(e){}
   }
 
   async function saveEndpoint(url){
