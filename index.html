@@ -211,6 +211,24 @@
   .bar-fill{ height:100%; border-radius:3px; }
   .empty-row td{ text-align:center; color:var(--ink-faint); padding: 40px 14px; font-size:13px; }
 
+  .subject-input{
+    width: 168px; border:1px solid var(--border); border-radius:7px;
+    padding: 7px 10px; font-size:12.5px; color:var(--ink); background:transparent;
+  }
+  .subject-input:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
+  .subject-input::placeholder{ color: var(--ink-faint); }
+
+  .crit-btn{
+    width:28px; height:28px; border-radius:7px; border:1.5px solid var(--border);
+    background:transparent; cursor:pointer; font-size:12px; font-weight:700;
+    display:inline-flex; align-items:center; justify-content:center; color:var(--ink-faint);
+    transition: transform .1s ease;
+  }
+  .crit-btn:hover{ transform: scale(1.06); }
+  .crit-btn.on{ background:var(--green-bg); border-color:var(--green); color:var(--green-ink2); }
+  .crit-btn.off{ background:var(--red-bg); border-color:var(--red-ink); color:var(--red-ink); }
+  .crit-btn:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
+
   /* ================= FOOTER / PAGINATION ================= */
   .table-footer{
     display:flex; align-items:center; justify-content:space-between;
@@ -270,35 +288,35 @@
     </div>
 
     <nav class="nav">
-      <button class="nav-item" data-nav>
+      <button class="nav-item" id="nav-dashboard" data-nav data-page="dashboard">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
         Dashboard
       </button>
-      <button class="nav-item" data-nav>
+      <button class="nav-item" id="nav-students" data-nav data-page="students">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         Student Management
       </button>
-      <button class="nav-item" data-nav>
+      <button class="nav-item" id="nav-mentors" data-nav data-page="mentors">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         Mentor Management
       </button>
-      <button class="nav-item" data-nav>
+      <button class="nav-item" id="nav-weekly" data-nav data-page="reports" data-tab="weekly">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         Weekly Plans
       </button>
-      <button class="nav-item" data-nav>
+      <button class="nav-item" id="nav-skill" data-nav data-page="reports" data-tab="skill">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12"/></svg>
         Skill Development
       </button>
-      <button class="nav-item" data-nav>
+      <button class="nav-item" id="nav-academic" data-nav data-page="reports" data-tab="academic">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg>
         Academic Tasks
       </button>
-      <button class="nav-item" data-nav>
+      <button class="nav-item" id="nav-attendance" data-nav data-page="reports" data-tab="attendance">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
         Attendance
       </button>
-      <button class="nav-item active" data-nav aria-current="page">
+      <button class="nav-item active" id="nav-reports" data-nav data-page="reports" aria-current="page">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
         Reports & Audit Logs
       </button>
@@ -319,52 +337,58 @@
   <!-- ================= MAIN ================= -->
   <main class="main">
     <div class="topbar">
-      <h1>Report & Audit Logs</h1>
+      <h1 id="topbarTitle">Report & Audit Logs</h1>
       <div class="topbar-right">
         <div class="topbar-avatar" style="background:#B9526B;">CH</div>
       </div>
     </div>
 
-    <div class="tabs" id="tabs">
-      <button class="tab-btn active" data-tab="weekly">Weekly Plan Submissions</button>
-      <button class="tab-btn" data-tab="skill">Skill Development</button>
-      <button class="tab-btn" data-tab="academic">Academic Tasks</button>
-      <button class="tab-btn" data-tab="attendance">Attendance</button>
-    </div>
+    <div id="page-reports">
+      <div class="tabs" id="tabs">
+        <button class="tab-btn active" data-tab="weekly">Weekly Plan Submissions</button>
+        <button class="tab-btn" data-tab="skill">Skill Development</button>
+        <button class="tab-btn" data-tab="academic">Academic Tasks</button>
+        <button class="tab-btn" data-tab="attendance">Attendance</button>
+      </div>
 
-    <div class="toolbar">
-      <div class="toolbar-left">
-        <div class="search-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="searchInput" placeholder="Search students or mentors">
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="searchInput" placeholder="Search students or mentors">
+          </div>
+          <div class="select-wrap">
+            <select id="mentorFilter"><option value="">Mentor</option></select>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div class="select-wrap">
+            <select id="statusFilter"><option value="">Status</option></select>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
         </div>
-        <div class="select-wrap">
-          <select id="mentorFilter"><option value="">Mentor</option></select>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </div>
-        <div class="select-wrap">
-          <select id="statusFilter"><option value="">Status</option></select>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        <div class="toolbar-right">
+          <span class="export-label">Export as:</span>
+          <button class="export-btn" id="exportCsv">CSV</button>
+          <button class="export-btn" id="exportPdf">PDF</button>
         </div>
       </div>
-      <div class="toolbar-right">
-        <span class="export-label">Export as:</span>
-        <button class="export-btn" id="exportCsv">CSV</button>
-        <button class="export-btn" id="exportPdf">PDF</button>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr id="theadRow"></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        <div class="page-info" id="pageInfo">Page 1 of 1</div>
+        <div class="pager" id="pager"></div>
       </div>
     </div>
 
-    <div class="table-wrap">
-      <table>
-        <thead><tr id="theadRow"></tr></thead>
-        <tbody id="tbody"></tbody>
-      </table>
-    </div>
-
-    <div class="table-footer">
-      <div class="page-info" id="pageInfo">Page 1 of 1</div>
-      <div class="pager" id="pager"></div>
-    </div>
+    <div id="page-dashboard" class="hidden"></div>
+    <div id="page-students" class="hidden"></div>
+    <div id="page-mentors" class="hidden"></div>
   </main>
 </div>
 
@@ -426,19 +450,48 @@
     }
     return rows;
   }
+  const CRITERIA_KEYS = ["genuine","weeklyPlan","tracker","assignment","assessment"];
+  const CRITERIA_LABELS = {
+    genuine: "Genuinely Marked",
+    weeklyPlan: "Weekly Plan Completed",
+    tracker: "Daily Tracker Updated",
+    assignment: "Assignment Completed",
+    assessment: "Assessment Completed"
+  };
+
+  function randCriteria(){
+    const c = {};
+    CRITERIA_KEYS.forEach(k => { c[k] = rng() < 0.68; });
+    return c;
+  }
+  function scoreFromCriteria(c){
+    const met = CRITERIA_KEYS.filter(k => c[k]).length;
+    return Math.round((met / CRITERIA_KEYS.length) * 100);
+  }
+  function statusFromScore(pct){
+    return pct >= 80 ? "Achieved" : pct >= 50 ? "In Progress" : "Not Achieved";
+  }
+
   function genSkill(n){
     const rows = [];
     for(let i=0;i<n;i++){
-      const score = randInt(30,100);
-      const status = score >= 80 ? "Achieved" : score >= 50 ? "In Progress" : "Not Achieved";
+      const criteria = randCriteria();
+      const score = scoreFromCriteria(criteria);
       rows.push({
+        uid: "skl-" + i,
         id: "#SKL-" + randInt(10000,99999),
         week: "Week " + randInt(1,20),
         student: fullName(), mentor: pick(uniqMentors),
-        skill: pick(SKILLS), score, date: randDate(), status
+        subject: pick(SKILLS),
+        criteria, score,
+        date: randDate(), status: statusFromScore(score)
       });
     }
     return rows;
+  }
+  function recomputeSkillRow(row){
+    row.score = scoreFromCriteria(row.criteria);
+    row.status = statusFromScore(row.score);
   }
   function genAcademic(n){
     const rows = [];
@@ -489,6 +542,7 @@
   const TAB_CONFIG = {
     weekly: {
       label: "Weekly Plan Submissions",
+      minWidth: 980,
       cols: ["Submission ID","Week","Student Name","Mentor Name","Planned Tasks","Completed","Completion","Submitted On","Status"],
       row(r){ return [
         r.id, r.week,
@@ -496,30 +550,45 @@
         r.planned, r.completed,
         barCell(r.pct),
         r.date, pillCell(r.status)
-      ]; }
+      ]; },
+      exportRow(r){ return [r.id, r.week, r.student, r.mentor, r.planned, r.completed, r.pct + "%", r.date, r.status]; }
     },
     skill: {
       label: "Skill Development",
-      cols: ["Log ID","Week","Student Name","Mentor Name","Skill Area","Score","Submitted On","Status"],
+      minWidth: 1580,
+      cols: ["Log ID","Week","Student Name","Mentor Name","Skill Development Subject","Genuine Marking","Weekly Plan","Daily Tracker","Assignment","Assessment","Score","Submitted On","Status"],
       row(r){ return [
         r.id, r.week,
         personCell(r.student), mentorCell(r.mentor),
-        r.skill, r.score + "/100",
+        subjectCell(r),
+        criteriaToggle(r,"genuine"), criteriaToggle(r,"weeklyPlan"), criteriaToggle(r,"tracker"),
+        criteriaToggle(r,"assignment"), criteriaToggle(r,"assessment"),
+        barCell(r.score),
         r.date, pillCell(r.status)
+      ]; },
+      exportRow(r){ return [
+        r.id, r.week, r.student, r.mentor, r.subject,
+        r.criteria.genuine ? "Yes" : "No", r.criteria.weeklyPlan ? "Yes" : "No",
+        r.criteria.tracker ? "Yes" : "No", r.criteria.assignment ? "Yes" : "No",
+        r.criteria.assessment ? "Yes" : "No",
+        r.score + "/100", r.date, r.status
       ]; }
     },
     academic: {
       label: "Academic Tasks",
+      minWidth: 980,
       cols: ["Task ID","Week","Student Name","Task Type","Task Name","Score","Submitted On","Status"],
       row(r){ return [
         r.id, r.week,
         personCell(r.student), r.type,
         r.task, r.score + "/100",
         r.date, pillCell(r.status)
-      ]; }
+      ]; },
+      exportRow(r){ return [r.id, r.week, r.student, r.type, r.task, r.score + "/100", r.date, r.status]; }
     },
     attendance: {
       label: "Attendance",
+      minWidth: 980,
       cols: ["Record ID","Week","Student Name","Mentor Name","Classes Held","Attended","Attendance","Submitted On","Status"],
       row(r){ return [
         r.id, r.week,
@@ -527,9 +596,20 @@
         r.held, r.attended,
         barCell(r.pct),
         r.date, pillCell(r.status)
-      ]; }
+      ]; },
+      exportRow(r){ return [r.id, r.week, r.student, r.mentor, r.held, r.attended, r.pct + "%", r.date, r.status]; }
     }
   };
+
+  function escapeAttr(s){ return String(s).replace(/"/g,"&quot;"); }
+
+  function subjectCell(r){
+    return `<input type="text" class="subject-input" data-uid="${r.uid}" value="${escapeAttr(r.subject)}" placeholder="Enter subject" aria-label="Skill development subject">`;
+  }
+  function criteriaToggle(r, key){
+    const on = !!r.criteria[key];
+    return `<button type="button" class="crit-btn ${on ? "on" : "off"}" data-uid="${r.uid}" data-key="${key}" title="${CRITERIA_LABELS[key]}" aria-pressed="${on}">${on ? "✓" : "✕"}</button>`;
+  }
 
   function personCell(name){
     return `<div class="cell-person"><div class="cell-avatar" style="background:${avatarColor(name)}">${initials(name)}</div>${name}</div>`;
@@ -585,6 +665,8 @@
   function render(){
     const cfg = TAB_CONFIG[state.tab];
     document.title = "CampusAudit — " + cfg.label;
+
+    document.querySelector(".table-wrap table").style.minWidth = (cfg.minWidth || 980) + "px";
 
     // thead
     const thead = document.getElementById("theadRow");
@@ -677,6 +759,23 @@
     state.status = e.target.value; state.page = 1; render();
   });
 
+  document.getElementById("tbody").addEventListener("input", e => {
+    if(e.target.matches(".subject-input")){
+      const row = DATA.skill.find(r => r.uid === e.target.dataset.uid);
+      if(row) row.subject = e.target.value;
+    }
+  });
+  document.getElementById("tbody").addEventListener("click", e => {
+    const btn = e.target.closest(".crit-btn");
+    if(!btn) return;
+    const row = DATA.skill.find(r => r.uid === btn.dataset.uid);
+    if(!row) return;
+    row.criteria[btn.dataset.key] = !row.criteria[btn.dataset.key];
+    recomputeSkillRow(row);
+    render();
+    toast(CRITERIA_LABELS[btn.dataset.key] + ": " + (row.criteria[btn.dataset.key] ? "marked" : "unmarked"));
+  });
+
   let toastTimer;
   function toast(msg){
     const el = document.getElementById("toast");
@@ -690,8 +789,7 @@
     const rows = filteredRows();
     const header = cfg.cols.join(",");
     const lines = rows.map(r => {
-      const raw = Object.keys(r).filter(k => k !== "id" || true).map(k => r[k]);
-      return Object.values(r).map(v => `"${String(v).replace(/"/g,'""')}"`).join(",");
+      return cfg.exportRow(r).map(v => `"${String(v).replace(/"/g,'""')}"`).join(",");
     });
     const csv = header + "\n" + lines.join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
@@ -711,6 +809,7 @@
   document.querySelectorAll(".nav-item").forEach(btn => {
     if(!btn.classList.contains("active")){
       btn.addEventListener("click", () => toast(btn.textContent.trim() + " — coming soon"));
+  
     }
   });
 
