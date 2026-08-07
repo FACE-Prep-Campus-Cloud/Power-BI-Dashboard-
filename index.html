@@ -348,11 +348,61 @@
   .recent-row .rr-sub{ color:var(--ink-faint); }
   .recent-empty{ font-size:12.5px; color:var(--ink-faint); }
 
+  /* ================= DASHBOARD ================= */
+  .dash-wrap{ padding: 22px 26px 34px; display:flex; flex-direction:column; gap:26px; }
+
+  .dash-hero-grid{ display:grid; grid-template-columns: repeat(4, 1fr); gap:14px; }
+  .dash-hero-card{
+    border:1px solid var(--border); border-radius: var(--radius); padding:16px 18px;
+    display:flex; flex-direction:column; gap:5px; background:#FAFAFB;
+  }
+  .dash-hero-label{ font-size:12px; font-weight:600; color:var(--ink-soft); }
+  .dash-hero-value{ font-size:26px; font-weight:800; color:var(--ink); line-height:1.15; }
+  .dash-hero-value-sub{ font-size:14px; font-weight:600; color:var(--ink-faint); }
+  .dash-hero-caption{ font-size:11.5px; color:var(--ink-faint); }
+
+  .dash-section-title{ font-size:13.5px; font-weight:700; color:var(--ink); margin-bottom:12px; }
+
+  .dash-domain-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap:12px; }
+  .dash-domain-card{
+    text-align:left; border:1px solid var(--border); border-radius: var(--radius); padding:14px 16px;
+    background:var(--card); cursor:pointer; display:flex; flex-direction:column; gap:9px;
+    transition: border-color .15s ease, transform .1s ease; font-family:inherit;
+  }
+  .dash-domain-card:hover{ border-color: var(--green); transform: translateY(-1px); }
+  .dash-domain-card:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
+  .dash-domain-top{ display:flex; align-items:center; justify-content:space-between; }
+  .dash-domain-icon{
+    width:30px; height:30px; border-radius:8px; background:var(--green-tint); color:var(--green-deep);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .dash-domain-icon svg{ width:16px; height:16px; }
+  .dash-domain-count{ font-size:20px; font-weight:800; color:var(--ink); }
+  .dash-domain-label{ font-size:12.5px; font-weight:600; color:var(--ink); }
+  .dash-domain-avg{ font-size:11.5px; color:var(--ink-faint); }
+  .dash-domain-bar{ display:flex; height:6px; border-radius:3px; overflow:hidden; background:var(--border); }
+  .dash-domain-bar-fill{ height:100%; }
+
+  .dash-two-col{ display:grid; grid-template-columns: 1fr 1fr; gap:20px; align-items:start; }
+  .dash-panel{
+    border:1px solid var(--border); border-radius: var(--radius); padding:14px 16px;
+    display:flex; flex-direction:column; gap:8px;
+  }
+
+  .dash-lb-row{ display:flex; align-items:center; gap:10px; padding:6px 0; border-bottom:1px solid var(--border); }
+  .dash-lb-row:last-child{ border-bottom:none; }
+  .dash-lb-rank{ width:16px; font-size:12px; font-weight:700; color:var(--ink-faint); text-align:center; flex-shrink:0; }
+  .dash-lb-name{ font-size:12.5px; font-weight:600; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .dash-lb-count{ font-size:11px; color:var(--ink-faint); flex-shrink:0; white-space:nowrap; }
+  .dash-lb-score{ font-size:12.5px; font-weight:700; width:26px; text-align:right; flex-shrink:0; }
+
   @media (max-width: 900px){
     .app{ padding:0; }
     .sidebar{ display:none; }
     .main{ border-radius:0; border-left:none; border-right:none; }
     .form-grid{ grid-template-columns: 1fr; }
+    .dash-hero-grid{ grid-template-columns: repeat(2,1fr); }
+    .dash-two-col{ grid-template-columns: 1fr; }
   }
 
   @media print{
@@ -385,7 +435,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
         Dashboard
       </button>
-      <button class="nav-item" id="nav-weekly" data-nav data-page="reports" data-tab="weekly">
+      <button class="nav-item" id="nav-weekly" data-nav data-page="weekly-entry">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         Weekly Plans
       </button>
@@ -473,6 +523,61 @@
       <div class="table-footer">
         <div class="page-info" id="pageInfo">Page 1 of 1</div>
         <div class="pager" id="pager"></div>
+      </div>
+    </div>
+
+    <!-- ================= WEEKLY PLAN ENTRY ================= -->
+    <div id="page-weekly-entry" class="hidden">
+      <div class="entry-wrap">
+        <div class="entry-card">
+          <h2>Weekly Plan Entry</h2>
+          <p class="entry-sub">Answer the genuineness questions below for this mentor's weekly plan. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Weekly Plan Submissions.</p>
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="wkEntryMentor">Mentor Name</label>
+              <select id="wkEntryMentor"><option value="">Select mentor</option></select>
+            </div>
+            <div class="form-field">
+              <label for="wkEntryDate">Date of Marking</label>
+              <input type="date" id="wkEntryDate">
+            </div>
+            <div class="form-field">
+              <label for="wkEntryPlanned">Planned Tasks</label>
+              <input type="number" id="wkEntryPlanned" min="0" max="40" placeholder="e.g. 10">
+            </div>
+            <div class="form-field">
+              <label for="wkEntryCompleted">Completed Tasks</label>
+              <input type="number" id="wkEntryCompleted" min="0" max="40" placeholder="e.g. 9">
+            </div>
+          </div>
+
+          <div class="section-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+            Genuineness Check
+          </div>
+          <div class="criteria-grid" id="wkEntryCriteria"></div>
+
+          <div class="score-band">
+            <span class="score-label">Score (auto-calculated from your answers)</span>
+            <span class="score-value" id="wkEntryScoreValue">0/100</span>
+          </div>
+
+          <div class="form-field full" style="margin-top:16px;">
+            <label for="wkEntryRemarks">Remarks</label>
+            <textarea id="wkEntryRemarks" rows="3" placeholder="Final remarks on this weekly plan..."></textarea>
+          </div>
+
+          <div class="entry-actions">
+            <button class="btn-primary" id="wkEntrySubmit">Add Entry</button>
+            <button class="btn-secondary" id="wkEntryReset">Reset</button>
+          </div>
+        </div>
+
+        <div class="recent-entries">
+          <h3>Recently added (this session)</h3>
+          <div class="recent-list" id="wkEntryRecent"></div>
+        </div>
       </div>
     </div>
 
@@ -742,6 +847,18 @@
   }
 
   // ---------------- genuineness question sets ----------------
+  const WEEKLY_KEYS = ["planGenuine","dailyUpdated","tasksVerified","reflectsEffort"];
+  const WEEKLY_SHORT = {
+    planGenuine: "Genuine Marking", dailyUpdated: "Daily Updates",
+    tasksVerified: "Tasks Verified", reflectsEffort: "Reflects Effort"
+  };
+  const WEEKLY_QUESTIONS = {
+    planGenuine: "Was this weekly plan genuinely completed, not backdated or copied?",
+    dailyUpdated: "Was the plan updated daily rather than filled in all at once?",
+    tasksVerified: "Were completed tasks cross-checked against the student's actual work?",
+    reflectsEffort: "Does the completion count genuinely reflect the student's effort that week?"
+  };
+
   const CRITERIA_KEYS = ["genuine","weeklyPlan","tracker","assignment","assessment"];
   const CRITERIA_SHORT = {
     genuine: "Genuine Marking", weeklyPlan: "Weekly Plan", tracker: "Daily Tracker",
@@ -778,6 +895,7 @@
   };
 
   const CRITERIA_CONFIG = {
+    weekly: { keys: WEEKLY_KEYS, short: WEEKLY_SHORT, questions: WEEKLY_QUESTIONS },
     skill: { keys: CRITERIA_KEYS, short: CRITERIA_SHORT, questions: CRITERIA_QUESTIONS },
     academic: { keys: ACADEMIC_KEYS, short: ACADEMIC_SHORT, questions: ACADEMIC_QUESTIONS },
     attendance: { keys: ATTENDANCE_KEYS, short: ATTENDANCE_SHORT, questions: ATTENDANCE_QUESTIONS }
@@ -799,25 +917,6 @@
     const c = {};
     CRITERIA_CONFIG[domain].keys.forEach(k => c[k] = false);
     return c;
-  }
-
-  // ---------------- weekly plan (unchanged demo dataset) ----------------
-  function genWeekly(n){
-    const rows = [];
-    for(let i=0;i<n;i++){
-      const mentor = pick(uniqMentors);
-      const planned = randInt(6,12);
-      const completed = randInt(0, planned);
-      const pct = Math.round((completed/planned)*100);
-      const status = pct >= 90 ? "Completed" : pct >= 50 ? "Partial" : "Not Completed";
-      rows.push({
-        id: "#WPL-" + randInt(10000,99999),
-        mentor,
-        planned, completed, pct,
-        date: randDate(), status
-      });
-    }
-    return rows;
   }
 
   // ---------------- internal audit ----------------
@@ -863,18 +962,25 @@
   }
 
   // ---------------- data store ----------------
-  // Skill Development, Academic Tasks, and Attendance start EMPTY —
-  // records are only created by a campus manager completing the
-  // genuineness-check entry forms. No fake data is pre-injected.
-  let skillSeq = 0, academicSeq = 0, attendanceSeq = 0;
+  // Weekly Plans, Skill Development, Academic Tasks, and Attendance all
+  // start EMPTY — records are only created by a campus manager completing
+  // the genuineness-check entry forms. No fake data is pre-injected.
+  let weeklySeq = 0, skillSeq = 0, academicSeq = 0, attendanceSeq = 0;
 
   const DATA = {
-    weekly: genWeekly(46),
+    weekly: [],
     skill: [],
     academic: [],
     attendance: [],
     audit: genAudit(38)
   };
+
+  // Chronological log of every entry added this session, across all
+  // domains, used to power the Dashboard's "Recent Activity" feed.
+  const activityLog = [];
+  function logActivity(domain, uid){
+    activityLog.push({ domain, uid, ts: Date.now() + activityLog.length });
+  }
 
   const STATUS_MAP = {
     "Completed":"ok","Achieved":"ok",
@@ -917,16 +1023,26 @@
   const TAB_CONFIG = {
     weekly: {
       label: "Weekly Plan Submissions",
-      minWidth: 860,
-      cols: ["Submission ID","Mentor Name","Planned Tasks","Completed","Completion","Date of Marking","Status"],
+      minWidth: 1560,
+      cols: ["Submission ID","Mentor Name","Planned Tasks","Completed","Completion",
+        WEEKLY_SHORT.planGenuine, WEEKLY_SHORT.dailyUpdated, WEEKLY_SHORT.tasksVerified, WEEKLY_SHORT.reflectsEffort,
+        "Score","Remarks","Date of Marking","Status"],
       row(r){ return [
         r.id,
         mentorCell(r.mentor),
         r.planned, r.completed,
         barCell(r.pct),
+        criteriaToggle("weekly",r,"planGenuine"), criteriaToggle("weekly",r,"dailyUpdated"),
+        criteriaToggle("weekly",r,"tasksVerified"), criteriaToggle("weekly",r,"reflectsEffort"),
+        barCell(r.score), remarksCell(r),
         r.date, pillCell(r.status)
       ]; },
-      exportRow(r){ return [r.id, r.mentor, r.planned, r.completed, r.pct + "%", r.date, r.status]; }
+      exportRow(r){ return [
+        r.id, r.mentor, r.planned, r.completed, r.pct + "%",
+        r.criteria.planGenuine ? "Yes" : "No", r.criteria.dailyUpdated ? "Yes" : "No",
+        r.criteria.tasksVerified ? "Yes" : "No", r.criteria.reflectsEffort ? "Yes" : "No",
+        r.score + "/100", r.remarks || "", r.date, r.status
+      ]; }
     },
     skill: {
       label: "Skill Development",
@@ -1236,6 +1352,89 @@
       uniqMentors.map(m => `<option value="${m}">${m}</option>`).join("");
   }
 
+  // ---------------- weekly plan entry page ----------------
+  let wkEntryAnswers = blankAnswers("weekly");
+
+  function updateWeeklyScore(){
+    const score = scoreFromAnswers(wkEntryAnswers, WEEKLY_KEYS);
+    const el = document.getElementById("wkEntryScoreValue");
+    el.textContent = score + "/100";
+    el.style.color = score >= 80 ? "var(--green-ink2)" : score >= 50 ? "var(--amber-ink)" : "var(--red-ink)";
+  }
+  function populateWeeklyEntryStatics(){
+    populateMentorSelect("wkEntryMentor");
+    document.getElementById("wkEntryDate").value = todayIso();
+    buildQuestionGrid("wkEntryCriteria", "weekly", wkEntryAnswers, updateWeeklyScore);
+  }
+  function resetWeeklyEntryForm(){
+    document.getElementById("wkEntryMentor").value = "";
+    document.getElementById("wkEntryDate").value = todayIso();
+    document.getElementById("wkEntryPlanned").value = "";
+    document.getElementById("wkEntryCompleted").value = "";
+    document.getElementById("wkEntryRemarks").value = "";
+    wkEntryAnswers = blankAnswers("weekly");
+    buildQuestionGrid("wkEntryCriteria", "weekly", wkEntryAnswers, updateWeeklyScore);
+    updateWeeklyScore();
+  }
+
+  const recentWeeklyUids = [];
+  function renderRecentWeekly(){
+    const wrap = document.getElementById("wkEntryRecent");
+    if(recentWeeklyUids.length === 0){
+      wrap.innerHTML = `<div class="recent-empty">No entries added yet this session.</div>`;
+      return;
+    }
+    wrap.innerHTML = recentWeeklyUids.slice().reverse().map(uid => {
+      const r = DATA.weekly.find(x => x.uid === uid);
+      if(!r) return "";
+      return `<div class="recent-row">
+        <div class="rr-left">
+          <div class="cell-avatar" style="background:${avatarColor(r.mentor)};width:24px;height:24px;font-size:9.5px;">${initials(r.mentor)}</div>
+          <span class="rr-name">${escapeHtml(r.mentor)}</span>
+          <span class="rr-sub">${r.completed}/${r.planned} tasks · ${r.date}</span>
+        </div>
+        <span class="pill ${STATUS_MAP[r.status] || 'warn'}">${r.status} · ${r.score}/100</span>
+      </div>`;
+    }).join("");
+  }
+
+  document.getElementById("wkEntrySubmit").addEventListener("click", () => {
+    const mentor = document.getElementById("wkEntryMentor").value;
+    const dateIso = document.getElementById("wkEntryDate").value;
+    const plannedRaw = document.getElementById("wkEntryPlanned").value;
+    const completedRaw = document.getElementById("wkEntryCompleted").value;
+    const remarks = document.getElementById("wkEntryRemarks").value.trim();
+
+    if(!mentor){ toast("Select a mentor before saving"); document.getElementById("wkEntryMentor").focus(); return; }
+    if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("wkEntryDate").focus(); return; }
+    if(plannedRaw === ""){ toast("Enter planned tasks before saving"); document.getElementById("wkEntryPlanned").focus(); return; }
+    if(completedRaw === ""){ toast("Enter completed tasks before saving"); document.getElementById("wkEntryCompleted").focus(); return; }
+    const planned = Math.max(0, parseInt(plannedRaw,10) || 0);
+    const completed = Math.max(0, parseInt(completedRaw,10) || 0);
+    if(completed > planned){ toast("Completed can't be more than planned tasks"); document.getElementById("wkEntryCompleted").focus(); return; }
+    if(!remarks){ toast("Enter remarks before saving"); document.getElementById("wkEntryRemarks").focus(); return; }
+
+    weeklySeq++;
+    const criteria = { ...wkEntryAnswers };
+    const pct = planned > 0 ? Math.round((completed/planned)*100) : 0;
+    const row = {
+      uid: "wpl-" + weeklySeq,
+      id: "#WPL-" + Math.floor(10000 + Math.random()*89999),
+      mentor, planned, completed, pct,
+      criteria, remarks,
+      date: isoToDMY(dateIso)
+    };
+    recomputeRow("weekly", row);
+    DATA.weekly.unshift(row);
+    recentWeeklyUids.push(row.uid);
+    logActivity("weekly", row.uid);
+    renderRecentWeekly();
+
+    toast("Entry saved for " + mentor + " — visible in Reports & Audit Logs");
+    resetWeeklyEntryForm();
+  });
+  document.getElementById("wkEntryReset").addEventListener("click", resetWeeklyEntryForm);
+
   // ---------------- skill development entry page ----------------
   let skEntryAnswers = blankAnswers("skill");
 
@@ -1304,6 +1503,7 @@
     recomputeRow("skill", row);
     DATA.skill.unshift(row);
     recentSkillUids.push(row.uid);
+    logActivity("skill", row.uid);
     renderRecentSkill();
 
     toast("Entry saved for " + mentor + " — visible in Reports & Audit Logs");
@@ -1381,6 +1581,7 @@
     recomputeRow("academic", row);
     DATA.academic.unshift(row);
     recentAcademicUids.push(row.uid);
+    logActivity("academic", row.uid);
     renderRecentAcademic();
 
     toast("Entry saved for " + mentor + " — visible in Reports & Audit Logs");
@@ -1463,6 +1664,7 @@
     recomputeRow("attendance", row);
     DATA.attendance.unshift(row);
     recentAttendanceUids.push(row.uid);
+    logActivity("attendance", row.uid);
     renderRecentAttendance();
 
     toast("Entry saved for " + mentor + " — visible in Reports & Audit Logs");
@@ -1567,6 +1769,7 @@
     row.overall = overallAuditStatus(row);
     DATA.audit.unshift(row);
     recentAuditUids.push(row.uid);
+    logActivity("audit", row.uid);
     renderRecentAudits();
 
     toast("Audit saved for " + mentor + " — visible in Reports & Audit Logs");
@@ -1577,13 +1780,15 @@
   // ---------------- page routing ----------------
   const PAGE_TITLES = {
     "reports": "Report & Audit Logs",
+    "weekly-entry": "Weekly Plan Entry",
     "skill-entry": "Skill Development Entry",
     "academic-entry": "Academic Task Entry",
     "attendance-entry": "Attendance Entry",
-    "audit-entry": "Internal Audit Entry"
+    "audit-entry": "Internal Audit Entry",
+    "dashboard": "Dashboard"
   };
-  const PAGE_IDS = ["reports","skill-entry","academic-entry","attendance-entry","audit-entry","dashboard"];
-  const ENTRY_PAGES = ["skill-entry","academic-entry","attendance-entry","audit-entry"];
+  const PAGE_IDS = ["reports","weekly-entry","skill-entry","academic-entry","attendance-entry","audit-entry","dashboard"];
+  const ENTRY_PAGES = ["weekly-entry","skill-entry","academic-entry","attendance-entry","audit-entry"];
 
   function showPage(page){
     PAGE_IDS.forEach(p => {
@@ -1605,6 +1810,14 @@
         return;
       }
 
+      if(page === "dashboard"){
+        document.querySelectorAll("[data-nav]").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        showPage("dashboard");
+        renderDashboard();
+        return;
+      }
+
       if(ENTRY_PAGES.includes(page)){
         document.querySelectorAll("[data-nav]").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
@@ -1616,7 +1829,224 @@
     });
   });
 
+  // ---------------- dashboard ----------------
+  function goToReportsTab(tab){
+    document.querySelectorAll("[data-nav]").forEach(b => b.classList.remove("active"));
+    const reportsBtn = document.getElementById("nav-reports");
+    if(reportsBtn) reportsBtn.classList.add("active");
+    showPage("reports");
+    selectReportsTab(tab);
+  }
+
+  const DOMAIN_META = {
+    weekly: { label: "Weekly Plans", tab: "weekly",
+      icon: '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>' },
+    skill: { label: "Skill Development", tab: "skill",
+      icon: '<circle cx="12" cy="8" r="7"/><path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12"/>' },
+    academic: { label: "Academic Tasks", tab: "academic",
+      icon: '<path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="m9 14 2 2 4-4"/>' },
+    attendance: { label: "Attendance", tab: "attendance",
+      icon: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>' }
+  };
+  const SCORED_DOMAINS = ["weekly","skill","academic","attendance"];
+
+  function domainSummary(domain){
+    const rows = DATA[domain];
+    const total = rows.length;
+    const achieved = rows.filter(r => r.status === "Achieved").length;
+    const inProgress = rows.filter(r => r.status === "In Progress").length;
+    const notAchieved = rows.filter(r => r.status === "Not Achieved").length;
+    const avgScore = total ? Math.round(rows.reduce((s,r) => s + r.score, 0) / total) : 0;
+    return { total, achieved, inProgress, notAchieved, avgScore };
+  }
+  function auditSummary(){
+    const rows = DATA.audit;
+    const total = rows.length;
+    const completed = rows.filter(r => r.overall === "Completed").length;
+    const inProgress = rows.filter(r => r.overall === "In Progress").length;
+    const notCompleted = rows.filter(r => r.overall === "Not Completed").length;
+    return { total, completed, inProgress, notCompleted };
+  }
+
+  function mentorLeaderboard(){
+    const byMentor = {};
+    SCORED_DOMAINS.forEach(domain => {
+      DATA[domain].forEach(r => {
+        if(!byMentor[r.mentor]) byMentor[r.mentor] = { mentor: r.mentor, sum: 0, count: 0 };
+        byMentor[r.mentor].sum += r.score;
+        byMentor[r.mentor].count += 1;
+      });
+    });
+    return Object.values(byMentor)
+      .map(m => ({ mentor: m.mentor, count: m.count, avg: Math.round(m.sum / m.count) }))
+      .sort((a,b) => b.avg - a.avg || b.count - a.count);
+  }
+
+  function needsAttentionRows(limit){
+    const out = [];
+    SCORED_DOMAINS.forEach(domain => {
+      DATA[domain].filter(r => r.status === "Not Achieved").forEach(r => {
+        out.push({ domain, label: DOMAIN_META[domain].label, mentor: r.mentor, date: r.date, detail: (r.score) + "/100", remarks: r.remarks || "" });
+      });
+    });
+    DATA.audit.filter(r => r.overall === "Not Completed").forEach(r => {
+      out.push({ domain: "audit", label: "Internal Audit", mentor: r.mentor, date: r.date, detail: "Flagged by " + r.auditor, remarks: r.notes || "" });
+    });
+    return out.slice(0, limit);
+  }
+
+  function recentActivityRows(limit){
+    return activityLog.slice(-limit).reverse().map(a => {
+      const row = DATA[a.domain] && DATA[a.domain].find(r => r.uid === a.uid);
+      if(!row) return null;
+      return { domain: a.domain, row };
+    }).filter(Boolean);
+  }
+
+  function renderDashboard(){
+    const wrap = document.getElementById("page-dashboard");
+
+    const totalRecords = SCORED_DOMAINS.reduce((s,d) => s + DATA[d].length, 0) + DATA.audit.length;
+    const scoredTotal = SCORED_DOMAINS.reduce((s,d) => s + DATA[d].length, 0);
+    const scoredSum = SCORED_DOMAINS.reduce((s,d) => s + DATA[d].reduce((ss,r) => ss + r.score, 0), 0);
+    const overallAvg = scoredTotal ? Math.round(scoredSum / scoredTotal) : 0;
+    const mentorsWithActivity = new Set();
+    SCORED_DOMAINS.forEach(d => DATA[d].forEach(r => mentorsWithActivity.add(r.mentor)));
+    DATA.audit.forEach(r => mentorsWithActivity.add(r.mentor));
+    const flaggedCount = SCORED_DOMAINS.reduce((s,d) => s + DATA[d].filter(r => r.status === "Not Achieved").length, 0)
+      + DATA.audit.filter(r => r.overall === "Not Completed").length;
+
+    const auditStats = auditSummary();
+    const leaderboard = mentorLeaderboard();
+    const attention = needsAttentionRows(6);
+    const activity = recentActivityRows(8);
+
+    const heroHtml = `
+      <div class="dash-hero-grid">
+        <div class="dash-hero-card">
+          <span class="dash-hero-label">Mentors Tracked</span>
+          <span class="dash-hero-value">${mentorsWithActivity.size}<span class="dash-hero-value-sub"> / ${uniqMentors.length}</span></span>
+          <span class="dash-hero-caption">have at least one logged record</span>
+        </div>
+        <div class="dash-hero-card">
+          <span class="dash-hero-label">Records Logged</span>
+          <span class="dash-hero-value">${totalRecords}</span>
+          <span class="dash-hero-caption">across all report types</span>
+        </div>
+        <div class="dash-hero-card">
+          <span class="dash-hero-label">Avg. Genuineness Score</span>
+          <span class="dash-hero-value" style="color:${overallAvg >= 80 ? 'var(--green-ink2)' : overallAvg >= 50 ? 'var(--amber-ink)' : 'var(--red-ink)'}">${overallAvg}<span class="dash-hero-value-sub">/100</span></span>
+          <span class="dash-hero-caption">weekly, skill, academic &amp; attendance</span>
+        </div>
+        <div class="dash-hero-card">
+          <span class="dash-hero-label">Flagged For Review</span>
+          <span class="dash-hero-value" style="color:${flaggedCount > 0 ? 'var(--red-ink)' : 'var(--green-ink2)'}">${flaggedCount}</span>
+          <span class="dash-hero-caption">not achieved or not completed</span>
+        </div>
+      </div>`;
+
+    const domainCardsHtml = `
+      <div class="dash-section">
+        <div class="dash-section-title">Report Breakdown</div>
+        <div class="dash-domain-grid">
+          ${SCORED_DOMAINS.map(d => {
+            const s = domainSummary(d);
+            const meta = DOMAIN_META[d];
+            return `<button type="button" class="dash-domain-card" data-goto-tab="${meta.tab}">
+              <div class="dash-domain-top">
+                <div class="dash-domain-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${meta.icon}</svg></div>
+                <span class="dash-domain-count">${s.total}</span>
+              </div>
+              <div class="dash-domain-label">${meta.label}</div>
+              <div class="dash-domain-avg">Avg score: <strong style="color:${s.avgScore >= 80 ? 'var(--green-ink2)' : s.avgScore >= 50 ? 'var(--amber-ink)' : 'var(--red-ink)'}">${s.total ? s.avgScore : '—'}</strong></div>
+              <div class="dash-domain-bar">
+                ${s.total ? `<div class="dash-domain-bar-fill" style="width:${(s.achieved/s.total)*100}%;background:var(--green)"></div><div class="dash-domain-bar-fill" style="width:${(s.inProgress/s.total)*100}%;background:var(--amber-ink)"></div><div class="dash-domain-bar-fill" style="width:${(s.notAchieved/s.total)*100}%;background:var(--red-ink)"></div>` : `<div class="dash-domain-bar-fill" style="width:100%;background:var(--border)"></div>`}
+              </div>
+            </button>`;
+          }).join("")}
+          <button type="button" class="dash-domain-card" data-goto-tab="audit">
+            <div class="dash-domain-top">
+              <div class="dash-domain-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 12 2 2 4-4"/><path d="M12 3c-2.5 2-4.5 2-7 1v7c0 5 3 8.5 7 10 4-1.5 7-5 7-10V4c-2.5 1-4.5 1-7-1Z"/></svg></div>
+              <span class="dash-domain-count">${auditStats.total}</span>
+            </div>
+            <div class="dash-domain-label">Internal Audit</div>
+            <div class="dash-domain-avg">Completed: <strong style="color:var(--green-ink2)">${auditStats.completed}</strong> · Flagged: <strong style="color:var(--red-ink)">${auditStats.notCompleted}</strong></div>
+            <div class="dash-domain-bar">
+              ${auditStats.total ? `<div class="dash-domain-bar-fill" style="width:${(auditStats.completed/auditStats.total)*100}%;background:var(--green)"></div><div class="dash-domain-bar-fill" style="width:${(auditStats.inProgress/auditStats.total)*100}%;background:var(--amber-ink)"></div><div class="dash-domain-bar-fill" style="width:${(auditStats.notCompleted/auditStats.total)*100}%;background:var(--red-ink)"></div>` : `<div class="dash-domain-bar-fill" style="width:100%;background:var(--border)"></div>`}
+            </div>
+          </button>
+        </div>
+      </div>`;
+
+    const leaderboardHtml = `
+      <div class="dash-section">
+        <div class="dash-section-title">Mentor Leaderboard</div>
+        <div class="dash-panel">
+          ${leaderboard.length === 0 ? `<div class="recent-empty">No genuineness-scored entries yet. Add entries from Weekly Plans, Skill Development, Academic Tasks, or Attendance to see mentors ranked here.</div>` :
+            leaderboard.slice(0,8).map((m,i) => `
+              <div class="dash-lb-row">
+                <span class="dash-lb-rank">${i+1}</span>
+                <div class="cell-avatar" style="background:${avatarColor(m.mentor)};width:26px;height:26px;font-size:10px;">${initials(m.mentor)}</div>
+                <span class="dash-lb-name">${escapeHtml(m.mentor)}</span>
+                <span class="dash-lb-count">${m.count} record${m.count===1?'':'s'}</span>
+                <div class="bar-track" style="width:90px;"><div class="bar-fill" style="width:${m.avg}%;background:${m.avg >= 80 ? 'var(--green-ink2)' : m.avg >= 50 ? 'var(--amber-ink)' : 'var(--red-ink)'}"></div></div>
+                <span class="dash-lb-score" style="color:${m.avg >= 80 ? 'var(--green-ink2)' : m.avg >= 50 ? 'var(--amber-ink)' : 'var(--red-ink)'}">${m.avg}</span>
+              </div>`).join("")}
+        </div>
+      </div>`;
+
+    const attentionHtml = `
+      <div class="dash-section">
+        <div class="dash-section-title">Needs Attention</div>
+        <div class="dash-panel">
+          ${attention.length === 0 ? `<div class="recent-empty">Nothing flagged right now — every scored record is In Progress or Achieved, and no audits are marked Not Completed.</div>` :
+            attention.map(a => `
+              <div class="recent-row">
+                <div class="rr-left">
+                  <div class="cell-avatar" style="background:${avatarColor(a.mentor)};width:24px;height:24px;font-size:9.5px;">${initials(a.mentor)}</div>
+                  <span class="rr-name">${escapeHtml(a.mentor)}</span>
+                  <span class="rr-sub">${escapeHtml(a.label)} · ${a.date}${a.remarks ? ' · ' + escapeHtml(a.remarks.slice(0,60)) : ''}</span>
+                </div>
+                <span class="pill bad">${escapeHtml(a.detail)}</span>
+              </div>`).join("")}
+        </div>
+      </div>`;
+
+    const activityHtml = `
+      <div class="dash-section">
+        <div class="dash-section-title">Recent Activity</div>
+        <div class="dash-panel">
+          ${activity.length === 0 ? `<div class="recent-empty">No activity logged yet this session. Entries you add anywhere in CampusAudit will show up here.</div>` :
+            activity.map(a => {
+              const r = a.row;
+              const meta = DOMAIN_META[a.domain];
+              const label = meta ? meta.label : "Internal Audit";
+              const statusText = a.domain === "audit" ? r.overall : (r.status + " · " + r.score + "/100");
+              const statusVal = a.domain === "audit" ? r.overall : r.status;
+              return `<div class="recent-row">
+                <div class="rr-left">
+                  <div class="cell-avatar" style="background:${avatarColor(r.mentor)};width:24px;height:24px;font-size:9.5px;">${initials(r.mentor)}</div>
+                  <span class="rr-name">${escapeHtml(r.mentor)}</span>
+                  <span class="rr-sub">${escapeHtml(label)} · ${r.date}</span>
+                </div>
+                <span class="pill ${STATUS_MAP[statusVal] || 'warn'}">${escapeHtml(statusText)}</span>
+              </div>`;
+            }).join("")}
+        </div>
+      </div>`;
+
+    wrap.innerHTML = `<div class="dash-wrap">${heroHtml}${domainCardsHtml}
+      <div class="dash-two-col">${leaderboardHtml}${attentionHtml}</div>
+      ${activityHtml}
+    </div>`;
+
+    wrap.querySelectorAll("[data-goto-tab]").forEach(el => {
+      el.addEventListener("click", () => goToReportsTab(el.dataset.gotoTab));
+    });
+  }
+
   populateFilters();
+  populateWeeklyEntryStatics(); updateWeeklyScore(); renderRecentWeekly();
   populateSkillEntryStatics(); updateSkillScore(); renderRecentSkill();
   populateAcademicEntryStatics(); updateAcademicScore(); renderRecentAcademic();
   populateAttendanceEntryStatics(); updateAttendanceScore(); renderRecentAttendance();
