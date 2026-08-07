@@ -29,7 +29,7 @@
   *{ box-sizing:border-box; }
   html,body{ margin:0; padding:0; background:var(--bg); color:var(--ink); font-family:'Inter',sans-serif; }
   button{ font-family:inherit; }
-  input{ font-family:inherit; }
+  input, select, textarea{ font-family:inherit; }
   .hidden{ display:none !important; }
 
   .app{
@@ -219,6 +219,11 @@
   .subject-input:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
   .subject-input::placeholder{ color: var(--ink-faint); }
 
+  .remarks-cell{
+    display:inline-block; max-width:220px; overflow:hidden; text-overflow:ellipsis;
+    white-space:nowrap; vertical-align:middle; color:var(--ink-soft); font-size:12.5px;
+  }
+
   .crit-btn{
     width:28px; height:28px; border-radius:7px; border:1.5px solid var(--border);
     background:transparent; cursor:pointer; font-size:12px; font-weight:700;
@@ -229,6 +234,19 @@
   .crit-btn.on{ background:var(--green-bg); border-color:var(--green); color:var(--green-ink2); }
   .crit-btn.off{ background:var(--red-bg); border-color:var(--red-ink); color:var(--red-ink); }
   .crit-btn:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
+
+  /* audit status inline select (used in table cells) */
+  .audit-select{
+    appearance:none; -webkit-appearance:none;
+    border:1.5px solid var(--border); border-radius:7px;
+    padding: 6px 26px 6px 10px; font-size:12px; font-weight:600; cursor:pointer;
+    background-repeat:no-repeat; background-position: right 8px center; background-size:11px;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239195A0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  }
+  .audit-select.st-Completed{ background-color:var(--green-bg); border-color:var(--green); color:var(--green-ink2); }
+  .audit-select.st-InProgress{ background-color:var(--amber-bg); border-color:var(--amber-ink); color:var(--amber-ink); }
+  .audit-select.st-NotCompleted{ background-color:var(--red-bg); border-color:var(--red-ink); color:var(--red-ink); }
+  .audit-select:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
 
   /* ================= FOOTER / PAGINATION ================= */
   .table-footer{
@@ -257,40 +275,49 @@
   }
   .toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
 
-  /* ================= SKILL ENTRY FORM ================= */
+  /* ================= ENTRY FORMS ================= */
   .entry-wrap{ padding: 22px 26px 30px; }
   .entry-card{
     border:1px solid var(--border); border-radius: var(--radius); padding: 22px 24px;
-    max-width: 760px;
+    max-width: 780px;
   }
   .entry-card h2{ margin:0 0 4px; font-size:15.5px; font-weight:700; }
-  .entry-card .entry-sub{ margin:0 0 20px; font-size:12.5px; color:var(--ink-faint); }
+  .entry-card .entry-sub{ margin:0 0 20px; font-size:12.5px; color:var(--ink-faint); line-height:1.5; }
   .form-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .form-field{ display:flex; flex-direction:column; gap:6px; }
   .form-field.full{ grid-column: 1 / -1; }
   .form-field label{ font-size:12px; font-weight:600; color:var(--ink-soft); }
-  .form-field input[type=text], .form-field select{
+  .form-field input[type=text], .form-field input[type=number], .form-field input[type=date], .form-field select, .form-field textarea{
     border:1px solid var(--border); border-radius:8px; padding: 9px 11px;
     font-size:13px; color:var(--ink); background:transparent; width:100%;
   }
-  .form-field input:focus-visible, .form-field select:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
-  .criteria-grid{ display:grid; grid-template-columns: repeat(2,1fr); gap:10px; margin-top:4px; }
-  .criteria-row{
-    display:flex; align-items:center; justify-content:space-between; gap:10px;
-    border:1px solid var(--border); border-radius:8px; padding: 9px 12px;
+  .form-field textarea{ resize:vertical; }
+  .form-field input:focus-visible, .form-field select:focus-visible, .form-field textarea:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
+
+  .section-label{
+    font-size:12.5px; font-weight:700; color:var(--ink-soft); margin: 20px 0 10px;
+    display:flex; align-items:center; gap:8px;
   }
-  .criteria-row span{ font-size:12.5px; color:var(--ink); }
+  .section-label svg{ width:15px; height:15px; color:var(--green); }
+
+  .criteria-grid{ display:grid; grid-template-columns: 1fr; gap:10px; margin-top:4px; }
+  .criteria-row{
+    display:flex; align-items:center; justify-content:space-between; gap:14px;
+    border:1px solid var(--border); border-radius:8px; padding: 11px 14px;
+  }
+  .criteria-row span{ font-size:12.5px; color:var(--ink); line-height:1.4; }
   .toggle-switch{
-    width:40px; height:22px; border-radius:20px; border:none; cursor:pointer; position:relative; flex-shrink:0;
+    width:44px; height:24px; border-radius:20px; border:none; cursor:pointer; position:relative; flex-shrink:0;
     background: var(--red-bg); transition: background .15s ease;
   }
   .toggle-switch::after{
-    content:""; position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%;
+    content:""; position:absolute; top:2px; left:2px; width:20px; height:20px; border-radius:50%;
     background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.25); transition: left .15s ease;
   }
   .toggle-switch.on{ background: var(--green); }
-  .toggle-switch.on::after{ left:20px; }
+  .toggle-switch.on::after{ left:22px; }
   .toggle-switch:focus-visible{ outline:2px solid var(--green); outline-offset:2px; }
+
   .score-band{
     display:flex; align-items:center; justify-content:space-between; gap:12px;
     border:1px dashed var(--border-color, var(--border)); border-radius:8px; padding:12px 14px; margin-top:18px;
@@ -309,7 +336,7 @@
     padding: 10px 18px; font-size:13px; font-weight:600; cursor:pointer;
   }
   .btn-secondary:hover{ border-color:var(--ink-faint); color:var(--ink); }
-  .recent-entries{ max-width:760px; margin-top:26px; }
+  .recent-entries{ max-width:780px; margin-top:26px; }
   .recent-entries h3{ font-size:13px; font-weight:700; margin:0 0 10px; color:var(--ink-soft); }
   .recent-list{ display:flex; flex-direction:column; gap:8px; }
   .recent-row{
@@ -326,7 +353,6 @@
     .sidebar{ display:none; }
     .main{ border-radius:0; border-left:none; border-right:none; }
     .form-grid{ grid-template-columns: 1fr; }
-    .criteria-grid{ grid-template-columns: 1fr; }
   }
 
   @media print{
@@ -359,14 +385,6 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
         Dashboard
       </button>
-      <button class="nav-item" id="nav-students" data-nav data-page="students">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        Student Management
-      </button>
-      <button class="nav-item" id="nav-mentors" data-nav data-page="mentors">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Mentor Management
-      </button>
       <button class="nav-item" id="nav-weekly" data-nav data-page="reports" data-tab="weekly">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         Weekly Plans
@@ -375,13 +393,17 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12"/></svg>
         Skill Development
       </button>
-      <button class="nav-item" id="nav-academic" data-nav data-page="reports" data-tab="academic">
+      <button class="nav-item" id="nav-academic" data-nav data-page="academic-entry">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg>
         Academic Tasks
       </button>
-      <button class="nav-item" id="nav-attendance" data-nav data-page="reports" data-tab="attendance">
+      <button class="nav-item" id="nav-attendance" data-nav data-page="attendance-entry">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
         Attendance
+      </button>
+      <button class="nav-item" id="nav-audit" data-nav data-page="audit-entry">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 12 2 2 4-4"/><path d="M12 3c-2.5 2-4.5 2-7 1v7c0 5 3 8.5 7 10 4-1.5 7-5 7-10V4c-2.5 1-4.5 1-7-1Z"/></svg>
+        Internal Audit
       </button>
       <button class="nav-item active" id="nav-reports" data-nav data-page="reports" aria-current="page">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
@@ -416,6 +438,7 @@
         <button class="tab-btn" data-tab="skill">Skill Development</button>
         <button class="tab-btn" data-tab="academic">Academic Tasks</button>
         <button class="tab-btn" data-tab="attendance">Attendance</button>
+        <button class="tab-btn" data-tab="audit">Internal Audit</button>
       </div>
 
       <div class="toolbar">
@@ -458,7 +481,7 @@
       <div class="entry-wrap">
         <div class="entry-card">
           <h2>Skill Development Entry</h2>
-          <p class="entry-sub">Fill in the fields below for a student. Only these fields are recorded, and the entry appears immediately under Reports &amp; Audit Logs → Skill Development.</p>
+          <p class="entry-sub">Answer the genuineness questions below for this student's skill development log. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Skill Development.</p>
 
           <div class="form-grid">
             <div class="form-field">
@@ -479,13 +502,20 @@
             </div>
           </div>
 
-          <div class="criteria-grid" id="skEntryCriteria">
-            <!-- toggle rows injected by JS -->
+          <div class="section-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+            Genuineness Check
           </div>
+          <div class="criteria-grid" id="skEntryCriteria"></div>
 
           <div class="score-band">
-            <span class="score-label">Score (auto-calculated from criteria)</span>
+            <span class="score-label">Score (auto-calculated from your answers)</span>
             <span class="score-value" id="skEntryScoreValue">0/100</span>
+          </div>
+
+          <div class="form-field full" style="margin-top:16px;">
+            <label for="skEntryRemarks">Remarks</label>
+            <textarea id="skEntryRemarks" rows="3" placeholder="Final remarks on this skill development log..."></textarea>
           </div>
 
           <div class="entry-actions">
@@ -501,9 +531,175 @@
       </div>
     </div>
 
+    <!-- ================= ACADEMIC TASKS ENTRY ================= -->
+    <div id="page-academic-entry" class="hidden">
+      <div class="entry-wrap">
+        <div class="entry-card">
+          <h2>Academic Task Entry</h2>
+          <p class="entry-sub">Answer the genuineness questions below to verify a student's academic task submission. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Academic Tasks.</p>
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="acEntryStudent">Student Name</label>
+              <input type="text" id="acEntryStudent" placeholder="e.g. Milo Fairbanks">
+            </div>
+            <div class="form-field">
+              <label for="acEntryMentor">Mentor Name</label>
+              <select id="acEntryMentor"><option value="">Select mentor</option></select>
+            </div>
+            <div class="form-field">
+              <label for="acEntryWeek">Week</label>
+              <select id="acEntryWeek"></select>
+            </div>
+            <div class="form-field">
+              <label for="acEntryType">Task Type</label>
+              <select id="acEntryType">
+                <option value="Quiz">Quiz</option>
+                <option value="Assignment">Assignment</option>
+              </select>
+            </div>
+            <div class="form-field full">
+              <label for="acEntryTask">Task Name</label>
+              <input type="text" id="acEntryTask" placeholder="e.g. Midterm Assignment">
+            </div>
+          </div>
+
+          <div class="section-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+            Genuineness Check
+          </div>
+          <div class="criteria-grid" id="acEntryCriteria"></div>
+
+          <div class="score-band">
+            <span class="score-label">Score (auto-calculated from your answers)</span>
+            <span class="score-value" id="acEntryScoreValue">0/100</span>
+          </div>
+
+          <div class="form-field full" style="margin-top:16px;">
+            <label for="acEntryRemarks">Remarks</label>
+            <textarea id="acEntryRemarks" rows="3" placeholder="Final remarks on this academic task..."></textarea>
+          </div>
+
+          <div class="entry-actions">
+            <button class="btn-primary" id="acEntrySubmit">Add Entry</button>
+            <button class="btn-secondary" id="acEntryReset">Reset</button>
+          </div>
+        </div>
+
+        <div class="recent-entries">
+          <h3>Recently added (this session)</h3>
+          <div class="recent-list" id="acEntryRecent"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= ATTENDANCE ENTRY ================= -->
+    <div id="page-attendance-entry" class="hidden">
+      <div class="entry-wrap">
+        <div class="entry-card">
+          <h2>Attendance Entry</h2>
+          <p class="entry-sub">Answer the genuineness questions below to verify a student's attendance record. Each answer is marked, a verification score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Attendance.</p>
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="atEntryStudent">Student Name</label>
+              <input type="text" id="atEntryStudent" placeholder="e.g. Milo Fairbanks">
+            </div>
+            <div class="form-field">
+              <label for="atEntryMentor">Mentor Name</label>
+              <select id="atEntryMentor"><option value="">Select mentor</option></select>
+            </div>
+            <div class="form-field">
+              <label for="atEntryWeek">Week</label>
+              <select id="atEntryWeek"></select>
+            </div>
+            <div class="form-field">
+              <label for="atEntryHeld">Classes Held</label>
+              <input type="number" id="atEntryHeld" min="0" max="40" placeholder="e.g. 10">
+            </div>
+            <div class="form-field">
+              <label for="atEntryAttended">Classes Attended</label>
+              <input type="number" id="atEntryAttended" min="0" max="40" placeholder="e.g. 9">
+            </div>
+          </div>
+
+          <div class="section-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+            Genuineness Check
+          </div>
+          <div class="criteria-grid" id="atEntryCriteria"></div>
+
+          <div class="score-band">
+            <span class="score-label">Verification Score (auto-calculated from your answers)</span>
+            <span class="score-value" id="atEntryScoreValue">0/100</span>
+          </div>
+
+          <div class="form-field full" style="margin-top:16px;">
+            <label for="atEntryRemarks">Remarks</label>
+            <textarea id="atEntryRemarks" rows="3" placeholder="Final remarks on this attendance record..."></textarea>
+          </div>
+
+          <div class="entry-actions">
+            <button class="btn-primary" id="atEntrySubmit">Add Entry</button>
+            <button class="btn-secondary" id="atEntryReset">Reset</button>
+          </div>
+        </div>
+
+        <div class="recent-entries">
+          <h3>Recently added (this session)</h3>
+          <div class="recent-list" id="atEntryRecent"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= INTERNAL AUDIT ENTRY ================= -->
+    <div id="page-audit-entry" class="hidden">
+      <div class="entry-wrap">
+        <div class="entry-card">
+          <h2>Internal Audit Entry</h2>
+          <p class="entry-sub">Use this when you and another campus manager sit down to review a mentor's work. Confirm whether the weekly plan, skill development, and academic tasks were genuinely completed for that mentor's students, then save — the record appears immediately under Reports &amp; Audit Logs → Internal Audit so it can be checked again on the next daily review.</p>
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="adEntryMentor">Mentor Being Audited</label>
+              <select id="adEntryMentor"><option value="">Select mentor</option></select>
+            </div>
+            <div class="form-field">
+              <label for="adEntryDate">Date of Audit</label>
+              <input type="date" id="adEntryDate">
+            </div>
+            <div class="form-field full">
+              <label for="adEntryAuditor">Auditor (Reviewing Campus Manager)</label>
+              <select id="adEntryAuditor"><option value="">Select auditor</option></select>
+            </div>
+          </div>
+
+          <div class="criteria-grid" id="adEntryCriteria"></div>
+
+          <div class="form-field full" style="margin-top:14px;">
+            <label for="adEntryNotes">Audit Notes (optional)</label>
+            <textarea id="adEntryNotes" rows="3" placeholder="Remarks from the audit discussion, e.g. why something was marked Not Completed..."></textarea>
+          </div>
+
+          <div class="score-band">
+            <span class="score-label">Overall Audit Status</span>
+            <span class="score-value" id="adEntryOverallValue">In Progress</span>
+          </div>
+
+          <div class="entry-actions">
+            <button class="btn-primary" id="adEntrySubmit">Save Audit</button>
+            <button class="btn-secondary" id="adEntryReset">Reset</button>
+          </div>
+        </div>
+
+        <div class="recent-entries">
+          <h3>Recently audited (this session)</h3>
+          <div class="recent-list" id="adEntryRecent"></div>
+        </div>
+      </div>
+    </div>
+
     <div id="page-dashboard" class="hidden"></div>
-    <div id="page-students" class="hidden"></div>
-    <div id="page-mentors" class="hidden"></div>
   </main>
 </div>
 
@@ -528,18 +724,26 @@
 
   const FIRST = ["Milo","Juniper","Hazel","Jemmy","Jasper","Owen","Silo","Scarlett","Luna","Willow","Rowan","Arlo","Sage","Wren","Finn","Nova","Ezra","Ivy","Kai","Maren","Theo","Elowen","Cass","Briar","Odin","Marlowe","Fable","Ash","Reeve","Talia"];
   const LAST = ["Fairbanks","Skye","Willow","Henry","Thorne","Jack","Woods","Rose","Maeve","Sage","Ellery","Marsh","Quill","Rivers","Blackwood","Fenwick","Harrow","Lockhart","Vance","Wilder","Sterling","Ashby","Crane","Doyle","Merrow"];
-  const SKILLS = ["Data Structures","React Fundamentals","SQL & Databases","API Design","UI/UX Basics","Public Speaking","Python Automation","Cloud Deployment","Git & Version Control","Problem Solving"];
-  const TASK_NAMES = ["Unit 4 Quiz","Midterm Assignment","Sprint Retrospective Quiz","Capstone Draft","Weekly Concept Check","Peer Review Assignment","Lab Assessment","Case Study Submission"];
   const MENTORS = Array.from({length:12}, () => pick(FIRST) + " " + pick(LAST));
   const uniqMentors = [...new Set(MENTORS)];
+  const CAMPUS_MANAGERS = ["Courtney Henry", ...new Set(Array.from({length:5}, () => pick(FIRST) + " " + pick(LAST)))];
 
-  function fullName(){ return pick(FIRST) + " " + pick(LAST); }
-  function randDate(){
-    const d = new Date(2025, randInt(0,11), randInt(1,28));
-    return String(d.getDate()).padStart(2,"0") + "/" + String(d.getMonth()+1).padStart(2,"0") + "/" + d.getFullYear();
-  }
   function todayDate(){
     const d = new Date();
+    return String(d.getDate()).padStart(2,"0") + "/" + String(d.getMonth()+1).padStart(2,"0") + "/" + d.getFullYear();
+  }
+  function todayIso(){
+    const d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+  }
+  function isoToDMY(iso){
+    const parts = iso.split("-");
+    if(parts.length !== 3) return todayDate();
+    const [y,m,d] = parts;
+    return d + "/" + m + "/" + y;
+  }
+  function randDate(){
+    const d = new Date(2025, randInt(0,11), randInt(1,28));
     return String(d.getDate()).padStart(2,"0") + "/" + String(d.getMonth()+1).padStart(2,"0") + "/" + d.getFullYear();
   }
   function initials(name){ return name.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase(); }
@@ -549,7 +753,67 @@
     return AVATAR_COLORS[h % AVATAR_COLORS.length];
   }
 
-  // ---------------- generate datasets ----------------
+  // ---------------- genuineness question sets ----------------
+  const CRITERIA_KEYS = ["genuine","weeklyPlan","tracker","assignment","assessment"];
+  const CRITERIA_SHORT = {
+    genuine: "Genuine Marking", weeklyPlan: "Weekly Plan", tracker: "Daily Tracker",
+    assignment: "Assignment", assessment: "Assessment"
+  };
+  const CRITERIA_QUESTIONS = {
+    genuine: "Was this log genuinely marked, not backdated or copied?",
+    weeklyPlan: "Did the student complete their weekly plan for this skill?",
+    tracker: "Was the daily tracker updated consistently?",
+    assignment: "Was the related assignment completed?",
+    assessment: "Was the related assessment completed?"
+  };
+
+  const ACADEMIC_KEYS = ["independent","onTime","verified","reflectsWork"];
+  const ACADEMIC_SHORT = {
+    independent: "Independent Work", onTime: "On Time", verified: "Verified", reflectsWork: "Reflects Work"
+  };
+  const ACADEMIC_QUESTIONS = {
+    independent: "Was the task completed independently, without copying?",
+    onTime: "Was it submitted within the deadline?",
+    verified: "Was the submission cross-checked against the actual task record?",
+    reflectsWork: "Does the score genuinely reflect the student's own understanding?"
+  };
+
+  const ATTENDANCE_KEYS = ["markedDaily","crossVerified","noProxy","matchesTracker"];
+  const ATTENDANCE_SHORT = {
+    markedDaily: "Daily Marking", crossVerified: "Cross-Verified", noProxy: "No Proxy", matchesTracker: "Matches Tracker"
+  };
+  const ATTENDANCE_QUESTIONS = {
+    markedDaily: "Was attendance marked daily by the mentor, not bulk-updated later?",
+    crossVerified: "Was it cross-verified with the class recording or log?",
+    noProxy: "Is there no evidence of proxy attendance?",
+    matchesTracker: "Does the attendance percentage match the daily tracker?"
+  };
+
+  const CRITERIA_CONFIG = {
+    skill: { keys: CRITERIA_KEYS, short: CRITERIA_SHORT, questions: CRITERIA_QUESTIONS },
+    academic: { keys: ACADEMIC_KEYS, short: ACADEMIC_SHORT, questions: ACADEMIC_QUESTIONS },
+    attendance: { keys: ATTENDANCE_KEYS, short: ATTENDANCE_SHORT, questions: ATTENDANCE_QUESTIONS }
+  };
+
+  function scoreFromAnswers(answers, keys){
+    const met = keys.filter(k => answers[k]).length;
+    return Math.round((met / keys.length) * 100);
+  }
+  function statusFromScore(pct){
+    return pct >= 80 ? "Achieved" : pct >= 50 ? "In Progress" : "Not Achieved";
+  }
+  function recomputeRow(domain, row){
+    const cfg = CRITERIA_CONFIG[domain];
+    row.score = scoreFromAnswers(row.criteria, cfg.keys);
+    row.status = statusFromScore(row.score);
+  }
+  function blankAnswers(domain){
+    const c = {};
+    CRITERIA_CONFIG[domain].keys.forEach(k => c[k] = false);
+    return c;
+  }
+
+  // ---------------- weekly plan (unchanged demo dataset) ----------------
   function genWeekly(n){
     const rows = [];
     for(let i=0;i<n;i++){
@@ -569,97 +833,104 @@
     }
     return rows;
   }
-  const CRITERIA_KEYS = ["genuine","weeklyPlan","tracker","assignment","assessment"];
-  const CRITERIA_LABELS = {
-    genuine: "Genuinely Marked",
-    weeklyPlan: "Weekly Plan Completed",
-    tracker: "Daily Tracker Updated",
-    assignment: "Assignment Completed",
-    assessment: "Assessment Completed"
+  function fullName(){ return pick(FIRST) + " " + pick(LAST); }
+
+  // ---------------- internal audit ----------------
+  const AUDIT_KEYS = ["weeklyPlan","skillDev","academic"];
+  const AUDIT_LABELS = {
+    weeklyPlan: "Weekly Plan Followed",
+    skillDev: "Skill Development Completed",
+    academic: "Academic Tasks Completed"
   };
+  const AUDIT_STATUSES = ["Completed","In Progress","Not Completed"];
+  function stKey(s){ return s.replace(/\s+/g,""); }
 
-  function randCriteria(){
-    const c = {};
-    CRITERIA_KEYS.forEach(k => { c[k] = rng() < 0.68; });
-    return c;
+  function randAuditStatus(){
+    const r = rng();
+    return r < 0.58 ? "Completed" : r < 0.84 ? "In Progress" : "Not Completed";
   }
-  function scoreFromCriteria(c){
-    const met = CRITERIA_KEYS.filter(k => c[k]).length;
-    return Math.round((met / CRITERIA_KEYS.length) * 100);
+  function overallAuditStatus(row){
+    const vals = AUDIT_KEYS.map(k => row[k]);
+    if(vals.every(v => v === "Completed")) return "Completed";
+    if(vals.some(v => v === "Not Completed")) return "Not Completed";
+    return "In Progress";
   }
-  function statusFromScore(pct){
-    return pct >= 80 ? "Achieved" : pct >= 50 ? "In Progress" : "Not Achieved";
+  let auditSeq = 0;
+  function genAudit(n){
+    const rows = [];
+    for(let i=0;i<n;i++){
+      auditSeq++;
+      const row = {
+        uid: "aud-" + auditSeq,
+        id: "#AUD-" + randInt(10000,99999),
+        mentor: pick(uniqMentors),
+        auditor: pick(CAMPUS_MANAGERS),
+        weeklyPlan: randAuditStatus(),
+        skillDev: randAuditStatus(),
+        academic: randAuditStatus(),
+        notes: "",
+        date: randDate()
+      };
+      row.overall = overallAuditStatus(row);
+      rows.push(row);
+    }
+    return rows;
   }
 
-  let skillSeq = 0;
-  function genSkill(n){
-    const rows = [];
-    for(let i=0;i<n;i++){
-      const criteria = randCriteria();
-      const score = scoreFromCriteria(criteria);
-      skillSeq++;
-      rows.push({
-        uid: "skl-" + skillSeq,
-        id: "#SKL-" + randInt(10000,99999),
-        week: "Week " + randInt(1,20),
-        student: fullName(), mentor: pick(uniqMentors),
-        subject: pick(SKILLS),
-        criteria, score,
-        date: randDate(), status: statusFromScore(score),
-        manual: false
-      });
-    }
-    return rows;
-  }
-  function recomputeSkillRow(row){
-    row.score = scoreFromCriteria(row.criteria);
-    row.status = statusFromScore(row.score);
-  }
-  function genAcademic(n){
-    const rows = [];
-    for(let i=0;i<n;i++){
-      const type = pick(["Quiz","Assignment"]);
-      const score = randInt(0,100);
-      const status = score === 0 ? "Missing" : score < 50 ? "Late" : "Submitted";
-      rows.push({
-        id: "#ACD-" + randInt(10000,99999),
-        week: "Week " + randInt(1,20),
-        student: fullName(), mentor: pick(uniqMentors),
-        type, task: pick(TASK_NAMES), score,
-        date: randDate(), status
-      });
-    }
-    return rows;
-  }
-  function genAttendance(n){
-    const rows = [];
-    for(let i=0;i<n;i++){
-      const held = randInt(8,12);
-      const attended = randInt(0, held);
-      const pct = Math.round((attended/held)*100);
-      const status = pct >= 85 ? "Good" : pct >= 65 ? "Warning" : "Critical";
-      rows.push({
-        id: "#ATD-" + randInt(10000,99999),
-        week: "Week " + randInt(1,20),
-        student: fullName(), mentor: pick(uniqMentors),
-        held, attended, pct, date: randDate(), status
-      });
-    }
-    return rows;
-  }
+  // ---------------- data store ----------------
+  // Skill Development, Academic Tasks, and Attendance start EMPTY —
+  // records are only created by a campus manager completing the
+  // genuineness-check entry forms. No fake data is pre-injected.
+  let skillSeq = 0, academicSeq = 0, attendanceSeq = 0;
 
   const DATA = {
     weekly: genWeekly(46),
-    skill: genSkill(46),
-    academic: genAcademic(46),
-    attendance: genAttendance(46)
+    skill: [],
+    academic: [],
+    attendance: [],
+    audit: genAudit(38)
   };
 
   const STATUS_MAP = {
-    "Completed":"ok","Achieved":"ok","Submitted":"ok","Good":"ok",
-    "Partial":"warn","In Progress":"warn","Late":"warn","Warning":"warn",
-    "Not Completed":"bad","Not Achieved":"bad","Missing":"bad","Critical":"bad"
+    "Completed":"ok","Achieved":"ok",
+    "Partial":"warn","In Progress":"warn",
+    "Not Completed":"bad","Not Achieved":"bad"
   };
+
+  function escapeAttr(s){ return String(s).replace(/"/g,"&quot;"); }
+  function escapeHtml(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+  function personCell(name){
+    return `<div class="cell-person"><div class="cell-avatar" style="background:${avatarColor(name)}">${initials(name)}</div>${escapeHtml(name)}</div>`;
+  }
+  function mentorCell(name){
+    return `<div class="cell-person"><div class="cell-avatar" style="background:${avatarColor(name)}">${initials(name)}</div>${escapeHtml(name)}</div>`;
+  }
+  function pillCell(status){
+    const cls = STATUS_MAP[status] || "warn";
+    return `<span class="pill ${cls}">${status}</span>`;
+  }
+  function barCell(pct){
+    const color = pct >= 80 ? "var(--green-ink2)" : pct >= 50 ? "var(--amber-ink)" : "var(--red-ink)";
+    return `<div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div><span style="font-size:12px;color:${color};font-weight:600">${pct}%</span></div>`;
+  }
+  function remarksCell(r){
+    const text = r.remarks && r.remarks.trim() ? r.remarks.trim() : "—";
+    return `<span class="remarks-cell" title="${escapeAttr(text)}">${escapeHtml(text)}</span>`;
+  }
+  function subjectCell(r){
+    return `<input type="text" class="subject-input" data-domain="skill" data-uid="${r.uid}" value="${escapeAttr(r.subject)}" placeholder="Enter subject" aria-label="Skill development subject">`;
+  }
+  function criteriaToggle(domain, r, key){
+    const on = !!r.criteria[key];
+    const question = CRITERIA_CONFIG[domain].questions[key];
+    return `<button type="button" class="crit-btn ${on ? "on" : "off"}" data-domain="${domain}" data-uid="${r.uid}" data-key="${key}" title="${escapeAttr(question)}" aria-pressed="${on}">${on ? "✓" : "✕"}</button>`;
+  }
+  function auditSelectCell(r, key){
+    const val = r[key];
+    const opts = AUDIT_STATUSES.map(s => `<option value="${s}" ${s===val?"selected":""}>${s}</option>`).join("");
+    return `<select class="audit-select st-${stKey(val)}" data-uid="${r.uid}" data-key="${key}" aria-label="${AUDIT_LABELS[key]}">${opts}</select>`;
+  }
 
   const TAB_CONFIG = {
     weekly: {
@@ -677,15 +948,17 @@
     },
     skill: {
       label: "Skill Development",
-      minWidth: 1580,
-      cols: ["Log ID","Week","Student Name","Mentor Name","Skill Development Subject","Genuine Marking","Weekly Plan","Daily Tracker","Assignment","Assessment","Score","Submitted On","Status"],
+      minWidth: 1680,
+      cols: ["Log ID","Week","Student Name","Mentor Name","Skill Subject",
+        CRITERIA_SHORT.genuine, CRITERIA_SHORT.weeklyPlan, CRITERIA_SHORT.tracker, CRITERIA_SHORT.assignment, CRITERIA_SHORT.assessment,
+        "Score","Remarks","Submitted On","Status"],
       row(r){ return [
         r.id, r.week,
         personCell(r.student), mentorCell(r.mentor),
         subjectCell(r),
-        criteriaToggle(r,"genuine"), criteriaToggle(r,"weeklyPlan"), criteriaToggle(r,"tracker"),
-        criteriaToggle(r,"assignment"), criteriaToggle(r,"assessment"),
-        barCell(r.score),
+        criteriaToggle("skill",r,"genuine"), criteriaToggle("skill",r,"weeklyPlan"), criteriaToggle("skill",r,"tracker"),
+        criteriaToggle("skill",r,"assignment"), criteriaToggle("skill",r,"assessment"),
+        barCell(r.score), remarksCell(r),
         r.date, pillCell(r.status)
       ]; },
       exportRow(r){ return [
@@ -693,61 +966,71 @@
         r.criteria.genuine ? "Yes" : "No", r.criteria.weeklyPlan ? "Yes" : "No",
         r.criteria.tracker ? "Yes" : "No", r.criteria.assignment ? "Yes" : "No",
         r.criteria.assessment ? "Yes" : "No",
-        r.score + "/100", r.date, r.status
+        r.score + "/100", r.remarks || "", r.date, r.status
       ]; }
     },
     academic: {
       label: "Academic Tasks",
-      minWidth: 980,
-      cols: ["Task ID","Week","Student Name","Task Type","Task Name","Score","Submitted On","Status"],
-      row(r){ return [
-        r.id, r.week,
-        personCell(r.student), r.type,
-        r.task, r.score + "/100",
-        r.date, pillCell(r.status)
-      ]; },
-      exportRow(r){ return [r.id, r.week, r.student, r.type, r.task, r.score + "/100", r.date, r.status]; }
-    },
-    attendance: {
-      label: "Attendance",
-      minWidth: 980,
-      cols: ["Record ID","Week","Student Name","Mentor Name","Classes Held","Attended","Attendance","Submitted On","Status"],
+      minWidth: 1620,
+      cols: ["Task ID","Week","Student Name","Mentor Name","Task Type","Task Name",
+        ACADEMIC_SHORT.independent, ACADEMIC_SHORT.onTime, ACADEMIC_SHORT.verified, ACADEMIC_SHORT.reflectsWork,
+        "Score","Remarks","Submitted On","Status"],
       row(r){ return [
         r.id, r.week,
         personCell(r.student), mentorCell(r.mentor),
-        r.held, r.attended,
-        barCell(r.pct),
+        r.type, r.task,
+        criteriaToggle("academic",r,"independent"), criteriaToggle("academic",r,"onTime"),
+        criteriaToggle("academic",r,"verified"), criteriaToggle("academic",r,"reflectsWork"),
+        barCell(r.score), remarksCell(r),
         r.date, pillCell(r.status)
       ]; },
-      exportRow(r){ return [r.id, r.week, r.student, r.mentor, r.held, r.attended, r.pct + "%", r.date, r.status]; }
+      exportRow(r){ return [
+        r.id, r.week, r.student, r.mentor, r.type, r.task,
+        r.criteria.independent ? "Yes" : "No", r.criteria.onTime ? "Yes" : "No",
+        r.criteria.verified ? "Yes" : "No", r.criteria.reflectsWork ? "Yes" : "No",
+        r.score + "/100", r.remarks || "", r.date, r.status
+      ]; }
+    },
+    attendance: {
+      label: "Attendance",
+      minWidth: 1780,
+      cols: ["Record ID","Week","Student Name","Mentor Name","Classes Held","Attended","Attendance %",
+        ATTENDANCE_SHORT.markedDaily, ATTENDANCE_SHORT.crossVerified, ATTENDANCE_SHORT.noProxy, ATTENDANCE_SHORT.matchesTracker,
+        "Verification Score","Remarks","Submitted On","Status"],
+      row(r){ return [
+        r.id, r.week,
+        personCell(r.student), mentorCell(r.mentor),
+        r.held, r.attended, barCell(r.pct),
+        criteriaToggle("attendance",r,"markedDaily"), criteriaToggle("attendance",r,"crossVerified"),
+        criteriaToggle("attendance",r,"noProxy"), criteriaToggle("attendance",r,"matchesTracker"),
+        barCell(r.score), remarksCell(r),
+        r.date, pillCell(r.status)
+      ]; },
+      exportRow(r){ return [
+        r.id, r.week, r.student, r.mentor, r.held, r.attended, r.pct + "%",
+        r.criteria.markedDaily ? "Yes" : "No", r.criteria.crossVerified ? "Yes" : "No",
+        r.criteria.noProxy ? "Yes" : "No", r.criteria.matchesTracker ? "Yes" : "No",
+        r.score + "/100", r.remarks || "", r.date, r.status
+      ]; }
+    },
+    audit: {
+      label: "Internal Audit",
+      minWidth: 1220,
+      cols: ["Audit ID","Mentor Audited","Weekly Plan","Skill Development","Academic Tasks","Overall Status","Auditor","Audited On"],
+      row(r){ return [
+        r.id,
+        mentorCell(r.mentor),
+        auditSelectCell(r,"weeklyPlan"), auditSelectCell(r,"skillDev"), auditSelectCell(r,"academic"),
+        pillCell(r.overall),
+        mentorCell(r.auditor),
+        r.date
+      ]; },
+      exportRow(r){ return [
+        r.id, r.mentor,
+        r.weeklyPlan, r.skillDev, r.academic, r.overall, r.auditor, r.date
+      ]; }
     }
   };
-
-  function escapeAttr(s){ return String(s).replace(/"/g,"&quot;"); }
-  function escapeHtml(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-
-  function subjectCell(r){
-    return `<input type="text" class="subject-input" data-uid="${r.uid}" value="${escapeAttr(r.subject)}" placeholder="Enter subject" aria-label="Skill development subject">`;
-  }
-  function criteriaToggle(r, key){
-    const on = !!r.criteria[key];
-    return `<button type="button" class="crit-btn ${on ? "on" : "off"}" data-uid="${r.uid}" data-key="${key}" title="${CRITERIA_LABELS[key]}" aria-pressed="${on}">${on ? "✓" : "✕"}</button>`;
-  }
-
-  function personCell(name){
-    return `<div class="cell-person"><div class="cell-avatar" style="background:${avatarColor(name)}">${initials(name)}</div>${escapeHtml(name)}</div>`;
-  }
-  function mentorCell(name){
-    return `<div class="cell-person"><div class="cell-avatar" style="background:${avatarColor(name)}">${initials(name)}</div>${escapeHtml(name)}</div>`;
-  }
-  function pillCell(status){
-    const cls = STATUS_MAP[status] || "warn";
-    return `<span class="pill ${cls}">${status}</span>`;
-  }
-  function barCell(pct){
-    const color = pct >= 80 ? "var(--green-ink2)" : pct >= 50 ? "var(--amber-ink)" : "var(--red-ink)";
-    return `<div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div><span style="font-size:12px;color:${color};font-weight:600">${pct}%</span></div>`;
-  }
 
   // ---------------- state ----------------
   let state = { tab: "weekly", search: "", mentor: "", status: "", page: 1, pageSize: 10 };
@@ -757,28 +1040,30 @@
     return raw.filter(r => {
       if(state.search){
         const q = state.search.toLowerCase();
-        const hay = (r.student + " " + (r.mentor||"")).toLowerCase();
+        const hay = ((r.student||"") + " " + (r.mentor||"") + " " + (r.auditor||"")).toLowerCase();
         if(!hay.includes(q)) return false;
       }
       if(state.mentor && r.mentor !== state.mentor) return false;
-      if(state.status && r.status !== state.status) return false;
+      if(state.status){
+        const s = state.tab === "audit" ? r.overall : r.status;
+        if(s !== state.status) return false;
+      }
       return true;
     });
   }
 
   function uniqueStatuses(){
-    const set = new Set(DATA[state.tab].map(r => r.status));
-    return [...set];
+    if(state.tab === "audit") return [...new Set(DATA.audit.map(r => r.overall))];
+    return [...new Set(DATA[state.tab].map(r => r.status))];
   }
 
   function populateFilters(){
     const mentorSel = document.getElementById("mentorFilter");
     const statusSel = document.getElementById("statusFilter");
-    const hasMentor = DATA[state.tab][0].mentor !== undefined;
 
     mentorSel.innerHTML = '<option value="">Mentor</option>' +
       uniqMentors.map(m => `<option value="${m}">${m}</option>`).join("");
-    mentorSel.parentElement.style.display = hasMentor ? "" : "none";
+    mentorSel.parentElement.style.display = "";
 
     statusSel.innerHTML = '<option value="">Status</option>' +
       uniqueStatuses().map(s => `<option value="${s}">${s}</option>`).join("");
@@ -790,7 +1075,6 @@
 
     document.querySelector(".table-wrap table").style.minWidth = (cfg.minWidth || 980) + "px";
 
-    // thead
     const thead = document.getElementById("theadRow");
     thead.innerHTML = `<th class="cell-check"><input type="checkbox" aria-label="Select all"></th>` +
       cfg.cols.map(c => `<th>${c}</th>`).join("");
@@ -803,7 +1087,7 @@
 
     const tbody = document.getElementById("tbody");
     if(pageRows.length === 0){
-      tbody.innerHTML = `<tr class="empty-row"><td colspan="${cfg.cols.length+1}">No records match your filters.</td></tr>`;
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="${cfg.cols.length+1}">No records yet. Add one from the entry form to see it here.</td></tr>`;
     } else {
       tbody.innerHTML = pageRows.map(r => {
         const cells = cfg.row(r);
@@ -895,12 +1179,23 @@
   document.getElementById("tbody").addEventListener("click", e => {
     const btn = e.target.closest(".crit-btn");
     if(!btn) return;
-    const row = DATA.skill.find(r => r.uid === btn.dataset.uid);
+    const domain = btn.dataset.domain;
+    const row = DATA[domain].find(r => r.uid === btn.dataset.uid);
     if(!row) return;
     row.criteria[btn.dataset.key] = !row.criteria[btn.dataset.key];
-    recomputeSkillRow(row);
+    recomputeRow(domain, row);
     render();
-    toast(CRITERIA_LABELS[btn.dataset.key] + ": " + (row.criteria[btn.dataset.key] ? "marked" : "unmarked"));
+    toast(CRITERIA_CONFIG[domain].short[btn.dataset.key] + ": " + (row.criteria[btn.dataset.key] ? "Yes" : "No"));
+  });
+  document.getElementById("tbody").addEventListener("change", e => {
+    const sel = e.target.closest(".audit-select");
+    if(!sel) return;
+    const row = DATA.audit.find(r => r.uid === sel.dataset.uid);
+    if(!row) return;
+    row[sel.dataset.key] = sel.value;
+    row.overall = overallAuditStatus(row);
+    render();
+    toast(AUDIT_LABELS[sel.dataset.key] + " for " + row.mentor + ": " + row[sel.dataset.key]);
   });
 
   let toastTimer;
@@ -933,66 +1228,70 @@
     setTimeout(() => window.print(), 300);
   });
 
-  // ---------------- skill development entry page ----------------
-  function populateSkillEntryStatics(){
-    const mentorSel = document.getElementById("skEntryMentor");
-    mentorSel.innerHTML = '<option value="">Select mentor</option>' +
-      uniqMentors.map(m => `<option value="${m}">${m}</option>`).join("");
-
-    const weekSel = document.getElementById("skEntryWeek");
-    weekSel.innerHTML = Array.from({length:20}, (_,i)=>i+1)
-      .map(w => `<option value="Week ${w}">Week ${w}</option>`).join("");
-
-    const grid = document.getElementById("skEntryCriteria");
-    grid.innerHTML = CRITERIA_KEYS.map(k => `
+  // ---------------- generic question-grid helper ----------------
+  function buildQuestionGrid(containerId, domain, answers, onChange){
+    const cfg = CRITERIA_CONFIG[domain];
+    const grid = document.getElementById(containerId);
+    grid.innerHTML = cfg.keys.map(k => `
       <div class="criteria-row">
-        <span>${CRITERIA_LABELS[k]}</span>
-        <button type="button" class="toggle-switch" data-key="${k}" role="switch" aria-checked="false" aria-label="${CRITERIA_LABELS[k]}"></button>
+        <span>${cfg.questions[k]}</span>
+        <button type="button" class="toggle-switch ${answers[k] ? "on" : ""}" data-key="${k}" role="switch" aria-checked="${answers[k] ? "true" : "false"}" aria-label="${escapeAttr(cfg.questions[k])}"></button>
       </div>
     `).join("");
+    grid.onclick = e => {
+      const sw = e.target.closest(".toggle-switch");
+      if(!sw) return;
+      const key = sw.dataset.key;
+      answers[key] = !answers[key];
+      sw.classList.toggle("on", answers[key]);
+      sw.setAttribute("aria-checked", answers[key] ? "true" : "false");
+      onChange();
+    };
+  }
+  function populateWeekSelect(id){
+    const sel = document.getElementById(id);
+    sel.innerHTML = Array.from({length:20}, (_,i)=>i+1)
+      .map(w => `<option value="Week ${w}">Week ${w}</option>`).join("");
+  }
+  function populateMentorSelect(id){
+    const sel = document.getElementById(id);
+    sel.innerHTML = '<option value="">Select mentor</option>' +
+      uniqMentors.map(m => `<option value="${m}">${m}</option>`).join("");
   }
 
-  let entryCriteria = { genuine:false, weeklyPlan:false, tracker:false, assignment:false, assessment:false };
+  // ---------------- skill development entry page ----------------
+  let skEntryAnswers = blankAnswers("skill");
 
-  function updateEntryScore(){
-    const score = scoreFromCriteria(entryCriteria);
+  function updateSkillScore(){
+    const score = scoreFromAnswers(skEntryAnswers, CRITERIA_KEYS);
     const el = document.getElementById("skEntryScoreValue");
     el.textContent = score + "/100";
-    const color = score >= 80 ? "var(--green-ink2)" : score >= 50 ? "var(--amber-ink)" : "var(--red-ink)";
-    el.style.color = color;
+    el.style.color = score >= 80 ? "var(--green-ink2)" : score >= 50 ? "var(--amber-ink)" : "var(--red-ink)";
   }
-
-  document.getElementById("skEntryCriteria").addEventListener("click", e => {
-    const sw = e.target.closest(".toggle-switch");
-    if(!sw) return;
-    const key = sw.dataset.key;
-    entryCriteria[key] = !entryCriteria[key];
-    sw.classList.toggle("on", entryCriteria[key]);
-    sw.setAttribute("aria-checked", entryCriteria[key] ? "true" : "false");
-    updateEntryScore();
-  });
-
+  function populateSkillEntryStatics(){
+    populateMentorSelect("skEntryMentor");
+    populateWeekSelect("skEntryWeek");
+    buildQuestionGrid("skEntryCriteria", "skill", skEntryAnswers, updateSkillScore);
+  }
   function resetSkillEntryForm(){
     document.getElementById("skEntryStudent").value = "";
     document.getElementById("skEntryMentor").value = "";
     document.getElementById("skEntryWeek").value = "Week 1";
     document.getElementById("skEntrySubject").value = "";
-    entryCriteria = { genuine:false, weeklyPlan:false, tracker:false, assignment:false, assessment:false };
-    document.querySelectorAll("#skEntryCriteria .toggle-switch").forEach(sw => {
-      sw.classList.remove("on"); sw.setAttribute("aria-checked","false");
-    });
-    updateEntryScore();
+    document.getElementById("skEntryRemarks").value = "";
+    skEntryAnswers = blankAnswers("skill");
+    buildQuestionGrid("skEntryCriteria", "skill", skEntryAnswers, updateSkillScore);
+    updateSkillScore();
   }
 
-  const recentUids = [];
-
-  function renderRecentEntries(){
+  const recentSkillUids = [];
+  function renderRecentSkill(){
     const wrap = document.getElementById("skEntryRecent");
-    if(recentUids.length === 0){
+    if(recentSkillUids.length === 0){
       wrap.innerHTML = `<div class="recent-empty">No entries added yet this session.</div>`;
       return;
     }
-    wrap.innerHTML = recentUids.slice().reverse().map(uid => {
+    wrap.innerHTML = recentSkillUids.slice().reverse().map(uid => {
       const r = DATA.skill.find(x => x.uid === uid);
       if(!r) return "";
       return `<div class="recent-row">
@@ -1011,39 +1310,309 @@
     const mentor = document.getElementById("skEntryMentor").value;
     const week = document.getElementById("skEntryWeek").value;
     const subject = document.getElementById("skEntrySubject").value.trim();
+    const remarks = document.getElementById("skEntryRemarks").value.trim();
 
     if(!student){ toast("Enter a student name before saving"); document.getElementById("skEntryStudent").focus(); return; }
     if(!mentor){ toast("Select a mentor before saving"); document.getElementById("skEntryMentor").focus(); return; }
     if(!subject){ toast("Enter a skill development subject before saving"); document.getElementById("skEntrySubject").focus(); return; }
+    if(!remarks){ toast("Enter remarks before saving"); document.getElementById("skEntryRemarks").focus(); return; }
 
     skillSeq++;
-    const criteria = { ...entryCriteria };
-    const score = scoreFromCriteria(criteria);
+    const criteria = { ...skEntryAnswers };
     const row = {
       uid: "skl-" + skillSeq,
       id: "#SKL-" + Math.floor(10000 + Math.random()*89999),
       week, student, mentor, subject,
-      criteria, score,
-      date: todayDate(),
-      status: statusFromScore(score),
-      manual: true
+      criteria, remarks,
+      date: todayDate()
     };
+    recomputeRow("skill", row);
     DATA.skill.unshift(row);
-    recentUids.push(row.uid);
-    renderRecentEntries();
+    recentSkillUids.push(row.uid);
+    renderRecentSkill();
 
     toast("Entry saved for " + student + " — visible in Reports & Audit Logs");
     resetSkillEntryForm();
   });
-
   document.getElementById("skEntryReset").addEventListener("click", resetSkillEntryForm);
+
+  // ---------------- academic task entry page ----------------
+  let acEntryAnswers = blankAnswers("academic");
+
+  function updateAcademicScore(){
+    const score = scoreFromAnswers(acEntryAnswers, ACADEMIC_KEYS);
+    const el = document.getElementById("acEntryScoreValue");
+    el.textContent = score + "/100";
+    el.style.color = score >= 80 ? "var(--green-ink2)" : score >= 50 ? "var(--amber-ink)" : "var(--red-ink)";
+  }
+  function populateAcademicEntryStatics(){
+    populateMentorSelect("acEntryMentor");
+    populateWeekSelect("acEntryWeek");
+    buildQuestionGrid("acEntryCriteria", "academic", acEntryAnswers, updateAcademicScore);
+  }
+  function resetAcademicEntryForm(){
+    document.getElementById("acEntryStudent").value = "";
+    document.getElementById("acEntryMentor").value = "";
+    document.getElementById("acEntryWeek").value = "Week 1";
+    document.getElementById("acEntryType").value = "Quiz";
+    document.getElementById("acEntryTask").value = "";
+    document.getElementById("acEntryRemarks").value = "";
+    acEntryAnswers = blankAnswers("academic");
+    buildQuestionGrid("acEntryCriteria", "academic", acEntryAnswers, updateAcademicScore);
+    updateAcademicScore();
+  }
+
+  const recentAcademicUids = [];
+  function renderRecentAcademic(){
+    const wrap = document.getElementById("acEntryRecent");
+    if(recentAcademicUids.length === 0){
+      wrap.innerHTML = `<div class="recent-empty">No entries added yet this session.</div>`;
+      return;
+    }
+    wrap.innerHTML = recentAcademicUids.slice().reverse().map(uid => {
+      const r = DATA.academic.find(x => x.uid === uid);
+      if(!r) return "";
+      return `<div class="recent-row">
+        <div class="rr-left">
+          <div class="cell-avatar" style="background:${avatarColor(r.student)};width:24px;height:24px;font-size:9.5px;">${initials(r.student)}</div>
+          <span class="rr-name">${escapeHtml(r.student)}</span>
+          <span class="rr-sub">${escapeHtml(r.task || "—")} · ${r.week}</span>
+        </div>
+        <span class="pill ${STATUS_MAP[r.status] || 'warn'}">${r.status} · ${r.score}/100</span>
+      </div>`;
+    }).join("");
+  }
+
+  document.getElementById("acEntrySubmit").addEventListener("click", () => {
+    const student = document.getElementById("acEntryStudent").value.trim();
+    const mentor = document.getElementById("acEntryMentor").value;
+    const week = document.getElementById("acEntryWeek").value;
+    const type = document.getElementById("acEntryType").value;
+    const task = document.getElementById("acEntryTask").value.trim();
+    const remarks = document.getElementById("acEntryRemarks").value.trim();
+
+    if(!student){ toast("Enter a student name before saving"); document.getElementById("acEntryStudent").focus(); return; }
+    if(!mentor){ toast("Select a mentor before saving"); document.getElementById("acEntryMentor").focus(); return; }
+    if(!task){ toast("Enter the task name before saving"); document.getElementById("acEntryTask").focus(); return; }
+    if(!remarks){ toast("Enter remarks before saving"); document.getElementById("acEntryRemarks").focus(); return; }
+
+    academicSeq++;
+    const criteria = { ...acEntryAnswers };
+    const row = {
+      uid: "acd-" + academicSeq,
+      id: "#ACD-" + Math.floor(10000 + Math.random()*89999),
+      week, student, mentor, type, task,
+      criteria, remarks,
+      date: todayDate()
+    };
+    recomputeRow("academic", row);
+    DATA.academic.unshift(row);
+    recentAcademicUids.push(row.uid);
+    renderRecentAcademic();
+
+    toast("Entry saved for " + student + " — visible in Reports & Audit Logs");
+    resetAcademicEntryForm();
+  });
+  document.getElementById("acEntryReset").addEventListener("click", resetAcademicEntryForm);
+
+  // ---------------- attendance entry page ----------------
+  let atEntryAnswers = blankAnswers("attendance");
+
+  function updateAttendanceScore(){
+    const score = scoreFromAnswers(atEntryAnswers, ATTENDANCE_KEYS);
+    const el = document.getElementById("atEntryScoreValue");
+    el.textContent = score + "/100";
+    el.style.color = score >= 80 ? "var(--green-ink2)" : score >= 50 ? "var(--amber-ink)" : "var(--red-ink)";
+  }
+  function populateAttendanceEntryStatics(){
+    populateMentorSelect("atEntryMentor");
+    populateWeekSelect("atEntryWeek");
+    buildQuestionGrid("atEntryCriteria", "attendance", atEntryAnswers, updateAttendanceScore);
+  }
+  function resetAttendanceEntryForm(){
+    document.getElementById("atEntryStudent").value = "";
+    document.getElementById("atEntryMentor").value = "";
+    document.getElementById("atEntryWeek").value = "Week 1";
+    document.getElementById("atEntryHeld").value = "";
+    document.getElementById("atEntryAttended").value = "";
+    document.getElementById("atEntryRemarks").value = "";
+    atEntryAnswers = blankAnswers("attendance");
+    buildQuestionGrid("atEntryCriteria", "attendance", atEntryAnswers, updateAttendanceScore);
+    updateAttendanceScore();
+  }
+
+  const recentAttendanceUids = [];
+  function renderRecentAttendance(){
+    const wrap = document.getElementById("atEntryRecent");
+    if(recentAttendanceUids.length === 0){
+      wrap.innerHTML = `<div class="recent-empty">No entries added yet this session.</div>`;
+      return;
+    }
+    wrap.innerHTML = recentAttendanceUids.slice().reverse().map(uid => {
+      const r = DATA.attendance.find(x => x.uid === uid);
+      if(!r) return "";
+      return `<div class="recent-row">
+        <div class="rr-left">
+          <div class="cell-avatar" style="background:${avatarColor(r.student)};width:24px;height:24px;font-size:9.5px;">${initials(r.student)}</div>
+          <span class="rr-name">${escapeHtml(r.student)}</span>
+          <span class="rr-sub">${r.attended}/${r.held} classes · ${r.week}</span>
+        </div>
+        <span class="pill ${STATUS_MAP[r.status] || 'warn'}">${r.status} · ${r.score}/100</span>
+      </div>`;
+    }).join("");
+  }
+
+  document.getElementById("atEntrySubmit").addEventListener("click", () => {
+    const student = document.getElementById("atEntryStudent").value.trim();
+    const mentor = document.getElementById("atEntryMentor").value;
+    const week = document.getElementById("atEntryWeek").value;
+    const heldRaw = document.getElementById("atEntryHeld").value;
+    const attendedRaw = document.getElementById("atEntryAttended").value;
+    const remarks = document.getElementById("atEntryRemarks").value.trim();
+
+    if(!student){ toast("Enter a student name before saving"); document.getElementById("atEntryStudent").focus(); return; }
+    if(!mentor){ toast("Select a mentor before saving"); document.getElementById("atEntryMentor").focus(); return; }
+    if(heldRaw === ""){ toast("Enter classes held before saving"); document.getElementById("atEntryHeld").focus(); return; }
+    if(attendedRaw === ""){ toast("Enter classes attended before saving"); document.getElementById("atEntryAttended").focus(); return; }
+    const held = Math.max(0, parseInt(heldRaw,10) || 0);
+    const attended = Math.max(0, parseInt(attendedRaw,10) || 0);
+    if(attended > held){ toast("Attended can't be more than classes held"); document.getElementById("atEntryAttended").focus(); return; }
+    if(!remarks){ toast("Enter remarks before saving"); document.getElementById("atEntryRemarks").focus(); return; }
+
+    attendanceSeq++;
+    const criteria = { ...atEntryAnswers };
+    const pct = held > 0 ? Math.round((attended/held)*100) : 0;
+    const row = {
+      uid: "atd-" + attendanceSeq,
+      id: "#ATD-" + Math.floor(10000 + Math.random()*89999),
+      week, student, mentor, held, attended, pct,
+      criteria, remarks,
+      date: todayDate()
+    };
+    recomputeRow("attendance", row);
+    DATA.attendance.unshift(row);
+    recentAttendanceUids.push(row.uid);
+    renderRecentAttendance();
+
+    toast("Entry saved for " + student + " — visible in Reports & Audit Logs");
+    resetAttendanceEntryForm();
+  });
+  document.getElementById("atEntryReset").addEventListener("click", resetAttendanceEntryForm);
+
+  // ---------------- internal audit entry page ----------------
+  let entryAudit = { weeklyPlan:"In Progress", skillDev:"In Progress", academic:"In Progress" };
+
+  function populateAuditEntryStatics(){
+    populateMentorSelect("adEntryMentor");
+
+    const auditorSel = document.getElementById("adEntryAuditor");
+    auditorSel.innerHTML = '<option value="">Select auditor</option>' +
+      CAMPUS_MANAGERS.map(m => `<option value="${m}">${m}</option>`).join("");
+
+    document.getElementById("adEntryDate").value = todayIso();
+
+    const grid = document.getElementById("adEntryCriteria");
+    grid.innerHTML = AUDIT_KEYS.map(k => `
+      <div class="criteria-row">
+        <span>${AUDIT_LABELS[k]}</span>
+        <select class="audit-select" style="width:150px;" data-key="${k}" aria-label="${AUDIT_LABELS[k]}">
+          ${AUDIT_STATUSES.map(s => `<option value="${s}" ${s===entryAudit[k]?"selected":""}>${s}</option>`).join("")}
+        </select>
+      </div>
+    `).join("");
+    grid.querySelectorAll("select").forEach(sel => {
+      sel.className = "audit-select st-" + stKey(sel.value);
+    });
+  }
+
+  function updateAuditEntryOverall(){
+    const overall = overallAuditStatus(entryAudit);
+    const el = document.getElementById("adEntryOverallValue");
+    el.textContent = overall;
+    el.style.color = overall === "Completed" ? "var(--green-ink2)" : overall === "In Progress" ? "var(--amber-ink)" : "var(--red-ink)";
+  }
+
+  document.getElementById("adEntryCriteria").addEventListener("change", e => {
+    const sel = e.target.closest(".audit-select");
+    if(!sel) return;
+    const key = sel.dataset.key;
+    entryAudit[key] = sel.value;
+    sel.className = "audit-select st-" + stKey(sel.value);
+    updateAuditEntryOverall();
+  });
+
+  function resetAuditEntryForm(){
+    document.getElementById("adEntryMentor").value = "";
+    document.getElementById("adEntryDate").value = todayIso();
+    document.getElementById("adEntryAuditor").value = "";
+    document.getElementById("adEntryNotes").value = "";
+    entryAudit = { weeklyPlan:"In Progress", skillDev:"In Progress", academic:"In Progress" };
+    populateAuditEntryStatics();
+    updateAuditEntryOverall();
+  }
+
+  const recentAuditUids = [];
+  function renderRecentAudits(){
+    const wrap = document.getElementById("adEntryRecent");
+    if(recentAuditUids.length === 0){
+      wrap.innerHTML = `<div class="recent-empty">No audits recorded yet this session.</div>`;
+      return;
+    }
+    wrap.innerHTML = recentAuditUids.slice().reverse().map(uid => {
+      const r = DATA.audit.find(x => x.uid === uid);
+      if(!r) return "";
+      return `<div class="recent-row">
+        <div class="rr-left">
+          <div class="cell-avatar" style="background:${avatarColor(r.mentor)};width:24px;height:24px;font-size:9.5px;">${initials(r.mentor)}</div>
+          <span class="rr-name">${escapeHtml(r.mentor)}</span>
+          <span class="rr-sub">${r.date} · audited by ${escapeHtml(r.auditor)}</span>
+        </div>
+        <span class="pill ${STATUS_MAP[r.overall] || 'warn'}">${r.overall}</span>
+      </div>`;
+    }).join("");
+  }
+
+  document.getElementById("adEntrySubmit").addEventListener("click", () => {
+    const mentor = document.getElementById("adEntryMentor").value;
+    const dateIso = document.getElementById("adEntryDate").value;
+    const auditor = document.getElementById("adEntryAuditor").value;
+    const notes = document.getElementById("adEntryNotes").value.trim();
+
+    if(!mentor){ toast("Select the mentor being audited"); document.getElementById("adEntryMentor").focus(); return; }
+    if(!dateIso){ toast("Choose the date the audit was conducted"); document.getElementById("adEntryDate").focus(); return; }
+    if(!auditor){ toast("Select the auditor (reviewing campus manager)"); document.getElementById("adEntryAuditor").focus(); return; }
+
+    auditSeq++;
+    const row = {
+      uid: "aud-" + auditSeq,
+      id: "#AUD-" + Math.floor(10000 + Math.random()*89999),
+      mentor, auditor,
+      weeklyPlan: entryAudit.weeklyPlan,
+      skillDev: entryAudit.skillDev,
+      academic: entryAudit.academic,
+      notes,
+      date: isoToDMY(dateIso)
+    };
+    row.overall = overallAuditStatus(row);
+    DATA.audit.unshift(row);
+    recentAuditUids.push(row.uid);
+    renderRecentAudits();
+
+    toast("Audit saved for " + mentor + " — visible in Reports & Audit Logs");
+    resetAuditEntryForm();
+  });
+  document.getElementById("adEntryReset").addEventListener("click", resetAuditEntryForm);
 
   // ---------------- page routing ----------------
   const PAGE_TITLES = {
     "reports": "Report & Audit Logs",
-    "skill-entry": "Skill Development Entry"
+    "skill-entry": "Skill Development Entry",
+    "academic-entry": "Academic Task Entry",
+    "attendance-entry": "Attendance Entry",
+    "audit-entry": "Internal Audit Entry"
   };
-  const PAGE_IDS = ["reports","skill-entry","dashboard","students","mentors"];
+  const PAGE_IDS = ["reports","skill-entry","academic-entry","attendance-entry","audit-entry","dashboard"];
+  const ENTRY_PAGES = ["skill-entry","academic-entry","attendance-entry","audit-entry"];
 
   function showPage(page){
     PAGE_IDS.forEach(p => {
@@ -1065,22 +1634,22 @@
         return;
       }
 
-      if(page === "skill-entry"){
+      if(ENTRY_PAGES.includes(page)){
         document.querySelectorAll("[data-nav]").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
-        showPage("skill-entry");
+        showPage(page);
         return;
       }
 
-      // not-yet-built sections
       toast(btn.textContent.trim() + " — coming soon");
     });
   });
 
   populateFilters();
-  populateSkillEntryStatics();
-  updateEntryScore();
-  renderRecentEntries();
+  populateSkillEntryStatics(); updateSkillScore(); renderRecentSkill();
+  populateAcademicEntryStatics(); updateAcademicScore(); renderRecentAcademic();
+  populateAttendanceEntryStatics(); updateAttendanceScore(); renderRecentAttendance();
+  populateAuditEntryStatics(); updateAuditEntryOverall(); renderRecentAudits();
   render();
 })();
 </script>
