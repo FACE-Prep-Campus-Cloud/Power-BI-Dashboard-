@@ -445,7 +445,7 @@
         <div class="toolbar-left">
           <div class="search-box">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" id="searchInput" placeholder="Search students or mentors">
+            <input type="text" id="searchInput" placeholder="Search mentors">
           </div>
           <div class="select-wrap">
             <select id="mentorFilter"><option value="">Mentor</option></select>
@@ -481,22 +481,18 @@
       <div class="entry-wrap">
         <div class="entry-card">
           <h2>Skill Development Entry</h2>
-          <p class="entry-sub">Answer the genuineness questions below for this student's skill development log. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Skill Development.</p>
+          <p class="entry-sub">Answer the genuineness questions below for this skill development log. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Skill Development.</p>
 
           <div class="form-grid">
-            <div class="form-field">
-              <label for="skEntryStudent">Student Name</label>
-              <input type="text" id="skEntryStudent" placeholder="e.g. Milo Fairbanks">
-            </div>
             <div class="form-field">
               <label for="skEntryMentor">Mentor Name</label>
               <select id="skEntryMentor"><option value="">Select mentor</option></select>
             </div>
             <div class="form-field">
-              <label for="skEntryWeek">Week</label>
-              <select id="skEntryWeek"></select>
+              <label for="skEntryDate">Date of Marking</label>
+              <input type="date" id="skEntryDate">
             </div>
-            <div class="form-field">
+            <div class="form-field full">
               <label for="skEntrySubject">Skill Development Subject</label>
               <input type="text" id="skEntrySubject" placeholder="e.g. React Fundamentals">
             </div>
@@ -536,20 +532,16 @@
       <div class="entry-wrap">
         <div class="entry-card">
           <h2>Academic Task Entry</h2>
-          <p class="entry-sub">Answer the genuineness questions below to verify a student's academic task submission. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Academic Tasks.</p>
+          <p class="entry-sub">Answer the genuineness questions below to verify an academic task submission. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Academic Tasks.</p>
 
           <div class="form-grid">
-            <div class="form-field">
-              <label for="acEntryStudent">Student Name</label>
-              <input type="text" id="acEntryStudent" placeholder="e.g. Milo Fairbanks">
-            </div>
             <div class="form-field">
               <label for="acEntryMentor">Mentor Name</label>
               <select id="acEntryMentor"><option value="">Select mentor</option></select>
             </div>
             <div class="form-field">
-              <label for="acEntryWeek">Week</label>
-              <select id="acEntryWeek"></select>
+              <label for="acEntryDate">Date of Marking</label>
+              <input type="date" id="acEntryDate">
             </div>
             <div class="form-field">
               <label for="acEntryType">Task Type</label>
@@ -598,20 +590,16 @@
       <div class="entry-wrap">
         <div class="entry-card">
           <h2>Attendance Entry</h2>
-          <p class="entry-sub">Answer the genuineness questions below to verify a student's attendance record. Each answer is marked, a verification score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Attendance.</p>
+          <p class="entry-sub">Answer the genuineness questions below to verify an attendance record. Each answer is marked, a verification score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Attendance.</p>
 
           <div class="form-grid">
-            <div class="form-field">
-              <label for="atEntryStudent">Student Name</label>
-              <input type="text" id="atEntryStudent" placeholder="e.g. Milo Fairbanks">
-            </div>
             <div class="form-field">
               <label for="atEntryMentor">Mentor Name</label>
               <select id="atEntryMentor"><option value="">Select mentor</option></select>
             </div>
             <div class="form-field">
-              <label for="atEntryWeek">Week</label>
-              <select id="atEntryWeek"></select>
+              <label for="atEntryDate">Date of Marking</label>
+              <input type="date" id="atEntryDate">
             </div>
             <div class="form-field">
               <label for="atEntryHeld">Classes Held</label>
@@ -761,7 +749,7 @@
   };
   const CRITERIA_QUESTIONS = {
     genuine: "Was this log genuinely marked, not backdated or copied?",
-    weeklyPlan: "Did the student complete their weekly plan for this skill?",
+    weeklyPlan: "Was the weekly plan for this skill genuinely completed?",
     tracker: "Was the daily tracker updated consistently?",
     assignment: "Was the related assignment completed?",
     assessment: "Was the related assessment completed?"
@@ -775,7 +763,7 @@
     independent: "Was the task completed independently, without copying?",
     onTime: "Was it submitted within the deadline?",
     verified: "Was the submission cross-checked against the actual task record?",
-    reflectsWork: "Does the score genuinely reflect the student's own understanding?"
+    reflectsWork: "Does the score genuinely reflect the learner's own understanding?"
   };
 
   const ATTENDANCE_KEYS = ["markedDaily","crossVerified","noProxy","matchesTracker"];
@@ -817,7 +805,6 @@
   function genWeekly(n){
     const rows = [];
     for(let i=0;i<n;i++){
-      const student = fullName();
       const mentor = pick(uniqMentors);
       const planned = randInt(6,12);
       const completed = randInt(0, planned);
@@ -825,15 +812,13 @@
       const status = pct >= 90 ? "Completed" : pct >= 50 ? "Partial" : "Not Completed";
       rows.push({
         id: "#WPL-" + randInt(10000,99999),
-        week: "Week " + randInt(1,20),
-        student, mentor,
+        mentor,
         planned, completed, pct,
         date: randDate(), status
       });
     }
     return rows;
   }
-  function fullName(){ return pick(FIRST) + " " + pick(LAST); }
 
   // ---------------- internal audit ----------------
   const AUDIT_KEYS = ["weeklyPlan","skillDev","academic"];
@@ -900,9 +885,6 @@
   function escapeAttr(s){ return String(s).replace(/"/g,"&quot;"); }
   function escapeHtml(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
-  function personCell(name){
-    return `<div class="cell-person"><div class="cell-avatar" style="background:${avatarColor(name)}">${initials(name)}</div>${escapeHtml(name)}</div>`;
-  }
   function mentorCell(name){
     return `<div class="cell-person"><div class="cell-avatar" style="background:${avatarColor(name)}">${initials(name)}</div>${escapeHtml(name)}</div>`;
   }
@@ -935,26 +917,26 @@
   const TAB_CONFIG = {
     weekly: {
       label: "Weekly Plan Submissions",
-      minWidth: 980,
-      cols: ["Submission ID","Week","Student Name","Mentor Name","Planned Tasks","Completed","Completion","Submitted On","Status"],
+      minWidth: 860,
+      cols: ["Submission ID","Mentor Name","Planned Tasks","Completed","Completion","Date of Marking","Status"],
       row(r){ return [
-        r.id, r.week,
-        personCell(r.student), mentorCell(r.mentor),
+        r.id,
+        mentorCell(r.mentor),
         r.planned, r.completed,
         barCell(r.pct),
         r.date, pillCell(r.status)
       ]; },
-      exportRow(r){ return [r.id, r.week, r.student, r.mentor, r.planned, r.completed, r.pct + "%", r.date, r.status]; }
+      exportRow(r){ return [r.id, r.mentor, r.planned, r.completed, r.pct + "%", r.date, r.status]; }
     },
     skill: {
       label: "Skill Development",
-      minWidth: 1680,
-      cols: ["Log ID","Week","Student Name","Mentor Name","Skill Subject",
+      minWidth: 1560,
+      cols: ["Log ID","Mentor Name","Skill Subject",
         CRITERIA_SHORT.genuine, CRITERIA_SHORT.weeklyPlan, CRITERIA_SHORT.tracker, CRITERIA_SHORT.assignment, CRITERIA_SHORT.assessment,
-        "Score","Remarks","Submitted On","Status"],
+        "Score","Remarks","Date of Marking","Status"],
       row(r){ return [
-        r.id, r.week,
-        personCell(r.student), mentorCell(r.mentor),
+        r.id,
+        mentorCell(r.mentor),
         subjectCell(r),
         criteriaToggle("skill",r,"genuine"), criteriaToggle("skill",r,"weeklyPlan"), criteriaToggle("skill",r,"tracker"),
         criteriaToggle("skill",r,"assignment"), criteriaToggle("skill",r,"assessment"),
@@ -962,7 +944,7 @@
         r.date, pillCell(r.status)
       ]; },
       exportRow(r){ return [
-        r.id, r.week, r.student, r.mentor, r.subject,
+        r.id, r.mentor, r.subject,
         r.criteria.genuine ? "Yes" : "No", r.criteria.weeklyPlan ? "Yes" : "No",
         r.criteria.tracker ? "Yes" : "No", r.criteria.assignment ? "Yes" : "No",
         r.criteria.assessment ? "Yes" : "No",
@@ -971,13 +953,13 @@
     },
     academic: {
       label: "Academic Tasks",
-      minWidth: 1620,
-      cols: ["Task ID","Week","Student Name","Mentor Name","Task Type","Task Name",
+      minWidth: 1500,
+      cols: ["Task ID","Mentor Name","Task Type","Task Name",
         ACADEMIC_SHORT.independent, ACADEMIC_SHORT.onTime, ACADEMIC_SHORT.verified, ACADEMIC_SHORT.reflectsWork,
-        "Score","Remarks","Submitted On","Status"],
+        "Score","Remarks","Date of Marking","Status"],
       row(r){ return [
-        r.id, r.week,
-        personCell(r.student), mentorCell(r.mentor),
+        r.id,
+        mentorCell(r.mentor),
         r.type, r.task,
         criteriaToggle("academic",r,"independent"), criteriaToggle("academic",r,"onTime"),
         criteriaToggle("academic",r,"verified"), criteriaToggle("academic",r,"reflectsWork"),
@@ -985,7 +967,7 @@
         r.date, pillCell(r.status)
       ]; },
       exportRow(r){ return [
-        r.id, r.week, r.student, r.mentor, r.type, r.task,
+        r.id, r.mentor, r.type, r.task,
         r.criteria.independent ? "Yes" : "No", r.criteria.onTime ? "Yes" : "No",
         r.criteria.verified ? "Yes" : "No", r.criteria.reflectsWork ? "Yes" : "No",
         r.score + "/100", r.remarks || "", r.date, r.status
@@ -993,13 +975,13 @@
     },
     attendance: {
       label: "Attendance",
-      minWidth: 1780,
-      cols: ["Record ID","Week","Student Name","Mentor Name","Classes Held","Attended","Attendance %",
+      minWidth: 1660,
+      cols: ["Record ID","Mentor Name","Classes Held","Attended","Attendance %",
         ATTENDANCE_SHORT.markedDaily, ATTENDANCE_SHORT.crossVerified, ATTENDANCE_SHORT.noProxy, ATTENDANCE_SHORT.matchesTracker,
-        "Verification Score","Remarks","Submitted On","Status"],
+        "Verification Score","Remarks","Date of Marking","Status"],
       row(r){ return [
-        r.id, r.week,
-        personCell(r.student), mentorCell(r.mentor),
+        r.id,
+        mentorCell(r.mentor),
         r.held, r.attended, barCell(r.pct),
         criteriaToggle("attendance",r,"markedDaily"), criteriaToggle("attendance",r,"crossVerified"),
         criteriaToggle("attendance",r,"noProxy"), criteriaToggle("attendance",r,"matchesTracker"),
@@ -1007,7 +989,7 @@
         r.date, pillCell(r.status)
       ]; },
       exportRow(r){ return [
-        r.id, r.week, r.student, r.mentor, r.held, r.attended, r.pct + "%",
+        r.id, r.mentor, r.held, r.attended, r.pct + "%",
         r.criteria.markedDaily ? "Yes" : "No", r.criteria.crossVerified ? "Yes" : "No",
         r.criteria.noProxy ? "Yes" : "No", r.criteria.matchesTracker ? "Yes" : "No",
         r.score + "/100", r.remarks || "", r.date, r.status
@@ -1040,7 +1022,7 @@
     return raw.filter(r => {
       if(state.search){
         const q = state.search.toLowerCase();
-        const hay = ((r.student||"") + " " + (r.mentor||"") + " " + (r.auditor||"")).toLowerCase();
+        const hay = ((r.mentor||"") + " " + (r.auditor||"")).toLowerCase();
         if(!hay.includes(q)) return false;
       }
       if(state.mentor && r.mentor !== state.mentor) return false;
@@ -1248,11 +1230,6 @@
       onChange();
     };
   }
-  function populateWeekSelect(id){
-    const sel = document.getElementById(id);
-    sel.innerHTML = Array.from({length:20}, (_,i)=>i+1)
-      .map(w => `<option value="Week ${w}">Week ${w}</option>`).join("");
-  }
   function populateMentorSelect(id){
     const sel = document.getElementById(id);
     sel.innerHTML = '<option value="">Select mentor</option>' +
@@ -1270,13 +1247,12 @@
   }
   function populateSkillEntryStatics(){
     populateMentorSelect("skEntryMentor");
-    populateWeekSelect("skEntryWeek");
+    document.getElementById("skEntryDate").value = todayIso();
     buildQuestionGrid("skEntryCriteria", "skill", skEntryAnswers, updateSkillScore);
   }
   function resetSkillEntryForm(){
-    document.getElementById("skEntryStudent").value = "";
     document.getElementById("skEntryMentor").value = "";
-    document.getElementById("skEntryWeek").value = "Week 1";
+    document.getElementById("skEntryDate").value = todayIso();
     document.getElementById("skEntrySubject").value = "";
     document.getElementById("skEntryRemarks").value = "";
     skEntryAnswers = blankAnswers("skill");
@@ -1296,9 +1272,9 @@
       if(!r) return "";
       return `<div class="recent-row">
         <div class="rr-left">
-          <div class="cell-avatar" style="background:${avatarColor(r.student)};width:24px;height:24px;font-size:9.5px;">${initials(r.student)}</div>
-          <span class="rr-name">${escapeHtml(r.student)}</span>
-          <span class="rr-sub">${escapeHtml(r.subject || "—")} · ${r.week}</span>
+          <div class="cell-avatar" style="background:${avatarColor(r.mentor)};width:24px;height:24px;font-size:9.5px;">${initials(r.mentor)}</div>
+          <span class="rr-name">${escapeHtml(r.mentor)}</span>
+          <span class="rr-sub">${escapeHtml(r.subject || "—")} · ${r.date}</span>
         </div>
         <span class="pill ${STATUS_MAP[r.status] || 'warn'}">${r.status} · ${r.score}/100</span>
       </div>`;
@@ -1306,14 +1282,13 @@
   }
 
   document.getElementById("skEntrySubmit").addEventListener("click", () => {
-    const student = document.getElementById("skEntryStudent").value.trim();
     const mentor = document.getElementById("skEntryMentor").value;
-    const week = document.getElementById("skEntryWeek").value;
+    const dateIso = document.getElementById("skEntryDate").value;
     const subject = document.getElementById("skEntrySubject").value.trim();
     const remarks = document.getElementById("skEntryRemarks").value.trim();
 
-    if(!student){ toast("Enter a student name before saving"); document.getElementById("skEntryStudent").focus(); return; }
     if(!mentor){ toast("Select a mentor before saving"); document.getElementById("skEntryMentor").focus(); return; }
+    if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("skEntryDate").focus(); return; }
     if(!subject){ toast("Enter a skill development subject before saving"); document.getElementById("skEntrySubject").focus(); return; }
     if(!remarks){ toast("Enter remarks before saving"); document.getElementById("skEntryRemarks").focus(); return; }
 
@@ -1322,16 +1297,16 @@
     const row = {
       uid: "skl-" + skillSeq,
       id: "#SKL-" + Math.floor(10000 + Math.random()*89999),
-      week, student, mentor, subject,
+      mentor, subject,
       criteria, remarks,
-      date: todayDate()
+      date: isoToDMY(dateIso)
     };
     recomputeRow("skill", row);
     DATA.skill.unshift(row);
     recentSkillUids.push(row.uid);
     renderRecentSkill();
 
-    toast("Entry saved for " + student + " — visible in Reports & Audit Logs");
+    toast("Entry saved for " + mentor + " — visible in Reports & Audit Logs");
     resetSkillEntryForm();
   });
   document.getElementById("skEntryReset").addEventListener("click", resetSkillEntryForm);
@@ -1347,13 +1322,12 @@
   }
   function populateAcademicEntryStatics(){
     populateMentorSelect("acEntryMentor");
-    populateWeekSelect("acEntryWeek");
+    document.getElementById("acEntryDate").value = todayIso();
     buildQuestionGrid("acEntryCriteria", "academic", acEntryAnswers, updateAcademicScore);
   }
   function resetAcademicEntryForm(){
-    document.getElementById("acEntryStudent").value = "";
     document.getElementById("acEntryMentor").value = "";
-    document.getElementById("acEntryWeek").value = "Week 1";
+    document.getElementById("acEntryDate").value = todayIso();
     document.getElementById("acEntryType").value = "Quiz";
     document.getElementById("acEntryTask").value = "";
     document.getElementById("acEntryRemarks").value = "";
@@ -1374,9 +1348,9 @@
       if(!r) return "";
       return `<div class="recent-row">
         <div class="rr-left">
-          <div class="cell-avatar" style="background:${avatarColor(r.student)};width:24px;height:24px;font-size:9.5px;">${initials(r.student)}</div>
-          <span class="rr-name">${escapeHtml(r.student)}</span>
-          <span class="rr-sub">${escapeHtml(r.task || "—")} · ${r.week}</span>
+          <div class="cell-avatar" style="background:${avatarColor(r.mentor)};width:24px;height:24px;font-size:9.5px;">${initials(r.mentor)}</div>
+          <span class="rr-name">${escapeHtml(r.mentor)}</span>
+          <span class="rr-sub">${escapeHtml(r.task || "—")} · ${r.date}</span>
         </div>
         <span class="pill ${STATUS_MAP[r.status] || 'warn'}">${r.status} · ${r.score}/100</span>
       </div>`;
@@ -1384,15 +1358,14 @@
   }
 
   document.getElementById("acEntrySubmit").addEventListener("click", () => {
-    const student = document.getElementById("acEntryStudent").value.trim();
     const mentor = document.getElementById("acEntryMentor").value;
-    const week = document.getElementById("acEntryWeek").value;
+    const dateIso = document.getElementById("acEntryDate").value;
     const type = document.getElementById("acEntryType").value;
     const task = document.getElementById("acEntryTask").value.trim();
     const remarks = document.getElementById("acEntryRemarks").value.trim();
 
-    if(!student){ toast("Enter a student name before saving"); document.getElementById("acEntryStudent").focus(); return; }
     if(!mentor){ toast("Select a mentor before saving"); document.getElementById("acEntryMentor").focus(); return; }
+    if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("acEntryDate").focus(); return; }
     if(!task){ toast("Enter the task name before saving"); document.getElementById("acEntryTask").focus(); return; }
     if(!remarks){ toast("Enter remarks before saving"); document.getElementById("acEntryRemarks").focus(); return; }
 
@@ -1401,16 +1374,16 @@
     const row = {
       uid: "acd-" + academicSeq,
       id: "#ACD-" + Math.floor(10000 + Math.random()*89999),
-      week, student, mentor, type, task,
+      mentor, type, task,
       criteria, remarks,
-      date: todayDate()
+      date: isoToDMY(dateIso)
     };
     recomputeRow("academic", row);
     DATA.academic.unshift(row);
     recentAcademicUids.push(row.uid);
     renderRecentAcademic();
 
-    toast("Entry saved for " + student + " — visible in Reports & Audit Logs");
+    toast("Entry saved for " + mentor + " — visible in Reports & Audit Logs");
     resetAcademicEntryForm();
   });
   document.getElementById("acEntryReset").addEventListener("click", resetAcademicEntryForm);
@@ -1426,13 +1399,12 @@
   }
   function populateAttendanceEntryStatics(){
     populateMentorSelect("atEntryMentor");
-    populateWeekSelect("atEntryWeek");
+    document.getElementById("atEntryDate").value = todayIso();
     buildQuestionGrid("atEntryCriteria", "attendance", atEntryAnswers, updateAttendanceScore);
   }
   function resetAttendanceEntryForm(){
-    document.getElementById("atEntryStudent").value = "";
     document.getElementById("atEntryMentor").value = "";
-    document.getElementById("atEntryWeek").value = "Week 1";
+    document.getElementById("atEntryDate").value = todayIso();
     document.getElementById("atEntryHeld").value = "";
     document.getElementById("atEntryAttended").value = "";
     document.getElementById("atEntryRemarks").value = "";
@@ -1453,9 +1425,9 @@
       if(!r) return "";
       return `<div class="recent-row">
         <div class="rr-left">
-          <div class="cell-avatar" style="background:${avatarColor(r.student)};width:24px;height:24px;font-size:9.5px;">${initials(r.student)}</div>
-          <span class="rr-name">${escapeHtml(r.student)}</span>
-          <span class="rr-sub">${r.attended}/${r.held} classes · ${r.week}</span>
+          <div class="cell-avatar" style="background:${avatarColor(r.mentor)};width:24px;height:24px;font-size:9.5px;">${initials(r.mentor)}</div>
+          <span class="rr-name">${escapeHtml(r.mentor)}</span>
+          <span class="rr-sub">${r.attended}/${r.held} classes · ${r.date}</span>
         </div>
         <span class="pill ${STATUS_MAP[r.status] || 'warn'}">${r.status} · ${r.score}/100</span>
       </div>`;
@@ -1463,15 +1435,14 @@
   }
 
   document.getElementById("atEntrySubmit").addEventListener("click", () => {
-    const student = document.getElementById("atEntryStudent").value.trim();
     const mentor = document.getElementById("atEntryMentor").value;
-    const week = document.getElementById("atEntryWeek").value;
+    const dateIso = document.getElementById("atEntryDate").value;
     const heldRaw = document.getElementById("atEntryHeld").value;
     const attendedRaw = document.getElementById("atEntryAttended").value;
     const remarks = document.getElementById("atEntryRemarks").value.trim();
 
-    if(!student){ toast("Enter a student name before saving"); document.getElementById("atEntryStudent").focus(); return; }
     if(!mentor){ toast("Select a mentor before saving"); document.getElementById("atEntryMentor").focus(); return; }
+    if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("atEntryDate").focus(); return; }
     if(heldRaw === ""){ toast("Enter classes held before saving"); document.getElementById("atEntryHeld").focus(); return; }
     if(attendedRaw === ""){ toast("Enter classes attended before saving"); document.getElementById("atEntryAttended").focus(); return; }
     const held = Math.max(0, parseInt(heldRaw,10) || 0);
@@ -1485,16 +1456,16 @@
     const row = {
       uid: "atd-" + attendanceSeq,
       id: "#ATD-" + Math.floor(10000 + Math.random()*89999),
-      week, student, mentor, held, attended, pct,
+      mentor, held, attended, pct,
       criteria, remarks,
-      date: todayDate()
+      date: isoToDMY(dateIso)
     };
     recomputeRow("attendance", row);
     DATA.attendance.unshift(row);
     recentAttendanceUids.push(row.uid);
     renderRecentAttendance();
 
-    toast("Entry saved for " + student + " — visible in Reports & Audit Logs");
+    toast("Entry saved for " + mentor + " — visible in Reports & Audit Logs");
     resetAttendanceEntryForm();
   });
   document.getElementById("atEntryReset").addEventListener("click", resetAttendanceEntryForm);
