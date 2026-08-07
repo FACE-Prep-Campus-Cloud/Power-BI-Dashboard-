@@ -536,7 +536,7 @@
           <div class="form-grid">
             <div class="form-field">
               <label for="wkEntryMentor">Mentor Name</label>
-              <select id="wkEntryMentor"><option value="">Select mentor</option></select>
+              <input type="text" id="wkEntryMentor" placeholder="Enter mentor name">
             </div>
             <div class="form-field">
               <label for="wkEntryDate">Date of Marking</label>
@@ -591,7 +591,7 @@
           <div class="form-grid">
             <div class="form-field">
               <label for="skEntryMentor">Mentor Name</label>
-              <select id="skEntryMentor"><option value="">Select mentor</option></select>
+              <input type="text" id="skEntryMentor" placeholder="Enter mentor name">
             </div>
             <div class="form-field">
               <label for="skEntryDate">Date of Marking</label>
@@ -642,7 +642,7 @@
           <div class="form-grid">
             <div class="form-field">
               <label for="acEntryMentor">Mentor Name</label>
-              <select id="acEntryMentor"><option value="">Select mentor</option></select>
+              <input type="text" id="acEntryMentor" placeholder="Enter mentor name">
             </div>
             <div class="form-field">
               <label for="acEntryDate">Date of Marking</label>
@@ -700,7 +700,7 @@
           <div class="form-grid">
             <div class="form-field">
               <label for="atEntryMentor">Mentor Name</label>
-              <select id="atEntryMentor"><option value="">Select mentor</option></select>
+              <input type="text" id="atEntryMentor" placeholder="Enter mentor name">
             </div>
             <div class="form-field">
               <label for="atEntryDate">Date of Marking</label>
@@ -755,7 +755,7 @@
           <div class="form-grid">
             <div class="form-field">
               <label for="adEntryMentor">Mentor Being Audited</label>
-              <select id="adEntryMentor"><option value="">Select mentor</option></select>
+              <input type="text" id="adEntryMentor" placeholder="Enter mentor name">
             </div>
             <div class="form-field">
               <label for="adEntryDate">Date of Audit</label>
@@ -763,7 +763,7 @@
             </div>
             <div class="form-field full">
               <label for="adEntryAuditor">Auditor (Reviewing Campus Manager)</label>
-              <select id="adEntryAuditor"><option value="">Select auditor</option></select>
+              <input type="text" id="adEntryAuditor" placeholder="Enter auditor name">
             </div>
           </div>
 
@@ -802,44 +802,17 @@
 (function(){
   "use strict";
 
-  // ---------------- deterministic RNG ----------------
-  function mulberry32(seed){
-    return function(){
-      seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
-      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-  }
-  const rng = mulberry32(2026);
-  function pick(arr){ return arr[Math.floor(rng()*arr.length)]; }
-  function randInt(min,max){ return Math.floor(rng()*(max-min+1))+min; }
-
-  const FIRST = ["Milo","Juniper","Hazel","Jemmy","Jasper","Owen","Silo","Scarlett","Luna","Willow","Rowan","Arlo","Sage","Wren","Finn","Nova","Ezra","Ivy","Kai","Maren","Theo","Elowen","Cass","Briar","Odin","Marlowe","Fable","Ash","Reeve","Talia"];
-  const LAST = ["Fairbanks","Skye","Willow","Henry","Thorne","Jack","Woods","Rose","Maeve","Sage","Ellery","Marsh","Quill","Rivers","Blackwood","Fenwick","Harrow","Lockhart","Vance","Wilder","Sterling","Ashby","Crane","Doyle","Merrow"];
-  const MENTORS = Array.from({length:12}, () => pick(FIRST) + " " + pick(LAST));
-  const uniqMentors = [...new Set(MENTORS)];
-  const CAMPUS_MANAGERS = ["Courtney Henry", ...new Set(Array.from({length:5}, () => pick(FIRST) + " " + pick(LAST)))];
-
-  function todayDate(){
-    const d = new Date();
-    return String(d.getDate()).padStart(2,"0") + "/" + String(d.getMonth()+1).padStart(2,"0") + "/" + d.getFullYear();
-  }
   function todayIso(){
     const d = new Date();
     return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
   }
   function isoToDMY(iso){
     const parts = iso.split("-");
-    if(parts.length !== 3) return todayDate();
+    if(parts.length !== 3) return todayIso().split("-").reverse().join("/");
     const [y,m,d] = parts;
     return d + "/" + m + "/" + y;
   }
-  function randDate(){
-    const d = new Date(2025, randInt(0,11), randInt(1,28));
-    return String(d.getDate()).padStart(2,"0") + "/" + String(d.getMonth()+1).padStart(2,"0") + "/" + d.getFullYear();
-  }
-  function initials(name){ return name.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase(); }
+  function initials(name){ return name.split(" ").filter(Boolean).map(w=>w[0]).slice(0,2).join("").toUpperCase(); }
   const AVATAR_COLORS = ["#1E7A3C","#B9526B","#8C5FC4","#C9822B","#2E7BB0","#4C8B6B","#B0533C","#6B6FCB"];
   function avatarColor(name){
     let h=0; for(let i=0;i<name.length;i++) h = (h*31 + name.charCodeAt(i)) >>> 0;
@@ -929,10 +902,6 @@
   const AUDIT_STATUSES = ["Completed","In Progress","Not Completed"];
   function stKey(s){ return s.replace(/\s+/g,""); }
 
-  function randAuditStatus(){
-    const r = rng();
-    return r < 0.58 ? "Completed" : r < 0.84 ? "In Progress" : "Not Completed";
-  }
   function overallAuditStatus(row){
     const vals = AUDIT_KEYS.map(k => row[k]);
     if(vals.every(v => v === "Completed")) return "Completed";
@@ -940,31 +909,13 @@
     return "In Progress";
   }
   let auditSeq = 0;
-  function genAudit(n){
-    const rows = [];
-    for(let i=0;i<n;i++){
-      auditSeq++;
-      const row = {
-        uid: "aud-" + auditSeq,
-        id: "#AUD-" + randInt(10000,99999),
-        mentor: pick(uniqMentors),
-        auditor: pick(CAMPUS_MANAGERS),
-        weeklyPlan: randAuditStatus(),
-        skillDev: randAuditStatus(),
-        academic: randAuditStatus(),
-        notes: "",
-        date: randDate()
-      };
-      row.overall = overallAuditStatus(row);
-      rows.push(row);
-    }
-    return rows;
-  }
 
   // ---------------- data store ----------------
-  // Weekly Plans, Skill Development, Academic Tasks, and Attendance all
-  // start EMPTY — records are only created by a campus manager completing
-  // the genuineness-check entry forms. No fake data is pre-injected.
+  // Weekly Plans, Skill Development, Academic Tasks, Attendance, and
+  // Internal Audit all start EMPTY — records (and every mentor/auditor
+  // name that appears anywhere in the app) are only created when a
+  // campus manager fills in an entry form and types a name. No fake
+  // mentors or fake data are pre-injected.
   let weeklySeq = 0, skillSeq = 0, academicSeq = 0, attendanceSeq = 0;
 
   const DATA = {
@@ -972,7 +923,7 @@
     skill: [],
     academic: [],
     attendance: [],
-    audit: genAudit(38)
+    audit: []
   };
 
   // Chronological log of every entry added this session, across all
@@ -1155,19 +1106,25 @@
     return [...new Set(DATA[state.tab].map(r => r.status))];
   }
 
+  // Mentor filter options are built from whatever mentor names have
+  // actually been typed into entry forms for the current tab — there
+  // is no static mentor roster anymore.
   function populateFilters(){
     const mentorSel = document.getElementById("mentorFilter");
     const statusSel = document.getElementById("statusFilter");
+    const curMentor = state.mentor, curStatus = state.status;
 
+    const mentors = [...new Set(DATA[state.tab].map(r => r.mentor))].sort((a,b) => a.localeCompare(b));
     mentorSel.innerHTML = '<option value="">Mentor</option>' +
-      uniqMentors.map(m => `<option value="${m}">${m}</option>`).join("");
-    mentorSel.parentElement.style.display = "";
+      mentors.map(m => `<option value="${escapeAttr(m)}" ${m===curMentor?"selected":""}>${escapeHtml(m)}</option>`).join("");
 
     statusSel.innerHTML = '<option value="">Status</option>' +
-      uniqueStatuses().map(s => `<option value="${s}">${s}</option>`).join("");
+      uniqueStatuses().map(s => `<option value="${s}" ${s===curStatus?"selected":""}>${s}</option>`).join("");
   }
 
   function render(){
+    populateFilters();
+
     const cfg = TAB_CONFIG[state.tab];
     document.title = "CampusAudit — " + cfg.label;
 
@@ -1254,7 +1211,6 @@
     state.tab = tab;
     state.search = ""; document.getElementById("searchInput").value = "";
     state.mentor = ""; state.status = ""; state.page = 1;
-    populateFilters();
     render();
   }
 
@@ -1346,11 +1302,6 @@
       onChange();
     };
   }
-  function populateMentorSelect(id){
-    const sel = document.getElementById(id);
-    sel.innerHTML = '<option value="">Select mentor</option>' +
-      uniqMentors.map(m => `<option value="${m}">${m}</option>`).join("");
-  }
 
   // ---------------- weekly plan entry page ----------------
   let wkEntryAnswers = blankAnswers("weekly");
@@ -1362,7 +1313,6 @@
     el.style.color = score >= 80 ? "var(--green-ink2)" : score >= 50 ? "var(--amber-ink)" : "var(--red-ink)";
   }
   function populateWeeklyEntryStatics(){
-    populateMentorSelect("wkEntryMentor");
     document.getElementById("wkEntryDate").value = todayIso();
     buildQuestionGrid("wkEntryCriteria", "weekly", wkEntryAnswers, updateWeeklyScore);
   }
@@ -1399,13 +1349,13 @@
   }
 
   document.getElementById("wkEntrySubmit").addEventListener("click", () => {
-    const mentor = document.getElementById("wkEntryMentor").value;
+    const mentor = document.getElementById("wkEntryMentor").value.trim();
     const dateIso = document.getElementById("wkEntryDate").value;
     const plannedRaw = document.getElementById("wkEntryPlanned").value;
     const completedRaw = document.getElementById("wkEntryCompleted").value;
     const remarks = document.getElementById("wkEntryRemarks").value.trim();
 
-    if(!mentor){ toast("Select a mentor before saving"); document.getElementById("wkEntryMentor").focus(); return; }
+    if(!mentor){ toast("Enter a mentor name before saving"); document.getElementById("wkEntryMentor").focus(); return; }
     if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("wkEntryDate").focus(); return; }
     if(plannedRaw === ""){ toast("Enter planned tasks before saving"); document.getElementById("wkEntryPlanned").focus(); return; }
     if(completedRaw === ""){ toast("Enter completed tasks before saving"); document.getElementById("wkEntryCompleted").focus(); return; }
@@ -1445,7 +1395,6 @@
     el.style.color = score >= 80 ? "var(--green-ink2)" : score >= 50 ? "var(--amber-ink)" : "var(--red-ink)";
   }
   function populateSkillEntryStatics(){
-    populateMentorSelect("skEntryMentor");
     document.getElementById("skEntryDate").value = todayIso();
     buildQuestionGrid("skEntryCriteria", "skill", skEntryAnswers, updateSkillScore);
   }
@@ -1481,12 +1430,12 @@
   }
 
   document.getElementById("skEntrySubmit").addEventListener("click", () => {
-    const mentor = document.getElementById("skEntryMentor").value;
+    const mentor = document.getElementById("skEntryMentor").value.trim();
     const dateIso = document.getElementById("skEntryDate").value;
     const subject = document.getElementById("skEntrySubject").value.trim();
     const remarks = document.getElementById("skEntryRemarks").value.trim();
 
-    if(!mentor){ toast("Select a mentor before saving"); document.getElementById("skEntryMentor").focus(); return; }
+    if(!mentor){ toast("Enter a mentor name before saving"); document.getElementById("skEntryMentor").focus(); return; }
     if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("skEntryDate").focus(); return; }
     if(!subject){ toast("Enter a skill development subject before saving"); document.getElementById("skEntrySubject").focus(); return; }
     if(!remarks){ toast("Enter remarks before saving"); document.getElementById("skEntryRemarks").focus(); return; }
@@ -1521,7 +1470,6 @@
     el.style.color = score >= 80 ? "var(--green-ink2)" : score >= 50 ? "var(--amber-ink)" : "var(--red-ink)";
   }
   function populateAcademicEntryStatics(){
-    populateMentorSelect("acEntryMentor");
     document.getElementById("acEntryDate").value = todayIso();
     buildQuestionGrid("acEntryCriteria", "academic", acEntryAnswers, updateAcademicScore);
   }
@@ -1558,13 +1506,13 @@
   }
 
   document.getElementById("acEntrySubmit").addEventListener("click", () => {
-    const mentor = document.getElementById("acEntryMentor").value;
+    const mentor = document.getElementById("acEntryMentor").value.trim();
     const dateIso = document.getElementById("acEntryDate").value;
     const type = document.getElementById("acEntryType").value;
     const task = document.getElementById("acEntryTask").value.trim();
     const remarks = document.getElementById("acEntryRemarks").value.trim();
 
-    if(!mentor){ toast("Select a mentor before saving"); document.getElementById("acEntryMentor").focus(); return; }
+    if(!mentor){ toast("Enter a mentor name before saving"); document.getElementById("acEntryMentor").focus(); return; }
     if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("acEntryDate").focus(); return; }
     if(!task){ toast("Enter the task name before saving"); document.getElementById("acEntryTask").focus(); return; }
     if(!remarks){ toast("Enter remarks before saving"); document.getElementById("acEntryRemarks").focus(); return; }
@@ -1599,7 +1547,6 @@
     el.style.color = score >= 80 ? "var(--green-ink2)" : score >= 50 ? "var(--amber-ink)" : "var(--red-ink)";
   }
   function populateAttendanceEntryStatics(){
-    populateMentorSelect("atEntryMentor");
     document.getElementById("atEntryDate").value = todayIso();
     buildQuestionGrid("atEntryCriteria", "attendance", atEntryAnswers, updateAttendanceScore);
   }
@@ -1636,13 +1583,13 @@
   }
 
   document.getElementById("atEntrySubmit").addEventListener("click", () => {
-    const mentor = document.getElementById("atEntryMentor").value;
+    const mentor = document.getElementById("atEntryMentor").value.trim();
     const dateIso = document.getElementById("atEntryDate").value;
     const heldRaw = document.getElementById("atEntryHeld").value;
     const attendedRaw = document.getElementById("atEntryAttended").value;
     const remarks = document.getElementById("atEntryRemarks").value.trim();
 
-    if(!mentor){ toast("Select a mentor before saving"); document.getElementById("atEntryMentor").focus(); return; }
+    if(!mentor){ toast("Enter a mentor name before saving"); document.getElementById("atEntryMentor").focus(); return; }
     if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("atEntryDate").focus(); return; }
     if(heldRaw === ""){ toast("Enter classes held before saving"); document.getElementById("atEntryHeld").focus(); return; }
     if(attendedRaw === ""){ toast("Enter classes attended before saving"); document.getElementById("atEntryAttended").focus(); return; }
@@ -1676,12 +1623,6 @@
   let entryAudit = { weeklyPlan:"In Progress", skillDev:"In Progress", academic:"In Progress" };
 
   function populateAuditEntryStatics(){
-    populateMentorSelect("adEntryMentor");
-
-    const auditorSel = document.getElementById("adEntryAuditor");
-    auditorSel.innerHTML = '<option value="">Select auditor</option>' +
-      CAMPUS_MANAGERS.map(m => `<option value="${m}">${m}</option>`).join("");
-
     document.getElementById("adEntryDate").value = todayIso();
 
     const grid = document.getElementById("adEntryCriteria");
@@ -1746,14 +1687,14 @@
   }
 
   document.getElementById("adEntrySubmit").addEventListener("click", () => {
-    const mentor = document.getElementById("adEntryMentor").value;
+    const mentor = document.getElementById("adEntryMentor").value.trim();
     const dateIso = document.getElementById("adEntryDate").value;
-    const auditor = document.getElementById("adEntryAuditor").value;
+    const auditor = document.getElementById("adEntryAuditor").value.trim();
     const notes = document.getElementById("adEntryNotes").value.trim();
 
-    if(!mentor){ toast("Select the mentor being audited"); document.getElementById("adEntryMentor").focus(); return; }
+    if(!mentor){ toast("Enter the mentor being audited"); document.getElementById("adEntryMentor").focus(); return; }
     if(!dateIso){ toast("Choose the date the audit was conducted"); document.getElementById("adEntryDate").focus(); return; }
-    if(!auditor){ toast("Select the auditor (reviewing campus manager)"); document.getElementById("adEntryAuditor").focus(); return; }
+    if(!auditor){ toast("Enter the auditor (reviewing campus manager)"); document.getElementById("adEntryAuditor").focus(); return; }
 
     auditSeq++;
     const row = {
@@ -1925,8 +1866,8 @@
       <div class="dash-hero-grid">
         <div class="dash-hero-card">
           <span class="dash-hero-label">Mentors Tracked</span>
-          <span class="dash-hero-value">${mentorsWithActivity.size}<span class="dash-hero-value-sub"> / ${uniqMentors.length}</span></span>
-          <span class="dash-hero-caption">have at least one logged record</span>
+          <span class="dash-hero-value">${mentorsWithActivity.size}</span>
+          <span class="dash-hero-caption">distinct mentor names with at least one logged record</span>
         </div>
         <div class="dash-hero-card">
           <span class="dash-hero-label">Records Logged</span>
@@ -2045,7 +1986,6 @@
     });
   }
 
-  populateFilters();
   populateWeeklyEntryStatics(); updateWeeklyScore(); renderRecentWeekly();
   populateSkillEntryStatics(); updateSkillScore(); renderRecentSkill();
   populateAcademicEntryStatics(); updateAcademicScore(); renderRecentAcademic();
