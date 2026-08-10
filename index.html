@@ -36,68 +36,61 @@
     display:flex;
     min-height:100vh;
     padding: 22px;
-    gap: 0;
+    gap: 18px;
+    align-items:flex-start;
   }
 
   /* ================= SIDEBAR ================= */
   .sidebar{
-    width: 232px;
-    flex-shrink:0;
+    width: 232px; flex-shrink:0;
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: var(--radius) 0 0 var(--radius);
-    border-right: none;
-    padding: 18px 14px;
+    border-radius: var(--radius);
     display:flex; flex-direction:column;
+    padding: 18px 14px;
+    gap: 22px;
+    position: sticky; top: 22px;
+    min-height: calc(100vh - 44px);
   }
-  .brand{
-    display:flex; align-items:center; gap:10px;
-    padding: 4px 6px 20px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 14px;
+  .sidebar-brand{
+    display:flex; align-items:center; gap:10px; padding: 4px 8px 2px;
   }
-  .brand-name{ font-weight:700; font-size:15.5px; letter-spacing:-0.01em; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .brand-collapse{
-    width:24px; height:24px; border-radius:6px; border:1px solid var(--border);
-    display:flex; align-items:center; justify-content:center; color:var(--ink-faint);
-    background:transparent; cursor:pointer;
+  .sidebar-brand-mark{
+    width:32px; height:32px; border-radius:9px; background:var(--green);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
   }
+  .sidebar-brand-mark svg{ width:17px; height:17px; color:#fff; }
+  .sidebar-brand-text{ display:flex; flex-direction:column; line-height:1.2; min-width:0; }
+  .sidebar-brand-name{ font-size:14.5px; font-weight:800; color:var(--ink); letter-spacing:-0.01em; }
+  .sidebar-brand-sub{ font-size:10.5px; font-weight:600; color:var(--ink-faint); letter-spacing:.03em; text-transform:uppercase; }
 
-  .nav{ display:flex; flex-direction:column; gap:2px; flex:1; }
-  .nav-item{
-    display:flex; align-items:center; gap:11px;
-    padding: 9px 10px; border-radius: var(--radius-sm);
-    color: var(--ink-soft); font-size:13.5px; font-weight:500;
-    text-decoration:none; cursor:pointer; border:none; background:transparent;
-    width:100%; text-align:left;
+  .sidebar-section-label{
+    font-size:10.5px; font-weight:700; color:var(--ink-faint); text-transform:uppercase;
+    letter-spacing:.05em; padding: 0 10px; margin-bottom:-8px;
   }
-  .nav-item svg{ width:17px; height:17px; flex-shrink:0; }
-  .nav-item:hover{ background: #F5F6F8; color: var(--ink); }
-  .nav-item.active{ background: var(--green-tint); color: var(--green-deep); font-weight:600; }
-  .nav-item:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
+  .sidebar-nav{ display:flex; flex-direction:column; gap:3px; }
+  .sidebar-nav-btn{
+    display:flex; align-items:center; gap:11px; width:100%; text-align:left;
+    background:none; border:none; border-radius:8px; cursor:pointer;
+    padding: 10px 11px; font-size:13px; font-weight:600; color:var(--ink-soft);
+    transition: background .12s ease, color .12s ease;
+  }
+  .sidebar-nav-btn svg{ width:17px; height:17px; flex-shrink:0; color:var(--ink-faint); transition: color .12s ease; }
+  .sidebar-nav-btn:hover{ background:#FAFAFB; color:var(--ink); }
+  .sidebar-nav-btn:hover svg{ color:var(--ink-soft); }
+  .sidebar-nav-btn:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
+  .sidebar-nav-btn.current{ background:var(--green-tint); color:var(--green-deep); }
+  .sidebar-nav-btn.current svg{ color:var(--green); }
 
-  .sidebar-footer{
-    border-top: 1px solid var(--border); padding-top: 12px; margin-top: 10px;
-    display:flex; align-items:center; gap:10px;
-  }
-  .user-avatar{
-    width:34px; height:34px; border-radius:50%; flex-shrink:0;
-    display:flex; align-items:center; justify-content:center;
-    color:#fff; font-size:12.5px; font-weight:700;
-  }
-  .user-meta{ min-width:0; flex:1; }
-  .user-name{ font-size:12.5px; font-weight:600; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .user-email{ font-size:11px; color:var(--ink-faint); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .logout-btn{ background:none; border:none; color:var(--ink-faint); cursor:pointer; padding:4px; border-radius:5px; flex-shrink:0; }
-  .logout-btn:hover{ color:var(--ink); background:#F5F6F8; }
-  .logout-btn svg{ width:16px; height:16px; }
+  .sidebar-footer{ margin-top:auto; padding: 10px 10px 2px; border-top:1px solid var(--border); }
+  .sidebar-footer-hint{ font-size:11px; color:var(--ink-faint); line-height:1.5; padding-top:12px; }
 
   /* ================= MAIN ================= */
   .main{
     flex:1; min-width:0;
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 0 var(--radius) var(--radius) 0;
+    border-radius: var(--radius);
     display:flex; flex-direction:column;
   }
 
@@ -121,6 +114,39 @@
     display:flex; align-items:center; justify-content:center;
   }
   .topbar-avatar img{ height:30px; width:auto; display:block; }
+  .mark-task-btn{
+    display:flex; align-items:center; gap:7px;
+    background: var(--green); color:#fff; border:none; border-radius:8px;
+    padding: 9px 16px; font-size:13px; font-weight:700; cursor:pointer;
+  }
+  .mark-task-btn:hover{ background: var(--green-deep); }
+  .mark-task-btn svg{ width:15px; height:15px; }
+
+  /* ================= TOP NAV (Dashboard / Reports — kept separate) ================= */
+  .topnav-strip{
+    display:flex; align-items:center; gap:0;
+    padding: 16px 26px; border-bottom: 1px solid var(--border);
+    overflow-x:auto;
+  }
+  .topnav-step{ display:flex; align-items:center; flex:1; min-width:0; }
+  .topnav-step:last-child{ flex:0 0 auto; }
+  .topnav-btn{
+    display:flex; align-items:center; gap:8px; background:none; border:none; cursor:pointer;
+    padding:2px; flex-shrink:0; white-space:nowrap;
+  }
+  .topnav-btn:focus-visible{ outline:2px solid var(--green); outline-offset:2px; border-radius:6px; }
+  .topnav-node{
+    width:26px; height:26px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:11.5px; font-weight:700; border:1.5px solid var(--border); color:var(--ink-faint); background:var(--card);
+    transition: background .12s ease, border-color .12s ease, color .12s ease;
+  }
+  .topnav-btn:hover .topnav-node{ border-color:var(--green); color:var(--green); }
+  .topnav-step.current .topnav-node{ background:var(--green-tint); border-color:var(--green); color:var(--green-deep); }
+  .topnav-label{ font-size:12.5px; font-weight:600; color:var(--ink-faint); }
+  .topnav-btn:hover .topnav-label{ color:var(--ink); }
+  .topnav-step.current .topnav-label{ color:var(--green-deep); }
+  .topnav-line{ flex:1; height:2px; background:var(--border); margin:0 10px; min-width:16px; }
 
   .tabs{
     display:flex; gap:26px; padding: 0 26px; border-bottom: 1px solid var(--border);
@@ -284,6 +310,15 @@
     border:1px solid var(--border); border-radius:8px; padding: 9px 11px;
     font-size:13px; color:var(--ink); background:transparent; width:100%;
   }
+  .form-field input[readonly]{
+  background: #FAFAFB;
+  color: var(--ink-faint);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.form-field label .lock-note{
+  font-weight:500; color:var(--ink-faint); font-size:11px; margin-left:4px;
+}
   .form-field textarea{ resize:vertical; }
   .form-field input:focus-visible, .form-field select:focus-visible, .form-field textarea:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
 
@@ -299,18 +334,16 @@
     border:1px solid var(--border); border-radius:8px; padding: 11px 14px;
   }
   .criteria-row span{ font-size:12.5px; color:var(--ink); line-height:1.4; }
-  .toggle-switch{
-    width:44px; height:24px; border-radius:20px; border:none; cursor:pointer; position:relative; flex-shrink:0;
-    background: var(--red-bg); transition: background .15s ease;
-  }
-  .toggle-switch::after{
-    content:""; position:absolute; top:2px; left:2px; width:20px; height:20px; border-radius:50%;
-    background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.25); transition: left .15s ease;
-  }
-  .toggle-switch.on{ background: var(--green); }
-  .toggle-switch.on::after{ left:22px; }
-  .toggle-switch:focus-visible{ outline:2px solid var(--green); outline-offset:2px; }
-
+.yn-group{ display:flex; gap:6px; flex-shrink:0; }
+.yn-btn{
+  padding:6px 16px; border-radius:7px; border:1.5px solid var(--border);
+  background:transparent; font-size:12px; font-weight:600; cursor:pointer; color:var(--ink-faint);
+  transition: background .12s ease, border-color .12s ease, color .12s ease;
+}
+.yn-btn:hover{ border-color:var(--ink-faint); color:var(--ink); }
+.yn-btn.yes.active{ background:var(--green-bg); border-color:var(--green); color:var(--green-ink2); }
+.yn-btn.no.active{ background:var(--red-bg); border-color:var(--red-ink); color:var(--red-ink); }
+.yn-btn:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
   .score-band{
     display:flex; align-items:center; justify-content:space-between; gap:12px;
     border:1px dashed var(--border-color, var(--border)); border-radius:8px; padding:12px 14px; margin-top:18px;
@@ -324,6 +357,8 @@
     padding: 10px 18px; font-size:13px; font-weight:600; cursor:pointer;
   }
   .btn-primary:hover{ background: var(--green-deep); }
+  .btn-primary[disabled]{ opacity:.5; cursor:not-allowed; }
+  .btn-primary[disabled]:hover{ background:var(--green); }
   .btn-secondary{
     background:transparent; color:var(--ink-soft); border:1px solid var(--border); border-radius:8px;
     padding: 10px 18px; font-size:13px; font-weight:600; cursor:pointer;
@@ -340,6 +375,51 @@
   .recent-row .rr-name{ font-weight:600; }
   .recent-row .rr-sub{ color:var(--ink-faint); }
   .recent-empty{ font-size:12.5px; color:var(--ink-faint); }
+
+  /* ================= FLOW STRIP (sequential gating — opened by "Record Audit") ================= */
+  .flow-strip{
+    display:flex; align-items:center; gap:0; margin-top:14px; margin-bottom:2px;
+  }
+  .flow-strip.is-empty{ opacity:.55; }
+  .flow-step{ display:flex; align-items:center; flex:1; min-width:0; }
+  .flow-step:last-child{ flex:0 0 auto; }
+  .flow-step-btn{
+    display:flex; align-items:center; background:none; border:none; cursor:pointer; padding:2px; flex-shrink:0;
+  }
+  .flow-step-btn:focus-visible{ outline:2px solid var(--green); outline-offset:2px; border-radius:6px; }
+  .flow-node{
+    width:24px; height:24px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; font-weight:700; border:1.5px solid var(--border); color:var(--ink-faint); background:var(--card);
+  }
+  .flow-node svg{ width:12px; height:12px; }
+  .flow-step.done .flow-node{ background:var(--green); border-color:var(--green); color:#fff; }
+  .flow-step.current .flow-node{ background:var(--green-tint); border-color:var(--green); color:var(--green-deep); }
+  .flow-step.locked .flow-node{ background:#FAFAFB; border-color:var(--border); color:var(--ink-faint); }
+  .flow-label{ font-size:10.5px; font-weight:600; color:var(--ink-faint); margin-left:6px; white-space:nowrap; }
+  .flow-step.done .flow-label{ color:var(--green-ink2); }
+  .flow-step.current .flow-label{ color:var(--green-deep); }
+  .flow-line{ flex:1; height:2px; background:var(--border); margin:0 6px; min-width:10px; }
+  .flow-step.done .flow-line{ background:var(--green); }
+  .flow-hint{
+    font-size:11.5px; color:var(--ink-faint); margin-top:6px; margin-bottom:4px; line-height:1.5;
+  }
+  .flow-hint.blocked{ color:var(--red-ink); font-weight:600; }
+  .flow-hint.ready{ color:var(--green-ink2); font-weight:600; }
+
+  /* ================= MODAL (mentor loop / audit queue prompts) ================= */
+  .modal-overlay{
+    position: fixed; inset:0; background: rgba(20,22,26,0.45);
+    display:flex; align-items:center; justify-content:center;
+    z-index: 100; padding: 20px;
+  }
+  .modal-box{
+    background: var(--card); border-radius: var(--radius); max-width: 420px; width:100%;
+    padding: 24px 24px 20px; box-shadow: 0 12px 32px rgba(16,24,40,0.18);
+  }
+  .modal-box h3{ margin:0 0 8px; font-size:15.5px; font-weight:700; color:var(--ink); }
+  .modal-box p{ margin:0 0 18px; font-size:13px; color:var(--ink-soft); line-height:1.55; }
+  .modal-actions{ display:flex; align-items:center; justify-content:flex-end; gap:10px; flex-wrap:wrap; }
 
   /* ================= DASHBOARD ================= */
   .dash-wrap{ padding: 22px 26px 34px; display:flex; flex-direction:column; gap:26px; }
@@ -390,21 +470,30 @@
   .dash-lb-score{ font-size:12.5px; font-weight:700; width:26px; text-align:right; flex-shrink:0; }
 
   @media (max-width: 900px){
-    .app{ padding:0; }
-    .sidebar{ display:none; }
-    .main{ border-radius:0; border-left:none; border-right:none; }
+    .app{ padding:0; flex-direction:column; }
+    .sidebar{
+      width:auto; flex-direction:row; align-items:center; position:static; min-height:0;
+      border-radius:0; border-left:none; border-right:none; border-top:none;
+      padding: 10px 12px; gap:10px; overflow-x:auto;
+    }
+    .sidebar-brand{ flex-shrink:0; }
+    .sidebar-section-label, .sidebar-footer{ display:none; }
+    .sidebar-nav{ flex-direction:row; }
+    .sidebar-nav-btn{ padding:8px 10px; white-space:nowrap; }
+    .main{ border-radius:0; }
     .form-grid{ grid-template-columns: 1fr; }
     .dash-hero-grid{ grid-template-columns: repeat(2,1fr); }
     .dash-two-col{ grid-template-columns: 1fr; }
+    .topnav-label{ display:none; }
+    .mark-task-btn span.mtb-label{ display:none; }
   }
 
   @media print{
     body{ background:#fff; }
-    .sidebar, .topbar-right, .tabs, .toolbar, .table-footer, .toast{ display:none !important; }
+    .sidebar, .topnav-strip, .topbar-right, .tabs, .toolbar, .table-footer, .toast{ display:none !important; }
     .app{ padding:0; }
     .main{ border:none; }
   }
-  .sidebar-footer{ display:none; }
 </style>
 </head>
 <body>
@@ -412,58 +501,42 @@
 
   <!-- ================= SIDEBAR ================= -->
   <aside class="sidebar">
-    <div class="brand">
-      <div class="brand-name">CampusAudit</div>
-      <button class="brand-collapse" aria-label="Collapse sidebar">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
-      </button>
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 12 2 2 4-4"/><path d="M12 3c-2.5 2-4.5 2-7 1v7c0 5 3 8.5 7 10 4-1.5 7-5 7-10V4c-2.5 1-4.5 1-7-1Z"/></svg>
+      </div>
+      <div class="sidebar-brand-text">
+        <span class="sidebar-brand-name">CampusAudit</span>
+        <span class="sidebar-brand-sub">Mentor Review</span>
+      </div>
     </div>
 
-    <nav class="nav">
-      <button class="nav-item" id="nav-dashboard" data-nav data-page="dashboard">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        Dashboard
-      </button>
-      <button class="nav-item" id="nav-weekly" data-nav data-page="weekly-entry">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        Weekly Plans
-      </button>
-      <button class="nav-item" id="nav-skill" data-nav data-page="skill-entry">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12"/></svg>
-        Skill Development
-      </button>
-      <button class="nav-item" id="nav-academic" data-nav data-page="academic-entry">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg>
-        Academic Tasks
-      </button>
-      <button class="nav-item" id="nav-attendance" data-nav data-page="attendance-entry">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        Attendance
-      </button>
-      <button class="nav-item" id="nav-audit" data-nav data-page="audit-entry">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 12 2 2 4-4"/><path d="M12 3c-2.5 2-4.5 2-7 1v7c0 5 3 8.5 7 10 4-1.5 7-5 7-10V4c-2.5 1-4.5 1-7-1Z"/></svg>
-        Internal Audit
-      </button>
-      <button class="nav-item active" id="nav-reports" data-nav data-page="reports" aria-current="page">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-        Reports & Audit Logs
-      </button>
-    </nav>
+    <div>
+      <div class="sidebar-section-label">Menu</div>
+      <div class="sidebar-nav" id="sidebarNav"></div>
+    </div>
 
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-hint">Use <strong>Record Audit</strong> above the page title to run a mentor through the Weekly Plan → Skill Development → Academic Tasks → Attendance review flow.</div>
+    </div>
   </aside>
 
   <!-- ================= MAIN ================= -->
   <main class="main">
     <div class="topbar">
-      <h1 id="topbarTitle">Report & Audit Logs</h1>
+      <h1 id="topbarTitle">Dashboard</h1>
       <div class="topbar-right">
+        <button class="mark-task-btn" id="markTaskBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span class="mtb-label">Record Audit</span>
+        </button>
         <div class="topbar-avatar">
-          <img src="data:image/png;base64,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" alt="FACE Prep Campus logo">
+          <img src="" alt="FACE Prep Campus logo">
         </div>
       </div>
     </div>
 
-    <div id="page-reports">
+    <div id="page-reports" class="hidden">
       <div class="tabs" id="tabs">
         <button class="tab-btn active" data-tab="weekly">Weekly Plan Submissions</button>
         <button class="tab-btn" data-tab="skill">Skill Development</button>
@@ -512,7 +585,7 @@
       <div class="entry-wrap">
         <div class="entry-card">
           <h2>Weekly Plan Entry</h2>
-          <p class="entry-sub">Answer the genuineness questions below for this mentor's weekly plan. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Weekly Plan Submissions.</p>
+          <p class="entry-sub">Answer the genuineness questions below for this mentor's weekly plan. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Weekly Plan Submissions. This is step 1 of the review flow — complete it before moving on to Skill Development, Academic Tasks, and Attendance for this mentor.</p>
 
           <div class="form-grid">
             <div class="form-field">
@@ -520,8 +593,8 @@
               <input type="text" id="wkEntryMentor" placeholder="Enter mentor name">
             </div>
             <div class="form-field">
-              <label for="wkEntryDate">Date of Marking</label>
-              <input type="date" id="wkEntryDate">
+<label for="wkEntryDate">Date of Marking <span class="lock-note">(auto-set, cannot be edited)</span></label>
+              <input type="date" id="wkEntryDate" readonly tabindex="-1">
             </div>
             <div class="form-field">
               <label for="wkEntryPlanned">Planned Tasks</label>
@@ -532,6 +605,8 @@
               <input type="number" id="wkEntryCompleted" min="0" max="40" placeholder="e.g. 9">
             </div>
           </div>
+
+          <div id="wkFlowStrip"></div>
 
           <div class="section-label">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
@@ -567,7 +642,7 @@
       <div class="entry-wrap">
         <div class="entry-card">
           <h2>Skill Development Entry</h2>
-          <p class="entry-sub">Answer the genuineness questions below for this skill development log. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Skill Development.</p>
+          <p class="entry-sub">Answer the genuineness questions below for this skill development log. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Skill Development. This mentor's Weekly Plan must be completed first — step 2 of the review flow.</p>
 
           <div class="form-grid">
             <div class="form-field">
@@ -576,13 +651,15 @@
             </div>
             <div class="form-field">
               <label for="skEntryDate">Date of Marking</label>
-              <input type="date" id="skEntryDate">
+<input type="date" id="skEntryDate" readonly tabindex="-1">
             </div>
             <div class="form-field full">
               <label for="skEntrySubject">Skill Development Subject</label>
               <input type="text" id="skEntrySubject" placeholder="e.g. React Fundamentals">
             </div>
           </div>
+
+          <div id="skFlowStrip"></div>
 
           <div class="section-label">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
@@ -618,7 +695,7 @@
       <div class="entry-wrap">
         <div class="entry-card">
           <h2>Academic Task Entry</h2>
-          <p class="entry-sub">Answer the genuineness questions below to verify an academic task submission. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Academic Tasks.</p>
+          <p class="entry-sub">Answer the genuineness questions below to verify an academic task submission. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Academic Tasks. This mentor's Weekly Plan and Skill Development must be completed first — step 3 of the review flow.</p>
 
           <div class="form-grid">
             <div class="form-field">
@@ -627,7 +704,11 @@
             </div>
             <div class="form-field">
               <label for="acEntryDate">Date of Marking</label>
-              <input type="date" id="acEntryDate">
+<input type="date" id="acEntryDate" readonly tabindex="-1">
+            </div>
+            <div class="form-field full">
+              <label for="acEntrySubject">Academic Subject</label>
+              <input type="text" id="acEntrySubject" placeholder="e.g. Data Structures">
             </div>
             <div class="form-field">
               <label for="acEntryType">Task Type</label>
@@ -641,6 +722,8 @@
               <input type="text" id="acEntryTask" placeholder="e.g. Midterm Assignment">
             </div>
           </div>
+
+          <div id="acFlowStrip"></div>
 
           <div class="section-label">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
@@ -676,7 +759,7 @@
       <div class="entry-wrap">
         <div class="entry-card">
           <h2>Attendance Entry</h2>
-          <p class="entry-sub">Answer the genuineness questions below to verify an attendance record. Each answer is marked, a verification score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Attendance.</p>
+          <p class="entry-sub">Answer the genuineness questions below to verify an attendance record. Each answer is marked, a verification score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Attendance. This mentor's Weekly Plan, Skill Development, and Academic Tasks must be completed first — step 4 of the review flow.</p>
 
           <div class="form-grid">
             <div class="form-field">
@@ -685,7 +768,7 @@
             </div>
             <div class="form-field">
               <label for="atEntryDate">Date of Marking</label>
-              <input type="date" id="atEntryDate">
+<input type="date" id="atEntryDate" readonly tabindex="-1">
             </div>
             <div class="form-field">
               <label for="atEntryHeld">Classes Held</label>
@@ -696,6 +779,8 @@
               <input type="number" id="atEntryAttended" min="0" max="40" placeholder="e.g. 9">
             </div>
           </div>
+
+          <div id="atFlowStrip"></div>
 
           <div class="section-label">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
@@ -731,16 +816,16 @@
       <div class="entry-wrap">
         <div class="entry-card">
           <h2>Internal Audit Entry</h2>
-          <p class="entry-sub">Use this when you and another campus manager sit down to review a mentor's work. Confirm whether the weekly plan, skill development, and academic tasks were genuinely completed for that mentor's students, then save — the record appears immediately under Reports &amp; Audit Logs → Internal Audit so it can be checked again on the next daily review.</p>
+          <p class="entry-sub">Use this when you and another campus manager sit down to review a campus manager's work. This is the final step of the review flow — it unlocks only once Weekly Plan, Skill Development, Academic Tasks, and Attendance have all been completed for this campus manager. Confirm whether each was genuinely completed, add your audit notes (required), then save — the record appears immediately under Reports &amp; Audit Logs → Internal Audit so it can be checked again on the next daily review.</p>
 
           <div class="form-grid">
             <div class="form-field">
-              <label for="adEntryMentor">Mentor Being Audited</label>
-              <input type="text" id="adEntryMentor" placeholder="Enter mentor name">
+              <label for="adEntryMentor">Campus Manager Being Audited</label>
+              <input type="text" id="adEntryMentor" placeholder="Enter campus manager name">
             </div>
             <div class="form-field">
               <label for="adEntryDate">Date of Audit</label>
-              <input type="date" id="adEntryDate">
+<input type="date" id="adEntryDate" readonly tabindex="-1">
             </div>
             <div class="form-field full">
               <label for="adEntryAuditor">Auditor (Reviewing Campus Manager)</label>
@@ -748,10 +833,12 @@
             </div>
           </div>
 
+          <div id="adFlowStrip"></div>
+
           <div class="criteria-grid" id="adEntryCriteria"></div>
 
           <div class="form-field full" style="margin-top:14px;">
-            <label for="adEntryNotes">Audit Notes (optional)</label>
+            <label for="adEntryNotes">Audit Notes</label>
             <textarea id="adEntryNotes" rows="3" placeholder="Remarks from the audit discussion, e.g. why something was marked Not Completed..."></textarea>
           </div>
 
@@ -773,11 +860,42 @@
       </div>
     </div>
 
+    <!-- ================= MARK TASK — FLOW OVERVIEW ================= -->
+    <div id="page-mark-flow" class="hidden">
+      <div class="entry-wrap">
+        <div class="entry-card">
+          <h2>Record Audit</h2>
+          <p class="entry-sub" id="mfEntrySub">Enter the mentor's name to start or continue their daily review. The flow runs in order — Weekly Plan, Skill Development, Academic Tasks, then Attendance — each step unlocking once the one before it is logged for this mentor. Internal Audit becomes available once all four are complete.</p>
+
+          <div class="form-grid">
+            <div class="form-field full">
+              <label for="mfEntryMentor">Mentor Name</label>
+              <input type="text" id="mfEntryMentor" placeholder="Enter mentor name to start or continue their review flow">
+            </div>
+          </div>
+
+          <div class="entry-actions">
+            <button class="btn-primary" id="mfEntryContinue">Continue</button>
+          </div>
+
+          <div id="mfFlowStrip"></div>
+        </div>
+      </div>
+    </div>
+
     <div id="page-dashboard" class="hidden"></div>
   </main>
 </div>
 
 <div class="toast" id="toast"></div>
+
+<div class="modal-overlay hidden" id="modalOverlay">
+  <div class="modal-box">
+    <h3 id="modalTitle"></h3>
+    <p id="modalMessage"></p>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -798,6 +916,26 @@
   function avatarColor(name){
     let h=0; for(let i=0;i<name.length;i++) h = (h*31 + name.charCodeAt(i)) >>> 0;
     return AVATAR_COLORS[h % AVATAR_COLORS.length];
+  }
+
+  // ---------------- generic modal ----------------
+  function showModal(title, message, buttons){
+    document.getElementById("modalTitle").textContent = title;
+    document.getElementById("modalMessage").textContent = message;
+    const actions = document.getElementById("modalActions");
+    actions.innerHTML = "";
+    buttons.forEach(b => {
+      const btn = document.createElement("button");
+      btn.className = b.primary ? "btn-primary" : "btn-secondary";
+      btn.textContent = b.label;
+      btn.type = "button";
+      btn.addEventListener("click", () => { closeModal(); if(b.onClick) b.onClick(); });
+      actions.appendChild(btn);
+    });
+    document.getElementById("modalOverlay").classList.remove("hidden");
+  }
+  function closeModal(){
+    document.getElementById("modalOverlay").classList.add("hidden");
   }
 
   // ---------------- genuineness question sets ----------------
@@ -892,11 +1030,6 @@
   let auditSeq = 0;
 
   // ---------------- data store ----------------
-  // Weekly Plans, Skill Development, Academic Tasks, Attendance, and
-  // Internal Audit all start EMPTY — records (and every mentor/auditor
-  // name that appears anywhere in the app) are only created when a
-  // campus manager fills in an entry form and types a name. No fake
-  // mentors or fake data are pre-injected.
   let weeklySeq = 0, skillSeq = 0, academicSeq = 0, attendanceSeq = 0;
 
   const DATA = {
@@ -907,8 +1040,6 @@
     audit: []
   };
 
-  // Chronological log of every entry added this session, across all
-  // domains, used to power the Dashboard's "Recent Activity" feed.
   const activityLog = [];
   function logActivity(domain, uid){
     activityLog.push({ domain, uid, ts: Date.now() + activityLog.length });
@@ -922,6 +1053,102 @@
 
   function escapeAttr(s){ return String(s).replace(/"/g,"&quot;"); }
   function escapeHtml(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+  // ---------------- sequential flow gating helpers ----------------
+  const FLOW_ORDER = ["weekly","skill","academic","attendance"];
+  const FLOW_LABELS = { weekly: "Weekly Plan", skill: "Skill Dev.", academic: "Academic", attendance: "Attendance", audit: "Internal Audit" };
+  const FLOW_PAGE_MAP = { weekly: "weekly-entry", skill: "skill-entry", academic: "academic-entry", attendance: "attendance-entry", audit: "audit-entry" };
+  const FLOW_MENTOR_FIELD = { weekly: "wkEntryMentor", skill: "skEntryMentor", academic: "acEntryMentor", attendance: "atEntryMentor", audit: "adEntryMentor" };
+  const FLOW_STRIP_ID = { weekly: "wkFlowStrip", skill: "skFlowStrip", academic: "acFlowStrip", attendance: "atFlowStrip", audit: "adFlowStrip" };
+  function normMentor(s){ return (s || "").trim().toLowerCase(); }
+  function stageDone(domain, mentorName){
+    const n = normMentor(mentorName);
+    if(!n) return false;
+    return DATA[domain].some(r => normMentor(r.mentor) === n);
+  }
+  function mentorFlowStatus(mentorName){
+    const out = {};
+    FLOW_ORDER.forEach(d => out[d] = stageDone(d, mentorName));
+    return out;
+  }
+  // returns the first prerequisite domain not yet done, or null if all prior stages are satisfied,
+  // checking only domains that appear before `uptoExclusive` in FLOW_ORDER (uptoExclusive not checked)
+  function firstMissingPrereq(mentorName, uptoExclusive){
+    const idx = FLOW_ORDER.indexOf(uptoExclusive);
+    const checkList = idx === -1 ? FLOW_ORDER : FLOW_ORDER.slice(0, idx);
+    for(const d of checkList){
+      if(!stageDone(d, mentorName)) return d;
+    }
+    return null;
+  }
+  // returns the first stage in FLOW_ORDER not yet completed for this mentor, or "audit" if all four are done
+  function firstIncompleteStage(mentorName){
+    for(const d of FLOW_ORDER){
+      if(!stageDone(d, mentorName)) return d;
+    }
+    return "audit";
+  }
+  // renders the 4/5-step strip. currentDomain is one of FLOW_ORDER or "audit".
+  // Every step is clickable — clicking jumps straight to that stage's entry page,
+  // carrying the mentor name across so the flow feels continuous end-to-end.
+  function renderFlowStrip(containerId, mentorName, currentDomain){
+    const el = document.getElementById(containerId);
+    if(!el) return;
+    const steps = currentDomain === "audit" ? FLOW_ORDER.concat(["audit"]) : FLOW_ORDER;
+    const status = mentorFlowStatus(mentorName);
+    const hasMentor = !!normMentor(mentorName);
+
+    const stepsHtml = steps.map((d,i) => {
+      const isAuditStep = d === "audit";
+      const done = isAuditStep ? false : status[d];
+      const isCurrent = d === currentDomain;
+      let cls = "locked";
+      if(done) cls = "done";
+      else if(isCurrent) cls = "current";
+      const node = done
+        ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
+        : String(i+1);
+      const isLast = i === steps.length - 1;
+      return `<div class="flow-step ${cls}">
+          <button type="button" class="flow-step-btn" data-domain="${d}">
+            <div class="flow-node">${node}</div>
+            <span class="flow-label">${FLOW_LABELS[d]}</span>
+          </button>
+          ${isLast ? "" : `<div class="flow-line"></div>`}
+        </div>`;
+    }).join("");
+
+    el.innerHTML = `<div class="flow-strip ${hasMentor ? "" : "is-empty"}">${stepsHtml}</div>`;
+
+    el.querySelectorAll(".flow-step-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const d = btn.dataset.domain;
+        if(hasMentor){
+          const field = document.getElementById(FLOW_MENTOR_FIELD[d]);
+          if(field) field.value = mentorName;
+        }
+        navigateTo(FLOW_PAGE_MAP[d]);
+      });
+    });
+
+    // hint line
+    let hintEl = el.nextElementSibling;
+    if(!hintEl || !hintEl.classList || !hintEl.classList.contains("flow-hint-slot")){
+      hintEl = document.createElement("div");
+      hintEl.className = "flow-hint-slot";
+      el.parentNode.insertBefore(hintEl, el.nextSibling);
+    }
+    if(!hasMentor){
+      hintEl.innerHTML = `<div class="flow-hint">Enter the mentor name to check this mentor's progress through the review flow.</div>`;
+      return;
+    }
+    const missing = firstMissingPrereq(mentorName, currentDomain);
+    if(missing){
+      hintEl.innerHTML = `<div class="flow-hint blocked">Complete ${FLOW_LABELS[missing]} for this mentor first — it hasn't been logged yet.</div>`;
+    } else {
+      hintEl.innerHTML = `<div class="flow-hint ready">Prerequisites complete — you can save this entry.</div>`;
+    }
+  }
 
   function mentorCell(name){
     return `<div class="cell-person"><div class="cell-avatar" style="background:${avatarColor(name)}">${initials(name)}</div>${escapeHtml(name)}</div>`;
@@ -1001,13 +1228,14 @@
     },
     academic: {
       label: "Academic Tasks",
-      minWidth: 1500,
-      cols: ["Task ID","Mentor Name","Task Type","Task Name",
+      minWidth: 1620,
+      cols: ["Task ID","Mentor Name","Subject","Task Type","Task Name",
         ACADEMIC_SHORT.independent, ACADEMIC_SHORT.onTime, ACADEMIC_SHORT.verified, ACADEMIC_SHORT.reflectsWork,
         "Score","Remarks","Date of Marking","Status"],
       row(r){ return [
         r.id,
         mentorCell(r.mentor),
+        escapeHtml(r.subject || "—"),
         r.type, r.task,
         criteriaToggle("academic",r,"independent"), criteriaToggle("academic",r,"onTime"),
         criteriaToggle("academic",r,"verified"), criteriaToggle("academic",r,"reflectsWork"),
@@ -1015,7 +1243,7 @@
         r.date, pillCell(r.status)
       ]; },
       exportRow(r){ return [
-        r.id, r.mentor, r.type, r.task,
+        r.id, r.mentor, r.subject || "", r.type, r.task,
         r.criteria.independent ? "Yes" : "No", r.criteria.onTime ? "Yes" : "No",
         r.criteria.verified ? "Yes" : "No", r.criteria.reflectsWork ? "Yes" : "No",
         r.score + "/100", r.remarks || "", r.date, r.status
@@ -1087,9 +1315,6 @@
     return [...new Set(DATA[state.tab].map(r => r.status))];
   }
 
-  // Mentor filter options are built from whatever mentor names have
-  // actually been typed into entry forms for the current tab — there
-  // is no static mentor roster anymore.
   function populateFilters(){
     const mentorSel = document.getElementById("mentorFilter");
     const statusSel = document.getElementById("statusFilter");
@@ -1263,27 +1488,33 @@
     setTimeout(() => window.print(), 300);
   });
 
-  // ---------------- generic question-grid helper ----------------
+// ---------------- generic question-grid helper ----------------
   function buildQuestionGrid(containerId, domain, answers, onChange){
     const cfg = CRITERIA_CONFIG[domain];
     const grid = document.getElementById(containerId);
     grid.innerHTML = cfg.keys.map(k => `
       <div class="criteria-row">
         <span>${cfg.questions[k]}</span>
-        <button type="button" class="toggle-switch ${answers[k] ? "on" : ""}" data-key="${k}" role="switch" aria-checked="${answers[k] ? "true" : "false"}" aria-label="${escapeAttr(cfg.questions[k])}"></button>
+        <div class="yn-group" role="group" aria-label="${escapeAttr(cfg.questions[k])}">
+          <button type="button" class="yn-btn yes ${answers[k] ? "active" : ""}" data-key="${k}" data-val="yes" aria-pressed="${answers[k] ? "true" : "false"}">Yes</button>
+          <button type="button" class="yn-btn no ${!answers[k] ? "active" : ""}" data-key="${k}" data-val="no" aria-pressed="${!answers[k] ? "true" : "false"}">No</button>
+        </div>
       </div>
     `).join("");
     grid.onclick = e => {
-      const sw = e.target.closest(".toggle-switch");
-      if(!sw) return;
-      const key = sw.dataset.key;
-      answers[key] = !answers[key];
-      sw.classList.toggle("on", answers[key]);
-      sw.setAttribute("aria-checked", answers[key] ? "true" : "false");
+      const btn = e.target.closest(".yn-btn");
+      if(!btn) return;
+      const key = btn.dataset.key;
+      const val = btn.dataset.val === "yes";
+      answers[key] = val;
+      grid.querySelectorAll(`.yn-btn[data-key="${key}"]`).forEach(b => {
+        const isActive = (b.dataset.val === "yes") === val;
+        b.classList.toggle("active", isActive);
+        b.setAttribute("aria-pressed", isActive ? "true" : "false");
+      });
       onChange();
     };
   }
-
   // ---------------- weekly plan entry page ----------------
   let wkEntryAnswers = blankAnswers("weekly");
 
@@ -1296,6 +1527,7 @@
   function populateWeeklyEntryStatics(){
     document.getElementById("wkEntryDate").value = todayIso();
     buildQuestionGrid("wkEntryCriteria", "weekly", wkEntryAnswers, updateWeeklyScore);
+    renderFlowStrip("wkFlowStrip", document.getElementById("wkEntryMentor").value, "weekly");
   }
   function resetWeeklyEntryForm(){
     document.getElementById("wkEntryMentor").value = "";
@@ -1306,7 +1538,11 @@
     wkEntryAnswers = blankAnswers("weekly");
     buildQuestionGrid("wkEntryCriteria", "weekly", wkEntryAnswers, updateWeeklyScore);
     updateWeeklyScore();
+    renderFlowStrip("wkFlowStrip", "", "weekly");
   }
+  document.getElementById("wkEntryMentor").addEventListener("input", e => {
+    renderFlowStrip("wkFlowStrip", e.target.value, "weekly");
+  });
 
   const recentWeeklyUids = [];
   function renderRecentWeekly(){
@@ -1361,8 +1597,11 @@
     logActivity("weekly", row.uid);
     renderRecentWeekly();
 
-    toast("Entry saved for " + mentor + " — visible in Reports & Audit Logs");
+    toast("Entry saved for " + mentor + " — moving on to Skill Development.");
     resetWeeklyEntryForm();
+    navigateTo("skill-entry");
+    document.getElementById("skEntryMentor").value = mentor;
+    renderFlowStrip("skFlowStrip", mentor, "skill");
   });
   document.getElementById("wkEntryReset").addEventListener("click", resetWeeklyEntryForm);
 
@@ -1378,6 +1617,7 @@
   function populateSkillEntryStatics(){
     document.getElementById("skEntryDate").value = todayIso();
     buildQuestionGrid("skEntryCriteria", "skill", skEntryAnswers, updateSkillScore);
+    renderFlowStrip("skFlowStrip", document.getElementById("skEntryMentor").value, "skill");
   }
   function resetSkillEntryForm(){
     document.getElementById("skEntryMentor").value = "";
@@ -1387,7 +1627,11 @@
     skEntryAnswers = blankAnswers("skill");
     buildQuestionGrid("skEntryCriteria", "skill", skEntryAnswers, updateSkillScore);
     updateSkillScore();
+    renderFlowStrip("skFlowStrip", "", "skill");
   }
+  document.getElementById("skEntryMentor").addEventListener("input", e => {
+    renderFlowStrip("skFlowStrip", e.target.value, "skill");
+  });
 
   const recentSkillUids = [];
   function renderRecentSkill(){
@@ -1417,6 +1661,7 @@
     const remarks = document.getElementById("skEntryRemarks").value.trim();
 
     if(!mentor){ toast("Enter a mentor name before saving"); document.getElementById("skEntryMentor").focus(); return; }
+    if(!stageDone("weekly", mentor)){ toast("Complete this mentor's Weekly Plan entry first"); document.getElementById("skEntryMentor").focus(); return; }
     if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("skEntryDate").focus(); return; }
     if(!subject){ toast("Enter a skill development subject before saving"); document.getElementById("skEntrySubject").focus(); return; }
     if(!remarks){ toast("Enter remarks before saving"); document.getElementById("skEntryRemarks").focus(); return; }
@@ -1436,8 +1681,11 @@
     logActivity("skill", row.uid);
     renderRecentSkill();
 
-    toast("Entry saved for " + mentor + " — visible in Reports & Audit Logs");
+    toast("Entry saved for " + mentor + " — moving on to Academic Tasks.");
     resetSkillEntryForm();
+    navigateTo("academic-entry");
+    document.getElementById("acEntryMentor").value = mentor;
+    renderFlowStrip("acFlowStrip", mentor, "academic");
   });
   document.getElementById("skEntryReset").addEventListener("click", resetSkillEntryForm);
 
@@ -1453,17 +1701,23 @@
   function populateAcademicEntryStatics(){
     document.getElementById("acEntryDate").value = todayIso();
     buildQuestionGrid("acEntryCriteria", "academic", acEntryAnswers, updateAcademicScore);
+    renderFlowStrip("acFlowStrip", document.getElementById("acEntryMentor").value, "academic");
   }
   function resetAcademicEntryForm(){
     document.getElementById("acEntryMentor").value = "";
     document.getElementById("acEntryDate").value = todayIso();
+    document.getElementById("acEntrySubject").value = "";
     document.getElementById("acEntryType").value = "Quiz";
     document.getElementById("acEntryTask").value = "";
     document.getElementById("acEntryRemarks").value = "";
     acEntryAnswers = blankAnswers("academic");
     buildQuestionGrid("acEntryCriteria", "academic", acEntryAnswers, updateAcademicScore);
     updateAcademicScore();
+    renderFlowStrip("acFlowStrip", "", "academic");
   }
+  document.getElementById("acEntryMentor").addEventListener("input", e => {
+    renderFlowStrip("acFlowStrip", e.target.value, "academic");
+  });
 
   const recentAcademicUids = [];
   function renderRecentAcademic(){
@@ -1479,7 +1733,7 @@
         <div class="rr-left">
           <div class="cell-avatar" style="background:${avatarColor(r.mentor)};width:24px;height:24px;font-size:9.5px;">${initials(r.mentor)}</div>
           <span class="rr-name">${escapeHtml(r.mentor)}</span>
-          <span class="rr-sub">${escapeHtml(r.task || "—")} · ${r.date}</span>
+          <span class="rr-sub">${escapeHtml(r.subject ? (r.subject + " · ") : "")}${escapeHtml(r.task || "—")} · ${r.date}</span>
         </div>
         <span class="pill ${STATUS_MAP[r.status] || 'warn'}">${r.status} · ${r.score}/100</span>
       </div>`;
@@ -1489,12 +1743,16 @@
   document.getElementById("acEntrySubmit").addEventListener("click", () => {
     const mentor = document.getElementById("acEntryMentor").value.trim();
     const dateIso = document.getElementById("acEntryDate").value;
+    const subject = document.getElementById("acEntrySubject").value.trim();
     const type = document.getElementById("acEntryType").value;
     const task = document.getElementById("acEntryTask").value.trim();
     const remarks = document.getElementById("acEntryRemarks").value.trim();
 
     if(!mentor){ toast("Enter a mentor name before saving"); document.getElementById("acEntryMentor").focus(); return; }
+    if(!stageDone("weekly", mentor)){ toast("Complete this mentor's Weekly Plan entry first"); document.getElementById("acEntryMentor").focus(); return; }
+    if(!stageDone("skill", mentor)){ toast("Complete this mentor's Skill Development entry first"); document.getElementById("acEntryMentor").focus(); return; }
     if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("acEntryDate").focus(); return; }
+    if(!subject){ toast("Enter the academic subject before saving"); document.getElementById("acEntrySubject").focus(); return; }
     if(!task){ toast("Enter the task name before saving"); document.getElementById("acEntryTask").focus(); return; }
     if(!remarks){ toast("Enter remarks before saving"); document.getElementById("acEntryRemarks").focus(); return; }
 
@@ -1503,7 +1761,7 @@
     const row = {
       uid: "acd-" + academicSeq,
       id: "#ACD-" + Math.floor(10000 + Math.random()*89999),
-      mentor, type, task,
+      mentor, subject, type, task,
       criteria, remarks,
       date: isoToDMY(dateIso)
     };
@@ -1513,8 +1771,11 @@
     logActivity("academic", row.uid);
     renderRecentAcademic();
 
-    toast("Entry saved for " + mentor + " — visible in Reports & Audit Logs");
+    toast("Entry saved for " + mentor + " — moving on to Attendance.");
     resetAcademicEntryForm();
+    navigateTo("attendance-entry");
+    document.getElementById("atEntryMentor").value = mentor;
+    renderFlowStrip("atFlowStrip", mentor, "attendance");
   });
   document.getElementById("acEntryReset").addEventListener("click", resetAcademicEntryForm);
 
@@ -1530,6 +1791,7 @@
   function populateAttendanceEntryStatics(){
     document.getElementById("atEntryDate").value = todayIso();
     buildQuestionGrid("atEntryCriteria", "attendance", atEntryAnswers, updateAttendanceScore);
+    renderFlowStrip("atFlowStrip", document.getElementById("atEntryMentor").value, "attendance");
   }
   function resetAttendanceEntryForm(){
     document.getElementById("atEntryMentor").value = "";
@@ -1540,7 +1802,11 @@
     atEntryAnswers = blankAnswers("attendance");
     buildQuestionGrid("atEntryCriteria", "attendance", atEntryAnswers, updateAttendanceScore);
     updateAttendanceScore();
+    renderFlowStrip("atFlowStrip", "", "attendance");
   }
+  document.getElementById("atEntryMentor").addEventListener("input", e => {
+    renderFlowStrip("atFlowStrip", e.target.value, "attendance");
+  });
 
   const recentAttendanceUids = [];
   function renderRecentAttendance(){
@@ -1563,6 +1829,28 @@
     }).join("");
   }
 
+  // Queue of mentors who finished Weekly->Skill->Academic->Attendance and are waiting to be audited
+  let pendingAuditQueue = [];
+  function enqueueForAudit(mentor){
+    const n = normMentor(mentor);
+    if(!pendingAuditQueue.some(m => normMentor(m) === n)) pendingAuditQueue.push(mentor);
+  }
+  function dequeueAuditedMentor(mentor){
+    const n = normMentor(mentor);
+    pendingAuditQueue = pendingAuditQueue.filter(m => normMentor(m) !== n);
+  }
+  function startAuditQueue(){
+    if(pendingAuditQueue.length === 0){
+      toast("No mentors pending Internal Audit right now.");
+      navigateTo("dashboard");
+      return;
+    }
+    const next = pendingAuditQueue[0];
+    navigateTo("audit-entry");
+    document.getElementById("adEntryMentor").value = next;
+    renderFlowStrip("adFlowStrip", next, "audit");
+  }
+
   document.getElementById("atEntrySubmit").addEventListener("click", () => {
     const mentor = document.getElementById("atEntryMentor").value.trim();
     const dateIso = document.getElementById("atEntryDate").value;
@@ -1571,6 +1859,9 @@
     const remarks = document.getElementById("atEntryRemarks").value.trim();
 
     if(!mentor){ toast("Enter a mentor name before saving"); document.getElementById("atEntryMentor").focus(); return; }
+    if(!stageDone("weekly", mentor)){ toast("Complete this mentor's Weekly Plan entry first"); document.getElementById("atEntryMentor").focus(); return; }
+    if(!stageDone("skill", mentor)){ toast("Complete this mentor's Skill Development entry first"); document.getElementById("atEntryMentor").focus(); return; }
+    if(!stageDone("academic", mentor)){ toast("Complete this mentor's Academic Task entry first"); document.getElementById("atEntryMentor").focus(); return; }
     if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("atEntryDate").focus(); return; }
     if(heldRaw === ""){ toast("Enter classes held before saving"); document.getElementById("atEntryHeld").focus(); return; }
     if(attendedRaw === ""){ toast("Enter classes attended before saving"); document.getElementById("atEntryAttended").focus(); return; }
@@ -1594,9 +1885,24 @@
     recentAttendanceUids.push(row.uid);
     logActivity("attendance", row.uid);
     renderRecentAttendance();
+    enqueueForAudit(mentor);
 
-    toast("Entry saved for " + mentor + " — visible in Reports & Audit Logs");
     resetAttendanceEntryForm();
+
+    // Instead of auto-jumping to audit, ask whether there's another mentor to review first.
+    showModal(
+      "Attendance completed for " + mentor,
+      "Weekly Plan, Skill Development, Academic Tasks and Attendance are all done for " + mentor + ". Is there another mentor to review today, or should we move on to Internal Audit?",
+      [
+        { label: "Add Another Mentor", onClick: () => {
+            resetMarkFlowForm();
+            navigateTo("mark-flow");
+          } },
+        { label: "Proceed to Internal Audit", primary: true, onClick: () => {
+            startAuditQueue();
+          } }
+      ]
+    );
   });
   document.getElementById("atEntryReset").addEventListener("click", resetAttendanceEntryForm);
 
@@ -1618,7 +1924,11 @@
     grid.querySelectorAll("select").forEach(sel => {
       sel.className = "audit-select st-" + stKey(sel.value);
     });
+    renderFlowStrip("adFlowStrip", document.getElementById("adEntryMentor").value, "audit");
   }
+  document.getElementById("adEntryMentor").addEventListener("input", e => {
+    renderFlowStrip("adFlowStrip", e.target.value, "audit");
+  });
 
   function updateAuditEntryOverall(){
     const overall = overallAuditStatus(entryAudit);
@@ -1673,9 +1983,14 @@
     const auditor = document.getElementById("adEntryAuditor").value.trim();
     const notes = document.getElementById("adEntryNotes").value.trim();
 
-    if(!mentor){ toast("Enter the mentor being audited"); document.getElementById("adEntryMentor").focus(); return; }
+    if(!mentor){ toast("Enter the campus manager being audited"); document.getElementById("adEntryMentor").focus(); return; }
+    if(!stageDone("weekly", mentor)){ toast("This campus manager's Weekly Plan hasn't been completed yet"); document.getElementById("adEntryMentor").focus(); return; }
+    if(!stageDone("skill", mentor)){ toast("This campus manager's Skill Development hasn't been completed yet"); document.getElementById("adEntryMentor").focus(); return; }
+    if(!stageDone("academic", mentor)){ toast("This campus manager's Academic Tasks haven't been completed yet"); document.getElementById("adEntryMentor").focus(); return; }
+    if(!stageDone("attendance", mentor)){ toast("This campus manager's Attendance hasn't been completed yet"); document.getElementById("adEntryMentor").focus(); return; }
     if(!dateIso){ toast("Choose the date the audit was conducted"); document.getElementById("adEntryDate").focus(); return; }
     if(!auditor){ toast("Enter the auditor (reviewing campus manager)"); document.getElementById("adEntryAuditor").focus(); return; }
+    if(!notes){ toast("Enter audit notes before saving"); document.getElementById("adEntryNotes").focus(); return; }
 
     auditSeq++;
     const row = {
@@ -1693,15 +2008,36 @@
     recentAuditUids.push(row.uid);
     logActivity("audit", row.uid);
     renderRecentAudits();
+    dequeueAuditedMentor(mentor);
 
-    toast("Audit saved for " + mentor + " — visible in Reports & Audit Logs");
     resetAuditEntryForm();
+
+    if(pendingAuditQueue.length > 0){
+      const nextMentor = pendingAuditQueue[0];
+      showModal(
+        "Audit saved for " + mentor,
+        "Up next: " + nextMentor + ". Continue straight into their Internal Audit?",
+        [
+          { label: "Go to Reports", onClick: () => { navigateTo("reports", "audit"); } },
+          { label: "Continue to " + nextMentor, primary: true, onClick: () => { startAuditQueue(); } }
+        ]
+      );
+    } else {
+      showModal(
+        "Review complete",
+        "Internal Audit saved for " + mentor + ". Every mentor in today's review has now been through Weekly Plan, Skill Development, Academic Tasks, Attendance and Internal Audit.",
+        [
+          { label: "Return to Dashboard", primary: true, onClick: () => { navigateTo("dashboard"); } }
+        ]
+      );
+    }
   });
   document.getElementById("adEntryReset").addEventListener("click", resetAuditEntryForm);
 
   // ---------------- page routing ----------------
   const PAGE_TITLES = {
     "reports": "Report & Audit Logs",
+    "mark-flow": "Record Audit",
     "weekly-entry": "Weekly Plan Entry",
     "skill-entry": "Skill Development Entry",
     "academic-entry": "Academic Task Entry",
@@ -1709,8 +2045,38 @@
     "audit-entry": "Internal Audit Entry",
     "dashboard": "Dashboard"
   };
-  const PAGE_IDS = ["reports","weekly-entry","skill-entry","academic-entry","attendance-entry","audit-entry","dashboard"];
+  const PAGE_IDS = ["reports","mark-flow","weekly-entry","skill-entry","academic-entry","attendance-entry","audit-entry","dashboard"];
+
+  // Sidebar navigation holds the two standalone destinations, Dashboard and
+  // Reports & Logs. The mentor review flow (Weekly Plan -> Skill Dev ->
+  // Academic -> Attendance -> Internal Audit) is a separate track: it only
+  // opens when "Record Audit" is clicked, landing on a flow overview that shows
+  // all four stages (plus Internal Audit once they're done) and lets you jump
+  // into any of them, or via the flow strip inside an entry page once that
+  // flow has been started.
+  const SIDEBAR_NAV = [
+    { page: "dashboard", label: "Dashboard",
+      icon: '<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>' },
+    { page: "reports",   label: "Reports & Logs", tab: "weekly",
+      icon: '<path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/>' }
+  ];
   const ENTRY_PAGES = ["weekly-entry","skill-entry","academic-entry","attendance-entry","audit-entry"];
+  let currentPage = "dashboard";
+
+  function renderSidebarNav(){
+    const el = document.getElementById("sidebarNav");
+    if(!el) return;
+    el.innerHTML = SIDEBAR_NAV.map(item => {
+      const isCurrent = item.page === currentPage;
+      return `<button type="button" class="sidebar-nav-btn ${isCurrent ? "current" : ""}" data-page="${item.page}" ${item.tab ? `data-tab="${item.tab}"` : ""}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${item.icon}</svg>
+          <span>${item.label}</span>
+        </button>`;
+    }).join("");
+    el.querySelectorAll(".sidebar-nav-btn").forEach(btn => {
+      btn.addEventListener("click", () => navigateTo(btn.dataset.page, btn.dataset.tab));
+    });
+  }
 
   function showPage(page){
     PAGE_IDS.forEach(p => {
@@ -1718,46 +2084,68 @@
       if(el) el.classList.toggle("hidden", p !== page);
     });
     document.getElementById("topbarTitle").textContent = PAGE_TITLES[page] || "CampusAudit";
+    currentPage = page;
+    renderSidebarNav();
   }
 
-  document.querySelectorAll("[data-nav]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const page = btn.dataset.page;
+  function navigateTo(page, tab){
+    if(page === "reports"){
+      showPage("reports");
+      if(tab) selectReportsTab(tab);
+      return;
+    }
+    if(page === "dashboard"){
+      showPage("dashboard");
+      renderDashboard();
+      return;
+    }
+    if(page === "mark-flow"){
+      showPage("mark-flow");
+      renderFlowStrip("mfFlowStrip", document.getElementById("mfEntryMentor").value, "audit");
+      return;
+    }
+    if(ENTRY_PAGES.includes(page)){
+      showPage(page);
+      // refresh flow strip for whichever entry page is opened, using its current mentor value
+      if(page === "weekly-entry") renderFlowStrip("wkFlowStrip", document.getElementById("wkEntryMentor").value, "weekly");
+      if(page === "skill-entry") renderFlowStrip("skFlowStrip", document.getElementById("skEntryMentor").value, "skill");
+      if(page === "academic-entry") renderFlowStrip("acFlowStrip", document.getElementById("acEntryMentor").value, "academic");
+      if(page === "attendance-entry") renderFlowStrip("atFlowStrip", document.getElementById("atEntryMentor").value, "attendance");
+      if(page === "audit-entry") renderFlowStrip("adFlowStrip", document.getElementById("adEntryMentor").value, "audit");
+      return;
+    }
+  }
 
-      if(page === "reports"){
-        document.querySelectorAll("[data-nav]").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        showPage("reports");
-        if(btn.dataset.tab) selectReportsTab(btn.dataset.tab);
-        return;
-      }
-
-      if(page === "dashboard"){
-        document.querySelectorAll("[data-nav]").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        showPage("dashboard");
-        renderDashboard();
-        return;
-      }
-
-      if(ENTRY_PAGES.includes(page)){
-        document.querySelectorAll("[data-nav]").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        showPage(page);
-        return;
-      }
-
-      toast(btn.textContent.trim() + " — coming soon");
-    });
+  // "Record Audit" is the single entry point into the review flow. Clicking it
+  // opens a flow overview asking for the mentor's name; clicking Continue
+  // jumps straight to whichever stage that mentor still needs — Weekly Plan
+  // first for a brand-new mentor, or further along if they're resuming.
+  function resetMarkFlowForm(){
+    document.getElementById("mfEntryMentor").value = "";
+    renderFlowStrip("mfFlowStrip", "", "audit");
+  }
+  document.getElementById("mfEntryMentor").addEventListener("input", e => {
+    renderFlowStrip("mfFlowStrip", e.target.value, "audit");
+  });
+  document.getElementById("markTaskBtn").addEventListener("click", () => {
+    resetMarkFlowForm();
+    navigateTo("mark-flow");
+  });
+  document.getElementById("mfEntryContinue").addEventListener("click", () => {
+    const mentor = document.getElementById("mfEntryMentor").value.trim();
+    if(!mentor){ toast("Enter a mentor name to continue"); document.getElementById("mfEntryMentor").focus(); return; }
+    const stage = firstIncompleteStage(mentor);
+    const page = FLOW_PAGE_MAP[stage];
+    navigateTo(page);
+    const field = document.getElementById(FLOW_MENTOR_FIELD[stage]);
+    if(field) field.value = mentor;
+    renderFlowStrip(FLOW_STRIP_ID[stage], mentor, stage);
+    if(stage === "audit") enqueueForAudit(mentor);
   });
 
   // ---------------- dashboard ----------------
   function goToReportsTab(tab){
-    document.querySelectorAll("[data-nav]").forEach(b => b.classList.remove("active"));
-    const reportsBtn = document.getElementById("nav-reports");
-    if(reportsBtn) reportsBtn.classList.add("active");
-    showPage("reports");
-    selectReportsTab(tab);
+    navigateTo("reports", tab);
   }
 
   const DOMAIN_META = {
@@ -1972,7 +2360,9 @@
   populateAcademicEntryStatics(); updateAcademicScore(); renderRecentAcademic();
   populateAttendanceEntryStatics(); updateAttendanceScore(); renderRecentAttendance();
   populateAuditEntryStatics(); updateAuditEntryOverall(); renderRecentAudits();
-  render();
+  resetMarkFlowForm();
+  renderSidebarNav();
+  navigateTo("dashboard");
 })();
 </script>
 </body>
