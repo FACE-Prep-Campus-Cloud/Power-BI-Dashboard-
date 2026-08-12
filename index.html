@@ -351,6 +351,12 @@
   }
   .score-band .score-label{ font-size:12.5px; color:var(--ink-soft); font-weight:600; }
   .score-band .score-value{ font-size:18px; font-weight:800; }
+  .status-band{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    border:1px solid var(--border); border-radius:8px; padding:12px 14px; margin-top:10px;
+  }
+  .status-band .status-label{ font-size:12.5px; color:var(--ink-soft); font-weight:600; }
+  .status-band select.audit-select{ width:190px; padding:8px 30px 8px 12px; font-size:12.5px; }
   .entry-actions{ display:flex; align-items:center; gap:10px; margin-top:20px; }
   .btn-primary{
     background: var(--green); color:#fff; border:none; border-radius:8px;
@@ -652,13 +658,22 @@
             <span class="score-value" id="skEntryScoreValue">0/100</span>
           </div>
 
+          <div class="status-band">
+            <span class="status-label">Status</span>
+            <select id="skEntryStatus" class="audit-select st-InProgress">
+              <option value="Completed">Completed</option>
+              <option value="In Progress" selected>In Progress</option>
+              <option value="Not Completed">Not Completed</option>
+            </select>
+          </div>
+
           <div class="form-field full" style="margin-top:16px;">
             <label for="skEntryRemarks">Remarks</label>
             <textarea id="skEntryRemarks" rows="3" placeholder="Final remarks on this skill development log..."></textarea>
           </div>
 
           <div class="entry-actions">
-            <button class="btn-primary" id="skEntrySubmit">Add Entry</button>
+            <button class="btn-primary" id="skEntrySubmit">Continue</button>
             <button class="btn-secondary" id="skEntryReset">Reset</button>
           </div>
         </div>
@@ -745,13 +760,22 @@
             <span class="score-value" id="acEntryScoreValue">0/100</span>
           </div>
 
+          <div class="status-band">
+            <span class="status-label">Status</span>
+            <select id="acEntryStatus" class="audit-select st-InProgress">
+              <option value="Completed">Completed</option>
+              <option value="In Progress" selected>In Progress</option>
+              <option value="Not Completed">Not Completed</option>
+            </select>
+          </div>
+
           <div class="form-field full" style="margin-top:16px;">
             <label for="acEntryRemarks">Remarks</label>
             <textarea id="acEntryRemarks" rows="3" placeholder="Final remarks on this academic task..."></textarea>
           </div>
 
           <div class="entry-actions">
-            <button class="btn-primary" id="acEntrySubmit">Add Entry</button>
+            <button class="btn-primary" id="acEntrySubmit">Continue</button>
             <button class="btn-secondary" id="acEntryReset">Reset</button>
           </div>
         </div>
@@ -842,13 +866,22 @@
             <span class="score-value" id="atEntryScoreValue">0/100</span>
           </div>
 
+          <div class="status-band">
+            <span class="status-label">Status</span>
+            <select id="atEntryStatus" class="audit-select st-InProgress">
+              <option value="Completed">Completed</option>
+              <option value="In Progress" selected>In Progress</option>
+              <option value="Not Completed">Not Completed</option>
+            </select>
+          </div>
+
           <div class="form-field full" style="margin-top:16px;">
             <label for="atEntryRemarks">Remarks</label>
             <textarea id="atEntryRemarks" rows="3" placeholder="Final remarks on this attendance record..."></textarea>
           </div>
 
           <div class="entry-actions">
-            <button class="btn-primary" id="atEntrySubmit">Add Entry</button>
+            <button class="btn-primary" id="atEntrySubmit">Continue</button>
             <button class="btn-secondary" id="atEntryReset">Reset</button>
           </div>
         </div>
@@ -865,7 +898,7 @@
       <div class="entry-wrap">
         <div class="entry-card">
           <h2>Internal Audit Entry</h2>
-          <p class="entry-sub">Use this when you and another campus manager sit down to review a campus manager's work. This is the final step of the review flow — it unlocks only once Skill Development, Academic Tasks, and Attendance have all been completed for this campus manager. Confirm whether each was genuinely completed, add your audit notes (required), then save — the record appears immediately under Reports &amp; Audit Logs → Internal Audit so it can be checked again on the next daily review.</p>
+          <p class="entry-sub">Use this when you and another campus manager sit down to review a campus manager's work. This is the final step of the review flow — it unlocks only once Skill Development, Academic Tasks, and Attendance have all been completed for this campus manager. Confirm whether each was genuinely completed, add your audit notes (required), then submit — the record appears immediately under Reports &amp; Audit Logs → Internal Audit so it can be checked again on the next daily review.</p>
 
           <div class="form-grid">
             <div class="form-field">
@@ -937,7 +970,7 @@
           </div>
 
           <div class="entry-actions">
-            <button class="btn-primary" id="adEntrySubmit">Save Audit</button>
+            <button class="btn-primary" id="adEntrySubmit">Submit</button>
             <button class="btn-secondary" id="adEntryReset">Reset</button>
           </div>
         </div>
@@ -1114,19 +1147,16 @@
     const met = keys.filter(k => answers[k]).length;
     return Math.round((met / keys.length) * 100);
   }
-  function statusFromScore(pct){
-    return pct >= 80 ? "Achieved" : pct >= 50 ? "In Progress" : "Not Achieved";
-  }
   function recomputeRow(domain, row){
     const cfg = CRITERIA_CONFIG[domain];
     row.score = scoreFromAnswers(row.criteria, cfg.keys);
-    row.status = statusFromScore(row.score);
   }
   function blankAnswers(domain){
     const c = {};
     CRITERIA_CONFIG[domain].keys.forEach(k => c[k] = false);
     return c;
   }
+  function stKey(s){ return s.replace(/\s+/g,""); }
 
   // ---------------- internal audit ----------------
   const AUDIT_KEYS = ["weeklyPlan","skillDev","academic"];
@@ -1136,7 +1166,6 @@
     academic: "Academic Tasks Completed"
   };
   const AUDIT_STATUSES = ["Completed","In Progress","Not Completed"];
-  function stKey(s){ return s.replace(/\s+/g,""); }
 
   function overallAuditStatus(row){
     const vals = AUDIT_KEYS.map(k => row[k]);
@@ -1636,8 +1665,24 @@
     };
   }
 
+  // ---------------- shared: status-band select wiring ----------------
+  function wireStatusSelect(selectId){
+    const sel = document.getElementById(selectId);
+    if(!sel) return;
+    sel.addEventListener("change", () => {
+      sel.className = "audit-select st-" + stKey(sel.value);
+    });
+  }
+  function resetStatusSelect(selectId){
+    const sel = document.getElementById(selectId);
+    if(!sel) return;
+    sel.value = "In Progress";
+    sel.className = "audit-select st-" + stKey(sel.value);
+  }
+
   // ---------------- skill development entry page ----------------
   let skEntryAnswers = blankAnswers("skill");
+  wireStatusSelect("skEntryStatus");
 
   function updateSkillScore(){
     const score = scoreFromAnswers(skEntryAnswers, CRITERIA_KEYS);
@@ -1657,6 +1702,7 @@
     document.getElementById("skEntryDate").value = todayIso();
     document.getElementById("skEntrySubject").value = "";
     document.getElementById("skEntryRemarks").value = "";
+    resetStatusSelect("skEntryStatus");
     skEntryAnswers = blankAnswers("skill");
     buildQuestionGrid("skEntryCriteria", "skill", skEntryAnswers, updateSkillScore);
     updateSkillScore();
@@ -1698,6 +1744,7 @@
     const mentor = document.getElementById("skEntryMentor").value.trim();
     const dateIso = document.getElementById("skEntryDate").value;
     const subject = document.getElementById("skEntrySubject").value.trim();
+    const status = document.getElementById("skEntryStatus").value;
     const remarks = document.getElementById("skEntryRemarks").value.trim();
 
     if(!campus){ toast("Choose a campus before saving"); document.getElementById("skEntryCampus").focus(); return; }
@@ -1717,6 +1764,7 @@
       date: isoToDMY(dateIso)
     };
     recomputeRow("skill", row);
+    row.status = status;
     DATA.skill.unshift(row);
     recentSkillUids.push(row.uid);
     logActivity("skill", row.uid);
@@ -1734,6 +1782,7 @@
 
   // ---------------- academic task entry page ----------------
   let acEntryAnswers = blankAnswers("academic");
+  wireStatusSelect("acEntryStatus");
 
   function updateAcademicScore(){
     const score = scoreFromAnswers(acEntryAnswers, ACADEMIC_KEYS);
@@ -1753,6 +1802,7 @@
     document.getElementById("acEntryDate").value = todayIso();
     document.getElementById("acEntrySubject").value = "";
     document.getElementById("acEntryRemarks").value = "";
+    resetStatusSelect("acEntryStatus");
     acEntryAnswers = blankAnswers("academic");
     buildQuestionGrid("acEntryCriteria", "academic", acEntryAnswers, updateAcademicScore);
     updateAcademicScore();
@@ -1794,6 +1844,7 @@
     const mentor = document.getElementById("acEntryMentor").value.trim();
     const dateIso = document.getElementById("acEntryDate").value;
     const subject = document.getElementById("acEntrySubject").value.trim();
+    const status = document.getElementById("acEntryStatus").value;
     const remarks = document.getElementById("acEntryRemarks").value.trim();
 
     if(!campus){ toast("Choose a campus before saving"); document.getElementById("acEntryCampus").focus(); return; }
@@ -1814,6 +1865,7 @@
       date: isoToDMY(dateIso)
     };
     recomputeRow("academic", row);
+    row.status = status;
     DATA.academic.unshift(row);
     recentAcademicUids.push(row.uid);
     logActivity("academic", row.uid);
@@ -1831,6 +1883,7 @@
 
   // ---------------- attendance entry page ----------------
   let atEntryAnswers = blankAnswers("attendance");
+  wireStatusSelect("atEntryStatus");
 
   function updateAttendanceScore(){
     const score = scoreFromAnswers(atEntryAnswers, ATTENDANCE_KEYS);
@@ -1851,6 +1904,7 @@
     document.getElementById("atEntryHeld").value = "";
     document.getElementById("atEntryAttended").value = "";
     document.getElementById("atEntryRemarks").value = "";
+    resetStatusSelect("atEntryStatus");
     atEntryAnswers = blankAnswers("attendance");
     buildQuestionGrid("atEntryCriteria", "attendance", atEntryAnswers, updateAttendanceScore);
     updateAttendanceScore();
@@ -1917,6 +1971,7 @@
     const dateIso = document.getElementById("atEntryDate").value;
     const heldRaw = document.getElementById("atEntryHeld").value;
     const attendedRaw = document.getElementById("atEntryAttended").value;
+    const status = document.getElementById("atEntryStatus").value;
     const remarks = document.getElementById("atEntryRemarks").value.trim();
 
     if(!campus){ toast("Choose a campus before saving"); document.getElementById("atEntryCampus").focus(); return; }
@@ -1943,6 +1998,7 @@
       date: isoToDMY(dateIso)
     };
     recomputeRow("attendance", row);
+    row.status = status;
     DATA.attendance.unshift(row);
     recentAttendanceUids.push(row.uid);
     logActivity("attendance", row.uid);
@@ -2097,7 +2153,7 @@
     } else {
       showModal(
         "Review complete",
-        "Internal Audit saved for " + mentor + ". Every mentor in today's review has now been through Skill Development, Academic Tasks, Attendance and Internal Audit.",
+        "Internal Audit submitted for " + mentor + ". Every mentor in today's review has now been through Skill Development, Academic Tasks, Attendance and Internal Audit.",
         [
           { label: "Return to Dashboard", primary: true, onClick: () => { navigateTo("dashboard"); } }
         ]
@@ -2247,9 +2303,9 @@
   function domainSummary(domain){
     const rows = DATA[domain];
     const total = rows.length;
-    const achieved = rows.filter(r => r.status === "Achieved").length;
+    const achieved = rows.filter(r => r.status === "Completed").length;
     const inProgress = rows.filter(r => r.status === "In Progress").length;
-    const notAchieved = rows.filter(r => r.status === "Not Achieved").length;
+    const notAchieved = rows.filter(r => r.status === "Not Completed").length;
     const avgScore = total ? Math.round(rows.reduce((s,r) => s + r.score, 0) / total) : 0;
     return { total, achieved, inProgress, notAchieved, avgScore };
   }
@@ -2279,7 +2335,7 @@
   function needsAttentionRows(limit){
     const out = [];
     SCORED_DOMAINS.forEach(domain => {
-      DATA[domain].filter(r => r.status === "Not Achieved").forEach(r => {
+      DATA[domain].filter(r => r.status === "Not Completed").forEach(r => {
         out.push({ domain, label: DOMAIN_META[domain].label, mentor: r.mentor, date: r.date, detail: (r.score) + "/100", remarks: r.remarks || "" });
       });
     });
@@ -2307,7 +2363,7 @@
     const mentorsWithActivity = new Set();
     SCORED_DOMAINS.forEach(d => DATA[d].forEach(r => mentorsWithActivity.add(r.mentor)));
     DATA.audit.forEach(r => mentorsWithActivity.add(r.mentor));
-    const flaggedCount = SCORED_DOMAINS.reduce((s,d) => s + DATA[d].filter(r => r.status === "Not Achieved").length, 0)
+    const flaggedCount = SCORED_DOMAINS.reduce((s,d) => s + DATA[d].filter(r => r.status === "Not Completed").length, 0)
       + DATA.audit.filter(r => r.overall === "Not Completed").length;
 
     const auditStats = auditSummary();
@@ -2393,7 +2449,7 @@
       <div class="dash-section">
         <div class="dash-section-title">Needs Attention</div>
         <div class="dash-panel">
-          ${attention.length === 0 ? `<div class="recent-empty">Nothing flagged right now — every scored record is In Progress or Achieved, and no audits are marked Not Completed.</div>` :
+          ${attention.length === 0 ? `<div class="recent-empty">Nothing flagged right now — every scored record is In Progress or Completed, and no audits are marked Not Completed.</div>` :
             attention.map(a => `
               <div class="recent-row">
                 <div class="rr-left">
