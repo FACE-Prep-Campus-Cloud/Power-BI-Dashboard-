@@ -730,17 +730,6 @@
               <label for="acEntrySubject">Academic Subject</label>
               <input type="text" id="acEntrySubject" placeholder="e.g. Data Structures">
             </div>
-            <div class="form-field">
-              <label for="acEntryType">Task Type</label>
-              <select id="acEntryType">
-                <option value="Quiz">Quiz</option>
-                <option value="Assignment">Assignment</option>
-              </select>
-            </div>
-            <div class="form-field full">
-              <label for="acEntryTask">Task Name</label>
-              <input type="text" id="acEntryTask" placeholder="e.g. Midterm Assignment">
-            </div>
           </div>
 
           <div id="acFlowStrip"></div>
@@ -1092,15 +1081,16 @@
     assessment: "Was the related assessment completed?"
   };
 
-  const ACADEMIC_KEYS = ["independent","onTime","verified","reflectsWork"];
+  const ACADEMIC_KEYS = ["assignmentGenuine","assessmentGenuine","beforeDeadline","studyMaterial"];
   const ACADEMIC_SHORT = {
-    independent: "Independent Work", onTime: "On Time", verified: "Verified", reflectsWork: "Reflects Work"
+    assignmentGenuine: "Assignment Genuine", assessmentGenuine: "Assessment Genuine",
+    beforeDeadline: "Before Deadline", studyMaterial: "Study Material"
   };
   const ACADEMIC_QUESTIONS = {
-    independent: "Was the task completed independently, without copying?",
-    onTime: "Was it submitted within the deadline?",
-    verified: "Was the submission cross-checked against the actual task record?",
-    reflectsWork: "Does the score genuinely reflect the learner's own understanding?"
+    assignmentGenuine: "Was the assignment genuinely completed by the learner, not copied?",
+    assessmentGenuine: "Was the assessment genuinely completed by the learner, not copied?",
+    beforeDeadline: "Was the task completed before the deadline?",
+    studyMaterial: "Was study material shared with the learner for this task?"
   };
 
   const ATTENDANCE_KEYS = ["markedDaily","crossVerified","noProxy","matchesTracker"];
@@ -1353,9 +1343,9 @@
     },
     academic: {
       label: "Academic Tasks",
-      minWidth: 1780,
-      cols: ["Task ID","Mentor Name","Campus","Subject","Academic Subject","Task Type","Task Name",
-        ACADEMIC_SHORT.independent, ACADEMIC_SHORT.onTime, ACADEMIC_SHORT.verified, ACADEMIC_SHORT.reflectsWork,
+      minWidth: 1580,
+      cols: ["Task ID","Mentor Name","Campus","Subject","Academic Subject",
+        ACADEMIC_SHORT.assignmentGenuine, ACADEMIC_SHORT.assessmentGenuine, ACADEMIC_SHORT.beforeDeadline, ACADEMIC_SHORT.studyMaterial,
         "Score","Remarks","Date of Marking","Status"],
       row(r){ return [
         r.id,
@@ -1363,16 +1353,15 @@
         escapeHtml(r.campus || "—"),
         escapeHtml(r.department || "—"),
         escapeHtml(r.subject || "—"),
-        r.type, r.task,
-        criteriaToggle("academic",r,"independent"), criteriaToggle("academic",r,"onTime"),
-        criteriaToggle("academic",r,"verified"), criteriaToggle("academic",r,"reflectsWork"),
+        criteriaToggle("academic",r,"assignmentGenuine"), criteriaToggle("academic",r,"assessmentGenuine"),
+        criteriaToggle("academic",r,"beforeDeadline"), criteriaToggle("academic",r,"studyMaterial"),
         barCell(r.score), remarksCell(r),
         r.date, pillCell(r.status)
       ]; },
       exportRow(r){ return [
-        r.id, r.mentor, r.campus || "", r.department || "", r.subject || "", r.type, r.task,
-        r.criteria.independent ? "Yes" : "No", r.criteria.onTime ? "Yes" : "No",
-        r.criteria.verified ? "Yes" : "No", r.criteria.reflectsWork ? "Yes" : "No",
+        r.id, r.mentor, r.campus || "", r.department || "", r.subject || "",
+        r.criteria.assignmentGenuine ? "Yes" : "No", r.criteria.assessmentGenuine ? "Yes" : "No",
+        r.criteria.beforeDeadline ? "Yes" : "No", r.criteria.studyMaterial ? "Yes" : "No",
         r.score + "/100", r.remarks || "", r.date, r.status
       ]; }
     },
@@ -1763,8 +1752,6 @@
     document.getElementById("acEntryMentor").value = "";
     document.getElementById("acEntryDate").value = todayIso();
     document.getElementById("acEntrySubject").value = "";
-    document.getElementById("acEntryType").value = "Quiz";
-    document.getElementById("acEntryTask").value = "";
     document.getElementById("acEntryRemarks").value = "";
     acEntryAnswers = blankAnswers("academic");
     buildQuestionGrid("acEntryCriteria", "academic", acEntryAnswers, updateAcademicScore);
@@ -1794,7 +1781,7 @@
         <div class="rr-left">
           <div class="cell-avatar" style="background:${avatarColor(r.mentor)};width:24px;height:24px;font-size:9.5px;">${initials(r.mentor)}</div>
           <span class="rr-name">${escapeHtml(r.mentor)}</span>
-          <span class="rr-sub">${escapeHtml(r.campus || "—")} · ${escapeHtml(r.subject ? (r.subject + " · ") : "")}${escapeHtml(r.task || "—")} · ${r.date}</span>
+          <span class="rr-sub">${escapeHtml(r.campus || "—")} · ${escapeHtml(r.subject || "—")} · ${r.date}</span>
         </div>
         <span class="pill ${STATUS_MAP[r.status] || 'warn'}">${r.status} · ${r.score}/100</span>
       </div>`;
@@ -1807,8 +1794,6 @@
     const mentor = document.getElementById("acEntryMentor").value.trim();
     const dateIso = document.getElementById("acEntryDate").value;
     const subject = document.getElementById("acEntrySubject").value.trim();
-    const type = document.getElementById("acEntryType").value;
-    const task = document.getElementById("acEntryTask").value.trim();
     const remarks = document.getElementById("acEntryRemarks").value.trim();
 
     if(!campus){ toast("Choose a campus before saving"); document.getElementById("acEntryCampus").focus(); return; }
@@ -1817,7 +1802,6 @@
     if(!stageDone("skill", mentor)){ toast("Complete this mentor's Skill Development entry first"); document.getElementById("acEntryMentor").focus(); return; }
     if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("acEntryDate").focus(); return; }
     if(!subject){ toast("Enter the academic subject before saving"); document.getElementById("acEntrySubject").focus(); return; }
-    if(!task){ toast("Enter the task name before saving"); document.getElementById("acEntryTask").focus(); return; }
     if(!remarks){ toast("Enter remarks before saving"); document.getElementById("acEntryRemarks").focus(); return; }
 
     academicSeq++;
@@ -1825,7 +1809,7 @@
     const row = {
       uid: "acd-" + academicSeq,
       id: "#ACD-" + Math.floor(10000 + Math.random()*89999),
-      mentor, campus, department, subject, type, task,
+      mentor, campus, department, subject,
       criteria, remarks,
       date: isoToDMY(dateIso)
     };
