@@ -614,8 +614,16 @@
               </select>
             </div>
             <div class="form-field">
-              <label for="skEntryDepartment">Department</label>
-              <input type="text" id="skEntryDepartment" placeholder="Enter department">
+              <label for="skEntryDepartment">Subject</label>
+              <select id="skEntryDepartment">
+                <option value="">Select Subject</option>
+                <option value="Tamil">Tamil</option>
+                <option value="Communication">Communication</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Data Science">Data Science</option>
+                <option value="Management">Management</option>
+                <option value="Commerce">Commerce</option>
+              </select>
             </div>
             <div class="form-field">
               <label for="skEntryMentor">Mentor Name</label>
@@ -699,8 +707,16 @@
               </select>
             </div>
             <div class="form-field">
-              <label for="acEntryDepartment">Department</label>
-              <input type="text" id="acEntryDepartment" placeholder="Enter department">
+              <label for="acEntryDepartment">Subject</label>
+              <select id="acEntryDepartment">
+                <option value="">Select Subject</option>
+                <option value="Tamil">Tamil</option>
+                <option value="Communication">Communication</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Data Science">Data Science</option>
+                <option value="Management">Management</option>
+                <option value="Commerce">Commerce</option>
+              </select>
             </div>
             <div class="form-field">
               <label for="acEntryMentor">Mentor Name</label>
@@ -795,8 +811,16 @@
               </select>
             </div>
             <div class="form-field">
-              <label for="atEntryDepartment">Department</label>
-              <input type="text" id="atEntryDepartment" placeholder="Enter department">
+              <label for="atEntryDepartment">Subject</label>
+              <select id="atEntryDepartment">
+                <option value="">Select Subject</option>
+                <option value="Tamil">Tamil</option>
+                <option value="Communication">Communication</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Data Science">Data Science</option>
+                <option value="Management">Management</option>
+                <option value="Commerce">Commerce</option>
+              </select>
             </div>
             <div class="form-field">
               <label for="atEntryMentor">Mentor Name</label>
@@ -884,8 +908,16 @@
               </select>
             </div>
             <div class="form-field">
-              <label for="adEntryDepartment">Department</label>
-              <input type="text" id="adEntryDepartment" placeholder="Enter department">
+              <label for="adEntryDepartment">Subject</label>
+              <select id="adEntryDepartment">
+                <option value="">Select Subject</option>
+                <option value="Tamil">Tamil</option>
+                <option value="Communication">Communication</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Data Science">Data Science</option>
+                <option value="Management">Management</option>
+                <option value="Commerce">Commerce</option>
+              </select>
             </div>
             <div class="form-field">
               <label for="adEntryMentor">Campus Manager Being Audited</label>
@@ -933,7 +965,7 @@
       <div class="entry-wrap">
         <div class="entry-card">
           <h2>Record Audit</h2>
-          <p class="entry-sub" id="mfEntrySub">Choose the campus, enter the department and the mentor's name to start or continue their review. The flow runs in order — Skill Development, Academic Tasks, then Attendance — each step unlocking once the one before it is logged for this mentor. Internal Audit becomes available once all three are complete.</p>
+          <p class="entry-sub" id="mfEntrySub">Choose the campus, enter the subject and the mentor's name to start or continue their review. The flow runs in order — Skill Development, Academic Tasks, then Attendance — each step unlocking once the one before it is logged for this mentor. Internal Audit becomes available once all three are complete.</p>
 
           <div class="form-grid">
             <div class="form-field full">
@@ -965,8 +997,16 @@
               </select>
             </div>
             <div class="form-field full">
-              <label for="mfEntryDepartment">Department</label>
-              <input type="text" id="mfEntryDepartment" placeholder="Enter department">
+              <label for="mfEntryDepartment">Subject</label>
+              <select id="mfEntryDepartment">
+                <option value="">Select Subject</option>
+                <option value="Tamil">Tamil</option>
+                <option value="Communication">Communication</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Data Science">Data Science</option>
+                <option value="Management">Management</option>
+                <option value="Commerce">Commerce</option>
+              </select>
             </div>
             <div class="form-field full">
               <label for="mfEntryMentor">Mentor Name</label>
@@ -1289,7 +1329,7 @@
     skill: {
       label: "Skill Development",
       minWidth: 1720,
-      cols: ["Log ID","Mentor Name","Campus","Department","Skill Subject",
+      cols: ["Log ID","Mentor Name","Campus","Subject","Skill Subject",
         CRITERIA_SHORT.genuine, CRITERIA_SHORT.weeklyPlan, CRITERIA_SHORT.tracker, CRITERIA_SHORT.assignment, CRITERIA_SHORT.assessment,
         "Score","Remarks","Date of Marking","Status"],
       row(r){ return [
@@ -1314,7 +1354,7 @@
     academic: {
       label: "Academic Tasks",
       minWidth: 1780,
-      cols: ["Task ID","Mentor Name","Campus","Department","Subject","Task Type","Task Name",
+      cols: ["Task ID","Mentor Name","Campus","Subject","Academic Subject","Task Type","Task Name",
         ACADEMIC_SHORT.independent, ACADEMIC_SHORT.onTime, ACADEMIC_SHORT.verified, ACADEMIC_SHORT.reflectsWork,
         "Score","Remarks","Date of Marking","Status"],
       row(r){ return [
@@ -1339,7 +1379,7 @@
     attendance: {
       label: "Attendance",
       minWidth: 1820,
-      cols: ["Record ID","Mentor Name","Campus","Department","Classes Held","Attended","Attendance %",
+      cols: ["Record ID","Mentor Name","Campus","Subject","Classes Held","Attended","Attendance %",
         ATTENDANCE_SHORT.markedDaily, ATTENDANCE_SHORT.crossVerified, ATTENDANCE_SHORT.noProxy, ATTENDANCE_SHORT.matchesTracker,
         "Verification Score","Remarks","Date of Marking","Status"],
       row(r){ return [
@@ -1363,7 +1403,7 @@
     audit: {
       label: "Internal Audit",
       minWidth: 1420,
-      cols: ["Audit ID","Mentor Audited","Campus","Department","Skill Development","Academic Tasks","Consistent Logging","Overall Status","Auditor","Audited On"],
+      cols: ["Audit ID","Mentor Audited","Campus","Subject","Skill Development","Academic Tasks","Consistent Logging","Overall Status","Auditor","Audited On"],
       row(r){ return [
         r.id,
         mentorCell(r.mentor),
@@ -1672,7 +1712,7 @@
     const remarks = document.getElementById("skEntryRemarks").value.trim();
 
     if(!campus){ toast("Choose a campus before saving"); document.getElementById("skEntryCampus").focus(); return; }
-    if(!department){ toast("Enter a department before saving"); document.getElementById("skEntryDepartment").focus(); return; }
+    if(!department){ toast("Select a subject before saving"); document.getElementById("skEntryDepartment").focus(); return; }
     if(!mentor){ toast("Enter a mentor name before saving"); document.getElementById("skEntryMentor").focus(); return; }
     if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("skEntryDate").focus(); return; }
     if(!subject){ toast("Enter a skill development subject before saving"); document.getElementById("skEntrySubject").focus(); return; }
@@ -1772,7 +1812,7 @@
     const remarks = document.getElementById("acEntryRemarks").value.trim();
 
     if(!campus){ toast("Choose a campus before saving"); document.getElementById("acEntryCampus").focus(); return; }
-    if(!department){ toast("Enter a department before saving"); document.getElementById("acEntryDepartment").focus(); return; }
+    if(!department){ toast("Select a subject before saving"); document.getElementById("acEntryDepartment").focus(); return; }
     if(!mentor){ toast("Enter a mentor name before saving"); document.getElementById("acEntryMentor").focus(); return; }
     if(!stageDone("skill", mentor)){ toast("Complete this mentor's Skill Development entry first"); document.getElementById("acEntryMentor").focus(); return; }
     if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("acEntryDate").focus(); return; }
@@ -1896,7 +1936,7 @@
     const remarks = document.getElementById("atEntryRemarks").value.trim();
 
     if(!campus){ toast("Choose a campus before saving"); document.getElementById("atEntryCampus").focus(); return; }
-    if(!department){ toast("Enter a department before saving"); document.getElementById("atEntryDepartment").focus(); return; }
+    if(!department){ toast("Select a subject before saving"); document.getElementById("atEntryDepartment").focus(); return; }
     if(!mentor){ toast("Enter a mentor name before saving"); document.getElementById("atEntryMentor").focus(); return; }
     if(!stageDone("skill", mentor)){ toast("Complete this mentor's Skill Development entry first"); document.getElementById("atEntryMentor").focus(); return; }
     if(!stageDone("academic", mentor)){ toast("Complete this mentor's Academic Task entry first"); document.getElementById("atEntryMentor").focus(); return; }
@@ -2031,7 +2071,7 @@
     const notes = document.getElementById("adEntryNotes").value.trim();
 
     if(!campus){ toast("Choose a campus before saving"); document.getElementById("adEntryCampus").focus(); return; }
-    if(!department){ toast("Enter a department before saving"); document.getElementById("adEntryDepartment").focus(); return; }
+    if(!department){ toast("Select a subject before saving"); document.getElementById("adEntryDepartment").focus(); return; }
     if(!mentor){ toast("Enter the campus manager being audited"); document.getElementById("adEntryMentor").focus(); return; }
     if(!stageDone("skill", mentor)){ toast("This campus manager's Skill Development hasn't been completed yet"); document.getElementById("adEntryMentor").focus(); return; }
     if(!stageDone("academic", mentor)){ toast("This campus manager's Academic Tasks haven't been completed yet"); document.getElementById("adEntryMentor").focus(); return; }
@@ -2098,7 +2138,7 @@
   // Reports & Logs. The mentor review flow (Skill Dev -> Academic ->
   // Attendance -> Internal Audit) is a separate track: it only
   // opens when "Record Audit" is clicked, landing on a flow overview that asks
-  // for Campus, Department and Mentor Name, shows all three stages (plus
+  // for Campus, Subject and Mentor Name, shows all three stages (plus
   // Internal Audit once they're done) and lets you jump into any of them, or
   // via the flow strip inside an entry page once that flow has been started.
   const SIDEBAR_NAV = [
@@ -2163,7 +2203,7 @@
   }
 
   // "Record Audit" is the single entry point into the review flow. Clicking it
-  // opens a flow overview asking for Campus, Department and Mentor Name;
+  // opens a flow overview asking for Campus, Subject and Mentor Name;
   // clicking Continue jumps straight to whichever stage that mentor still
   // needs — Skill Development first for a brand-new mentor, or further along
   // if they're resuming.
@@ -2190,7 +2230,7 @@
     const department = document.getElementById("mfEntryDepartment").value.trim();
     const mentor = document.getElementById("mfEntryMentor").value.trim();
     if(!campus){ toast("Choose a campus to continue"); document.getElementById("mfEntryCampus").focus(); return; }
-    if(!department){ toast("Enter a department to continue"); document.getElementById("mfEntryDepartment").focus(); return; }
+    if(!department){ toast("Select a subject to continue"); document.getElementById("mfEntryDepartment").focus(); return; }
     if(!mentor){ toast("Enter a mentor name to continue"); document.getElementById("mfEntryMentor").focus(); return; }
     const stage = firstIncompleteStage(mentor);
     const page = FLOW_PAGE_MAP[stage];
