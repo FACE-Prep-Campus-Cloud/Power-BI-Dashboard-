@@ -516,7 +516,7 @@
     </div>
 
     <div class="sidebar-footer">
-      <div class="sidebar-footer-hint">Use <strong>Record Audit</strong> above the page title to run a mentor through the Weekly Plan → Skill Development → Academic Tasks → Attendance review flow.</div>
+      <div class="sidebar-footer-hint">Use <strong>Record Audit</strong> above the page title to run a mentor through the Skill Development → Academic Tasks → Attendance review flow.</div>
     </div>
   </aside>
 
@@ -536,8 +536,7 @@
 
     <div id="page-reports" class="hidden">
       <div class="tabs" id="tabs">
-        <button class="tab-btn active" data-tab="weekly">Weekly Plan Submissions</button>
-        <button class="tab-btn" data-tab="skill">Skill Development</button>
+        <button class="tab-btn active" data-tab="skill">Skill Development</button>
         <button class="tab-btn" data-tab="academic">Academic Tasks</button>
         <button class="tab-btn" data-tab="attendance">Attendance</button>
         <button class="tab-btn" data-tab="audit">Internal Audit</button>
@@ -578,71 +577,46 @@
       </div>
     </div>
 
-    <!-- ================= WEEKLY PLAN ENTRY ================= -->
-    <div id="page-weekly-entry" class="hidden">
-      <div class="entry-wrap">
-        <div class="entry-card">
-          <h2>Weekly Plan Entry</h2>
-          <p class="entry-sub">Answer the genuineness questions below for this mentor's weekly plan. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Weekly Plan Submissions. This is step 1 of the review flow — complete it before moving on to Skill Development, Academic Tasks, and Attendance for this mentor.</p>
-
-          <div class="form-grid">
-            <div class="form-field">
-              <label for="wkEntryMentor">Mentor Name</label>
-              <input type="text" id="wkEntryMentor" placeholder="Enter mentor name">
-            </div>
-            <div class="form-field">
-<label for="wkEntryDate">Date of Marking <span class="lock-note">(auto-set, cannot be edited)</span></label>
-              <input type="date" id="wkEntryDate" readonly tabindex="-1">
-            </div>
-            <div class="form-field">
-              <label for="wkEntryPlanned">Planned Tasks</label>
-              <input type="number" id="wkEntryPlanned" min="0" max="40" placeholder="e.g. 10">
-            </div>
-            <div class="form-field">
-              <label for="wkEntryCompleted">Completed Tasks</label>
-              <input type="number" id="wkEntryCompleted" min="0" max="40" placeholder="e.g. 9">
-            </div>
-          </div>
-
-          <div id="wkFlowStrip"></div>
-
-          <div class="section-label">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
-            Genuineness Check
-          </div>
-          <div class="criteria-grid" id="wkEntryCriteria"></div>
-
-          <div class="score-band">
-            <span class="score-label">Score (auto-calculated from your answers)</span>
-            <span class="score-value" id="wkEntryScoreValue">0/100</span>
-          </div>
-
-          <div class="form-field full" style="margin-top:16px;">
-            <label for="wkEntryRemarks">Remarks</label>
-            <textarea id="wkEntryRemarks" rows="3" placeholder="Final remarks on this weekly plan..."></textarea>
-          </div>
-
-          <div class="entry-actions">
-            <button class="btn-primary" id="wkEntrySubmit">Add Entry</button>
-            <button class="btn-secondary" id="wkEntryReset">Reset</button>
-          </div>
-        </div>
-
-        <div class="recent-entries">
-          <h3>Recently added (this session)</h3>
-          <div class="recent-list" id="wkEntryRecent"></div>
-        </div>
-      </div>
-    </div>
-
     <!-- ================= SKILL DEVELOPMENT ENTRY ================= -->
     <div id="page-skill-entry" class="hidden">
       <div class="entry-wrap">
         <div class="entry-card">
           <h2>Skill Development Entry</h2>
-          <p class="entry-sub">Answer the genuineness questions below for this skill development log. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Skill Development. This mentor's Weekly Plan must be completed first — step 2 of the review flow.</p>
+          <p class="entry-sub">Answer the genuineness questions below for this skill development log. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Skill Development. This is step 1 of the review flow — complete it before moving on to Academic Tasks and Attendance for this mentor.</p>
 
           <div class="form-grid">
+            <div class="form-field">
+              <label for="skEntryCampus">Campus</label>
+              <select id="skEntryCampus">
+                <option value="">Select Campus</option>
+                <option value="Kamaraj College">Kamaraj College</option>
+                <option value="Kamaraj Women's College">Kamaraj Women's College</option>
+                <option value="SDNB Vaishnav College for Women">SDNB Vaishnav College for Women</option>
+                <option value="Patrician College of Arts & Science">Patrician College of Arts & Science</option>
+                <option value="TERF's College of Arts and Science">TERF's College of Arts and Science</option>
+                <option value="Sree Saraswathi Thyagaraja College">Sree Saraswathi Thyagaraja College</option>
+                <option value="TJS College of Arts and Science">TJS College of Arts and Science</option>
+                <option value="Bharathidasan College of Arts & Science">Bharathidasan College of Arts & Science</option>
+                <option value="Nagarathinam Angalammal Arts & Science College">Nagarathinam Angalammal Arts & Science College</option>
+                <option value="Vinayaga Mission’s Research Foundation School of Arts & Science">Vinayaga Mission’s Research Foundation School of Arts & Science</option>
+                <option value="Sri Amaraavathi College of Arts & Science">Sri Amaraavathi College of Arts & Science</option>
+                <option value="Takshashila University">Takshashila University</option>
+                <option value="Study World Group of Institution">Study World Group of Institution</option>
+                <option value="Rathinam College of Arts & Science">Rathinam College of Arts & Science</option>
+                <option value="Noorul Islam Centre for Higher Education (NICHE)">Noorul Islam Centre for Higher Education (NICHE)</option>
+                <option value="AMET University">AMET University</option>
+                <option value="Joy University">Joy University</option>
+                <option value="Sasurie College of Arts and Science">Sasurie College of Arts and Science</option>
+                <option value="Alliance University">Alliance University</option>
+                <option value="Kristu Jayathi University">Kristu Jayathi University</option>
+                <option value="S-VYASA University">S-VYASA University</option>
+                <option value="Asian School of Business">Asian School of Business</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="skEntryDepartment">Department</label>
+              <input type="text" id="skEntryDepartment" placeholder="Enter department">
+            </div>
             <div class="form-field">
               <label for="skEntryMentor">Mentor Name</label>
               <input type="text" id="skEntryMentor" placeholder="Enter mentor name">
@@ -693,9 +667,41 @@
       <div class="entry-wrap">
         <div class="entry-card">
           <h2>Academic Task Entry</h2>
-          <p class="entry-sub">Answer the genuineness questions below to verify an academic task submission. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Academic Tasks. This mentor's Weekly Plan and Skill Development must be completed first — step 3 of the review flow.</p>
+          <p class="entry-sub">Answer the genuineness questions below to verify an academic task submission. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Academic Tasks. This mentor's Skill Development must be completed first — step 2 of the review flow.</p>
 
           <div class="form-grid">
+            <div class="form-field">
+              <label for="acEntryCampus">Campus</label>
+              <select id="acEntryCampus">
+                <option value="">Select Campus</option>
+                <option value="Kamaraj College">Kamaraj College</option>
+                <option value="Kamaraj Women's College">Kamaraj Women's College</option>
+                <option value="SDNB Vaishnav College for Women">SDNB Vaishnav College for Women</option>
+                <option value="Patrician College of Arts & Science">Patrician College of Arts & Science</option>
+                <option value="TERF's College of Arts and Science">TERF's College of Arts and Science</option>
+                <option value="Sree Saraswathi Thyagaraja College">Sree Saraswathi Thyagaraja College</option>
+                <option value="TJS College of Arts and Science">TJS College of Arts and Science</option>
+                <option value="Bharathidasan College of Arts & Science">Bharathidasan College of Arts & Science</option>
+                <option value="Nagarathinam Angalammal Arts & Science College">Nagarathinam Angalammal Arts & Science College</option>
+                <option value="Vinayaga Mission’s Research Foundation School of Arts & Science">Vinayaga Mission’s Research Foundation School of Arts & Science</option>
+                <option value="Sri Amaraavathi College of Arts & Science">Sri Amaraavathi College of Arts & Science</option>
+                <option value="Takshashila University">Takshashila University</option>
+                <option value="Study World Group of Institution">Study World Group of Institution</option>
+                <option value="Rathinam College of Arts & Science">Rathinam College of Arts & Science</option>
+                <option value="Noorul Islam Centre for Higher Education (NICHE)">Noorul Islam Centre for Higher Education (NICHE)</option>
+                <option value="AMET University">AMET University</option>
+                <option value="Joy University">Joy University</option>
+                <option value="Sasurie College of Arts and Science">Sasurie College of Arts and Science</option>
+                <option value="Alliance University">Alliance University</option>
+                <option value="Kristu Jayathi University">Kristu Jayathi University</option>
+                <option value="S-VYASA University">S-VYASA University</option>
+                <option value="Asian School of Business">Asian School of Business</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="acEntryDepartment">Department</label>
+              <input type="text" id="acEntryDepartment" placeholder="Enter department">
+            </div>
             <div class="form-field">
               <label for="acEntryMentor">Mentor Name</label>
               <input type="text" id="acEntryMentor" placeholder="Enter mentor name">
@@ -757,9 +763,41 @@
       <div class="entry-wrap">
         <div class="entry-card">
           <h2>Attendance Entry</h2>
-          <p class="entry-sub">Answer the genuineness questions below to verify an attendance record. Each answer is marked, a verification score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Attendance. This mentor's Weekly Plan, Skill Development, and Academic Tasks must be completed first — step 4 of the review flow.</p>
+          <p class="entry-sub">Answer the genuineness questions below to verify an attendance record. Each answer is marked, a verification score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Attendance. This mentor's Skill Development and Academic Tasks must be completed first — step 3 of the review flow.</p>
 
           <div class="form-grid">
+            <div class="form-field">
+              <label for="atEntryCampus">Campus</label>
+              <select id="atEntryCampus">
+                <option value="">Select Campus</option>
+                <option value="Kamaraj College">Kamaraj College</option>
+                <option value="Kamaraj Women's College">Kamaraj Women's College</option>
+                <option value="SDNB Vaishnav College for Women">SDNB Vaishnav College for Women</option>
+                <option value="Patrician College of Arts & Science">Patrician College of Arts & Science</option>
+                <option value="TERF's College of Arts and Science">TERF's College of Arts and Science</option>
+                <option value="Sree Saraswathi Thyagaraja College">Sree Saraswathi Thyagaraja College</option>
+                <option value="TJS College of Arts and Science">TJS College of Arts and Science</option>
+                <option value="Bharathidasan College of Arts & Science">Bharathidasan College of Arts & Science</option>
+                <option value="Nagarathinam Angalammal Arts & Science College">Nagarathinam Angalammal Arts & Science College</option>
+                <option value="Vinayaga Mission’s Research Foundation School of Arts & Science">Vinayaga Mission’s Research Foundation School of Arts & Science</option>
+                <option value="Sri Amaraavathi College of Arts & Science">Sri Amaraavathi College of Arts & Science</option>
+                <option value="Takshashila University">Takshashila University</option>
+                <option value="Study World Group of Institution">Study World Group of Institution</option>
+                <option value="Rathinam College of Arts & Science">Rathinam College of Arts & Science</option>
+                <option value="Noorul Islam Centre for Higher Education (NICHE)">Noorul Islam Centre for Higher Education (NICHE)</option>
+                <option value="AMET University">AMET University</option>
+                <option value="Joy University">Joy University</option>
+                <option value="Sasurie College of Arts and Science">Sasurie College of Arts and Science</option>
+                <option value="Alliance University">Alliance University</option>
+                <option value="Kristu Jayathi University">Kristu Jayathi University</option>
+                <option value="S-VYASA University">S-VYASA University</option>
+                <option value="Asian School of Business">Asian School of Business</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="atEntryDepartment">Department</label>
+              <input type="text" id="atEntryDepartment" placeholder="Enter department">
+            </div>
             <div class="form-field">
               <label for="atEntryMentor">Mentor Name</label>
               <input type="text" id="atEntryMentor" placeholder="Enter mentor name">
@@ -814,9 +852,41 @@
       <div class="entry-wrap">
         <div class="entry-card">
           <h2>Internal Audit Entry</h2>
-          <p class="entry-sub">Use this when you and another campus manager sit down to review a campus manager's work. This is the final step of the review flow — it unlocks only once Weekly Plan, Skill Development, Academic Tasks, and Attendance have all been completed for this campus manager. Confirm whether each was genuinely completed, add your audit notes (required), then save — the record appears immediately under Reports &amp; Audit Logs → Internal Audit so it can be checked again on the next daily review.</p>
+          <p class="entry-sub">Use this when you and another campus manager sit down to review a campus manager's work. This is the final step of the review flow — it unlocks only once Skill Development, Academic Tasks, and Attendance have all been completed for this campus manager. Confirm whether each was genuinely completed, add your audit notes (required), then save — the record appears immediately under Reports &amp; Audit Logs → Internal Audit so it can be checked again on the next daily review.</p>
 
           <div class="form-grid">
+            <div class="form-field">
+              <label for="adEntryCampus">Campus</label>
+              <select id="adEntryCampus">
+                <option value="">Select Campus</option>
+                <option value="Kamaraj College">Kamaraj College</option>
+                <option value="Kamaraj Women's College">Kamaraj Women's College</option>
+                <option value="SDNB Vaishnav College for Women">SDNB Vaishnav College for Women</option>
+                <option value="Patrician College of Arts & Science">Patrician College of Arts & Science</option>
+                <option value="TERF's College of Arts and Science">TERF's College of Arts and Science</option>
+                <option value="Sree Saraswathi Thyagaraja College">Sree Saraswathi Thyagaraja College</option>
+                <option value="TJS College of Arts and Science">TJS College of Arts and Science</option>
+                <option value="Bharathidasan College of Arts & Science">Bharathidasan College of Arts & Science</option>
+                <option value="Nagarathinam Angalammal Arts & Science College">Nagarathinam Angalammal Arts & Science College</option>
+                <option value="Vinayaga Mission’s Research Foundation School of Arts & Science">Vinayaga Mission’s Research Foundation School of Arts & Science</option>
+                <option value="Sri Amaraavathi College of Arts & Science">Sri Amaraavathi College of Arts & Science</option>
+                <option value="Takshashila University">Takshashila University</option>
+                <option value="Study World Group of Institution">Study World Group of Institution</option>
+                <option value="Rathinam College of Arts & Science">Rathinam College of Arts & Science</option>
+                <option value="Noorul Islam Centre for Higher Education (NICHE)">Noorul Islam Centre for Higher Education (NICHE)</option>
+                <option value="AMET University">AMET University</option>
+                <option value="Joy University">Joy University</option>
+                <option value="Sasurie College of Arts and Science">Sasurie College of Arts and Science</option>
+                <option value="Alliance University">Alliance University</option>
+                <option value="Kristu Jayathi University">Kristu Jayathi University</option>
+                <option value="S-VYASA University">S-VYASA University</option>
+                <option value="Asian School of Business">Asian School of Business</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="adEntryDepartment">Department</label>
+              <input type="text" id="adEntryDepartment" placeholder="Enter department">
+            </div>
             <div class="form-field">
               <label for="adEntryMentor">Campus Manager Being Audited</label>
               <input type="text" id="adEntryMentor" placeholder="Enter campus manager name">
@@ -863,9 +933,41 @@
       <div class="entry-wrap">
         <div class="entry-card">
           <h2>Record Audit</h2>
-          <p class="entry-sub" id="mfEntrySub">Enter the mentor's name to start or continue their Weekly review. The flow runs in order — Weekly Plan, Skill Development, Academic Tasks, then Attendance — each step unlocking once the one before it is logged for this mentor. Internal Audit becomes available once all four are complete.</p>
+          <p class="entry-sub" id="mfEntrySub">Choose the campus, enter the department and the mentor's name to start or continue their review. The flow runs in order — Skill Development, Academic Tasks, then Attendance — each step unlocking once the one before it is logged for this mentor. Internal Audit becomes available once all three are complete.</p>
 
           <div class="form-grid">
+            <div class="form-field full">
+              <label for="mfEntryCampus">Campus</label>
+              <select id="mfEntryCampus">
+                <option value="">Select Campus</option>
+                <option value="Kamaraj College">Kamaraj College</option>
+                <option value="Kamaraj Women's College">Kamaraj Women's College</option>
+                <option value="SDNB Vaishnav College for Women">SDNB Vaishnav College for Women</option>
+                <option value="Patrician College of Arts & Science">Patrician College of Arts & Science</option>
+                <option value="TERF's College of Arts and Science">TERF's College of Arts and Science</option>
+                <option value="Sree Saraswathi Thyagaraja College">Sree Saraswathi Thyagaraja College</option>
+                <option value="TJS College of Arts and Science">TJS College of Arts and Science</option>
+                <option value="Bharathidasan College of Arts & Science">Bharathidasan College of Arts & Science</option>
+                <option value="Nagarathinam Angalammal Arts & Science College">Nagarathinam Angalammal Arts & Science College</option>
+                <option value="Vinayaga Mission’s Research Foundation School of Arts & Science">Vinayaga Mission’s Research Foundation School of Arts & Science</option>
+                <option value="Sri Amaraavathi College of Arts & Science">Sri Amaraavathi College of Arts & Science</option>
+                <option value="Takshashila University">Takshashila University</option>
+                <option value="Study World Group of Institution">Study World Group of Institution</option>
+                <option value="Rathinam College of Arts & Science">Rathinam College of Arts & Science</option>
+                <option value="Noorul Islam Centre for Higher Education (NICHE)">Noorul Islam Centre for Higher Education (NICHE)</option>
+                <option value="AMET University">AMET University</option>
+                <option value="Joy University">Joy University</option>
+                <option value="Sasurie College of Arts and Science">Sasurie College of Arts and Science</option>
+                <option value="Alliance University">Alliance University</option>
+                <option value="Kristu Jayathi University">Kristu Jayathi University</option>
+                <option value="S-VYASA University">S-VYASA University</option>
+                <option value="Asian School of Business">Asian School of Business</option>
+              </select>
+            </div>
+            <div class="form-field full">
+              <label for="mfEntryDepartment">Department</label>
+              <input type="text" id="mfEntryDepartment" placeholder="Enter department">
+            </div>
             <div class="form-field full">
               <label for="mfEntryMentor">Mentor Name</label>
               <input type="text" id="mfEntryMentor" placeholder="Enter mentor name to start or continue their review flow">
@@ -937,26 +1039,14 @@
   }
 
   // ---------------- genuineness question sets ----------------
-  const WEEKLY_KEYS = ["planGenuine","dailyUpdated","tasksVerified","reflectsEffort"];
-  const WEEKLY_SHORT = {
-    planGenuine: "Genuine Marking", dailyUpdated: "Daily Updates",
-    tasksVerified: "Tasks Verified", reflectsEffort: "Reflects Effort"
-  };
-  const WEEKLY_QUESTIONS = {
-    planGenuine: "Was this weekly plan genuinely completed, not backdated or copied?",
-    dailyUpdated: "Was the plan updated daily rather than filled in all at once?",
-    tasksVerified: "Were completed tasks cross-checked against the student's actual work?",
-    reflectsEffort: "Does the completion count genuinely reflect the student's effort that week?"
-  };
-
   const CRITERIA_KEYS = ["genuine","weeklyPlan","tracker","assignment","assessment"];
   const CRITERIA_SHORT = {
-    genuine: "Genuine Marking", weeklyPlan: "Weekly Plan", tracker: "Daily Tracker",
+    genuine: "Genuine Marking", weeklyPlan: "Consistency", tracker: "Daily Tracker",
     assignment: "Assignment", assessment: "Assessment"
   };
   const CRITERIA_QUESTIONS = {
     genuine: "Was this log genuinely marked, not backdated or copied?",
-    weeklyPlan: "Was the weekly plan for this skill genuinely completed?",
+    weeklyPlan: "Was progress on this skill logged consistently rather than all at once?",
     tracker: "Was the daily tracker updated consistently?",
     assignment: "Was the related assignment completed?",
     assessment: "Was the related assessment completed?"
@@ -985,7 +1075,6 @@
   };
 
   const CRITERIA_CONFIG = {
-    weekly: { keys: WEEKLY_KEYS, short: WEEKLY_SHORT, questions: WEEKLY_QUESTIONS },
     skill: { keys: CRITERIA_KEYS, short: CRITERIA_SHORT, questions: CRITERIA_QUESTIONS },
     academic: { keys: ACADEMIC_KEYS, short: ACADEMIC_SHORT, questions: ACADEMIC_QUESTIONS },
     attendance: { keys: ATTENDANCE_KEYS, short: ATTENDANCE_SHORT, questions: ATTENDANCE_QUESTIONS }
@@ -1012,7 +1101,7 @@
   // ---------------- internal audit ----------------
   const AUDIT_KEYS = ["weeklyPlan","skillDev","academic"];
   const AUDIT_LABELS = {
-    weeklyPlan: "Weekly Plan Followed",
+    weeklyPlan: "Consistent Logging Verified",
     skillDev: "Skill Development Completed",
     academic: "Academic Tasks Completed"
   };
@@ -1028,10 +1117,9 @@
   let auditSeq = 0;
 
   // ---------------- data store ----------------
-  let weeklySeq = 0, skillSeq = 0, academicSeq = 0, attendanceSeq = 0;
+  let skillSeq = 0, academicSeq = 0, attendanceSeq = 0;
 
   const DATA = {
-    weekly: [],
     skill: [],
     academic: [],
     attendance: [],
@@ -1053,11 +1141,13 @@
   function escapeHtml(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
   // ---------------- sequential flow gating helpers ----------------
-  const FLOW_ORDER = ["weekly","skill","academic","attendance"];
-  const FLOW_LABELS = { weekly: "Weekly Plan", skill: "Skill Dev.", academic: "Academic", attendance: "Attendance", audit: "Internal Audit" };
-  const FLOW_PAGE_MAP = { weekly: "weekly-entry", skill: "skill-entry", academic: "academic-entry", attendance: "attendance-entry", audit: "audit-entry" };
-  const FLOW_MENTOR_FIELD = { weekly: "wkEntryMentor", skill: "skEntryMentor", academic: "acEntryMentor", attendance: "atEntryMentor", audit: "adEntryMentor" };
-  const FLOW_STRIP_ID = { weekly: "wkFlowStrip", skill: "skFlowStrip", academic: "acFlowStrip", attendance: "atFlowStrip", audit: "adFlowStrip" };
+  const FLOW_ORDER = ["skill","academic","attendance"];
+  const FLOW_LABELS = { skill: "Skill Dev.", academic: "Academic", attendance: "Attendance", audit: "Internal Audit" };
+  const FLOW_PAGE_MAP = { skill: "skill-entry", academic: "academic-entry", attendance: "attendance-entry", audit: "audit-entry" };
+  const FLOW_MENTOR_FIELD = { skill: "skEntryMentor", academic: "acEntryMentor", attendance: "atEntryMentor", audit: "adEntryMentor" };
+  const FLOW_CAMPUS_FIELD = { skill: "skEntryCampus", academic: "acEntryCampus", attendance: "atEntryCampus", audit: "adEntryCampus" };
+  const FLOW_DEPARTMENT_FIELD = { skill: "skEntryDepartment", academic: "acEntryDepartment", attendance: "atEntryDepartment", audit: "adEntryDepartment" };
+  const FLOW_STRIP_ID = { skill: "skFlowStrip", academic: "acFlowStrip", attendance: "atFlowStrip", audit: "adFlowStrip" };
   function normMentor(s){ return (s || "").trim().toLowerCase(); }
   function stageDone(domain, mentorName){
     const n = normMentor(mentorName);
@@ -1079,17 +1169,31 @@
     }
     return null;
   }
-  // returns the first stage in FLOW_ORDER not yet completed for this mentor, or "audit" if all four are done
+  // returns the first stage in FLOW_ORDER not yet completed for this mentor, or "audit" if all three are done
   function firstIncompleteStage(mentorName){
     for(const d of FLOW_ORDER){
       if(!stageDone(d, mentorName)) return d;
     }
     return "audit";
   }
-  // renders the 4/5-step strip. currentDomain is one of FLOW_ORDER or "audit".
+  // reads the mentor/campus/department fields for a given entry-page prefix ("sk","ac","at","ad","mf")
+  function readFlowCtx(prefix){
+    const m = document.getElementById(prefix + "EntryMentor");
+    const c = document.getElementById(prefix + "EntryCampus");
+    const d = document.getElementById(prefix + "EntryDepartment");
+    return {
+      mentor: m ? m.value : "",
+      campus: c ? c.value : "",
+      department: d ? d.value : ""
+    };
+  }
+  // renders the 3/4-step strip. currentDomain is one of FLOW_ORDER or "audit".
   // Every step is clickable — clicking jumps straight to that stage's entry page,
-  // carrying the mentor name across so the flow feels continuous end-to-end.
-  function renderFlowStrip(containerId, mentorName, currentDomain){
+  // carrying the mentor/campus/department across so the flow feels continuous end-to-end.
+  function renderFlowStrip(containerId, ctx, currentDomain){
+    const mentorName = (ctx && ctx.mentor) || "";
+    const campusName = (ctx && ctx.campus) || "";
+    const departmentName = (ctx && ctx.department) || "";
     const el = document.getElementById(containerId);
     if(!el) return;
     const steps = currentDomain === "audit" ? FLOW_ORDER.concat(["audit"]) : FLOW_ORDER;
@@ -1122,8 +1226,12 @@
       btn.addEventListener("click", () => {
         const d = btn.dataset.domain;
         if(hasMentor){
-          const field = document.getElementById(FLOW_MENTOR_FIELD[d]);
-          if(field) field.value = mentorName;
+          const mField = document.getElementById(FLOW_MENTOR_FIELD[d]);
+          if(mField) mField.value = mentorName;
+          const cField = document.getElementById(FLOW_CAMPUS_FIELD[d]);
+          if(cField && campusName) cField.value = campusName;
+          const deptField = document.getElementById(FLOW_DEPARTMENT_FIELD[d]);
+          if(deptField && departmentName) deptField.value = departmentName;
         }
         navigateTo(FLOW_PAGE_MAP[d]);
       });
@@ -1178,38 +1286,17 @@
   }
 
   const TAB_CONFIG = {
-    weekly: {
-      label: "Weekly Plan Submissions",
-      minWidth: 1560,
-      cols: ["Submission ID","Mentor Name","Planned Tasks","Completed","Completion",
-        WEEKLY_SHORT.planGenuine, WEEKLY_SHORT.dailyUpdated, WEEKLY_SHORT.tasksVerified, WEEKLY_SHORT.reflectsEffort,
-        "Score","Remarks","Date of Marking","Status"],
-      row(r){ return [
-        r.id,
-        mentorCell(r.mentor),
-        r.planned, r.completed,
-        barCell(r.pct),
-        criteriaToggle("weekly",r,"planGenuine"), criteriaToggle("weekly",r,"dailyUpdated"),
-        criteriaToggle("weekly",r,"tasksVerified"), criteriaToggle("weekly",r,"reflectsEffort"),
-        barCell(r.score), remarksCell(r),
-        r.date, pillCell(r.status)
-      ]; },
-      exportRow(r){ return [
-        r.id, r.mentor, r.planned, r.completed, r.pct + "%",
-        r.criteria.planGenuine ? "Yes" : "No", r.criteria.dailyUpdated ? "Yes" : "No",
-        r.criteria.tasksVerified ? "Yes" : "No", r.criteria.reflectsEffort ? "Yes" : "No",
-        r.score + "/100", r.remarks || "", r.date, r.status
-      ]; }
-    },
     skill: {
       label: "Skill Development",
-      minWidth: 1560,
-      cols: ["Log ID","Mentor Name","Skill Subject",
+      minWidth: 1720,
+      cols: ["Log ID","Mentor Name","Campus","Department","Skill Subject",
         CRITERIA_SHORT.genuine, CRITERIA_SHORT.weeklyPlan, CRITERIA_SHORT.tracker, CRITERIA_SHORT.assignment, CRITERIA_SHORT.assessment,
         "Score","Remarks","Date of Marking","Status"],
       row(r){ return [
         r.id,
         mentorCell(r.mentor),
+        escapeHtml(r.campus || "—"),
+        escapeHtml(r.department || "—"),
         subjectCell(r),
         criteriaToggle("skill",r,"genuine"), criteriaToggle("skill",r,"weeklyPlan"), criteriaToggle("skill",r,"tracker"),
         criteriaToggle("skill",r,"assignment"), criteriaToggle("skill",r,"assessment"),
@@ -1217,7 +1304,7 @@
         r.date, pillCell(r.status)
       ]; },
       exportRow(r){ return [
-        r.id, r.mentor, r.subject,
+        r.id, r.mentor, r.campus || "", r.department || "", r.subject,
         r.criteria.genuine ? "Yes" : "No", r.criteria.weeklyPlan ? "Yes" : "No",
         r.criteria.tracker ? "Yes" : "No", r.criteria.assignment ? "Yes" : "No",
         r.criteria.assessment ? "Yes" : "No",
@@ -1226,13 +1313,15 @@
     },
     academic: {
       label: "Academic Tasks",
-      minWidth: 1620,
-      cols: ["Task ID","Mentor Name","Subject","Task Type","Task Name",
+      minWidth: 1780,
+      cols: ["Task ID","Mentor Name","Campus","Department","Subject","Task Type","Task Name",
         ACADEMIC_SHORT.independent, ACADEMIC_SHORT.onTime, ACADEMIC_SHORT.verified, ACADEMIC_SHORT.reflectsWork,
         "Score","Remarks","Date of Marking","Status"],
       row(r){ return [
         r.id,
         mentorCell(r.mentor),
+        escapeHtml(r.campus || "—"),
+        escapeHtml(r.department || "—"),
         escapeHtml(r.subject || "—"),
         r.type, r.task,
         criteriaToggle("academic",r,"independent"), criteriaToggle("academic",r,"onTime"),
@@ -1241,7 +1330,7 @@
         r.date, pillCell(r.status)
       ]; },
       exportRow(r){ return [
-        r.id, r.mentor, r.subject || "", r.type, r.task,
+        r.id, r.mentor, r.campus || "", r.department || "", r.subject || "", r.type, r.task,
         r.criteria.independent ? "Yes" : "No", r.criteria.onTime ? "Yes" : "No",
         r.criteria.verified ? "Yes" : "No", r.criteria.reflectsWork ? "Yes" : "No",
         r.score + "/100", r.remarks || "", r.date, r.status
@@ -1249,13 +1338,15 @@
     },
     attendance: {
       label: "Attendance",
-      minWidth: 1660,
-      cols: ["Record ID","Mentor Name","Classes Held","Attended","Attendance %",
+      minWidth: 1820,
+      cols: ["Record ID","Mentor Name","Campus","Department","Classes Held","Attended","Attendance %",
         ATTENDANCE_SHORT.markedDaily, ATTENDANCE_SHORT.crossVerified, ATTENDANCE_SHORT.noProxy, ATTENDANCE_SHORT.matchesTracker,
         "Verification Score","Remarks","Date of Marking","Status"],
       row(r){ return [
         r.id,
         mentorCell(r.mentor),
+        escapeHtml(r.campus || "—"),
+        escapeHtml(r.department || "—"),
         r.held, r.attended, barCell(r.pct),
         criteriaToggle("attendance",r,"markedDaily"), criteriaToggle("attendance",r,"crossVerified"),
         criteriaToggle("attendance",r,"noProxy"), criteriaToggle("attendance",r,"matchesTracker"),
@@ -1263,7 +1354,7 @@
         r.date, pillCell(r.status)
       ]; },
       exportRow(r){ return [
-        r.id, r.mentor, r.held, r.attended, r.pct + "%",
+        r.id, r.mentor, r.campus || "", r.department || "", r.held, r.attended, r.pct + "%",
         r.criteria.markedDaily ? "Yes" : "No", r.criteria.crossVerified ? "Yes" : "No",
         r.criteria.noProxy ? "Yes" : "No", r.criteria.matchesTracker ? "Yes" : "No",
         r.score + "/100", r.remarks || "", r.date, r.status
@@ -1271,25 +1362,27 @@
     },
     audit: {
       label: "Internal Audit",
-      minWidth: 1220,
-      cols: ["Audit ID","Mentor Audited","Weekly Plan","Skill Development","Academic Tasks","Overall Status","Auditor","Audited On"],
+      minWidth: 1420,
+      cols: ["Audit ID","Mentor Audited","Campus","Department","Skill Development","Academic Tasks","Consistent Logging","Overall Status","Auditor","Audited On"],
       row(r){ return [
         r.id,
         mentorCell(r.mentor),
-        auditSelectCell(r,"weeklyPlan"), auditSelectCell(r,"skillDev"), auditSelectCell(r,"academic"),
+        escapeHtml(r.campus || "—"),
+        escapeHtml(r.department || "—"),
+        auditSelectCell(r,"skillDev"), auditSelectCell(r,"academic"), auditSelectCell(r,"weeklyPlan"),
         pillCell(r.overall),
         mentorCell(r.auditor),
         r.date
       ]; },
       exportRow(r){ return [
-        r.id, r.mentor,
-        r.weeklyPlan, r.skillDev, r.academic, r.overall, r.auditor, r.date
+        r.id, r.mentor, r.campus || "", r.department || "",
+        r.skillDev, r.academic, r.weeklyPlan, r.overall, r.auditor, r.date
       ]; }
     }
   };
 
   // ---------------- state ----------------
-  let state = { tab: "weekly", search: "", mentor: "", status: "", page: 1, pageSize: 10 };
+  let state = { tab: "skill", search: "", mentor: "", status: "", page: 1, pageSize: 10 };
 
   function filteredRows(){
     const raw = DATA[state.tab];
@@ -1513,95 +1606,6 @@
       onChange();
     };
   }
-  // ---------------- weekly plan entry page ----------------
-  let wkEntryAnswers = blankAnswers("weekly");
-
-  function updateWeeklyScore(){
-    const score = scoreFromAnswers(wkEntryAnswers, WEEKLY_KEYS);
-    const el = document.getElementById("wkEntryScoreValue");
-    el.textContent = score + "/100";
-    el.style.color = score >= 80 ? "var(--green-ink2)" : score >= 50 ? "var(--amber-ink)" : "var(--red-ink)";
-  }
-  function populateWeeklyEntryStatics(){
-    document.getElementById("wkEntryDate").value = todayIso();
-    buildQuestionGrid("wkEntryCriteria", "weekly", wkEntryAnswers, updateWeeklyScore);
-    renderFlowStrip("wkFlowStrip", document.getElementById("wkEntryMentor").value, "weekly");
-  }
-  function resetWeeklyEntryForm(){
-    document.getElementById("wkEntryMentor").value = "";
-    document.getElementById("wkEntryDate").value = todayIso();
-    document.getElementById("wkEntryPlanned").value = "";
-    document.getElementById("wkEntryCompleted").value = "";
-    document.getElementById("wkEntryRemarks").value = "";
-    wkEntryAnswers = blankAnswers("weekly");
-    buildQuestionGrid("wkEntryCriteria", "weekly", wkEntryAnswers, updateWeeklyScore);
-    updateWeeklyScore();
-    renderFlowStrip("wkFlowStrip", "", "weekly");
-  }
-  document.getElementById("wkEntryMentor").addEventListener("input", e => {
-    renderFlowStrip("wkFlowStrip", e.target.value, "weekly");
-  });
-
-  const recentWeeklyUids = [];
-  function renderRecentWeekly(){
-    const wrap = document.getElementById("wkEntryRecent");
-    if(recentWeeklyUids.length === 0){
-      wrap.innerHTML = `<div class="recent-empty">No entries added yet this session.</div>`;
-      return;
-    }
-    wrap.innerHTML = recentWeeklyUids.slice().reverse().map(uid => {
-      const r = DATA.weekly.find(x => x.uid === uid);
-      if(!r) return "";
-      return `<div class="recent-row">
-        <div class="rr-left">
-          <div class="cell-avatar" style="background:${avatarColor(r.mentor)};width:24px;height:24px;font-size:9.5px;">${initials(r.mentor)}</div>
-          <span class="rr-name">${escapeHtml(r.mentor)}</span>
-          <span class="rr-sub">${r.completed}/${r.planned} tasks · ${r.date}</span>
-        </div>
-        <span class="pill ${STATUS_MAP[r.status] || 'warn'}">${r.status} · ${r.score}/100</span>
-      </div>`;
-    }).join("");
-  }
-
-  document.getElementById("wkEntrySubmit").addEventListener("click", () => {
-    const mentor = document.getElementById("wkEntryMentor").value.trim();
-    const dateIso = document.getElementById("wkEntryDate").value;
-    const plannedRaw = document.getElementById("wkEntryPlanned").value;
-    const completedRaw = document.getElementById("wkEntryCompleted").value;
-    const remarks = document.getElementById("wkEntryRemarks").value.trim();
-
-    if(!mentor){ toast("Enter a mentor name before saving"); document.getElementById("wkEntryMentor").focus(); return; }
-    if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("wkEntryDate").focus(); return; }
-    if(plannedRaw === ""){ toast("Enter planned tasks before saving"); document.getElementById("wkEntryPlanned").focus(); return; }
-    if(completedRaw === ""){ toast("Enter completed tasks before saving"); document.getElementById("wkEntryCompleted").focus(); return; }
-    const planned = Math.max(0, parseInt(plannedRaw,10) || 0);
-    const completed = Math.max(0, parseInt(completedRaw,10) || 0);
-    if(completed > planned){ toast("Completed can't be more than planned tasks"); document.getElementById("wkEntryCompleted").focus(); return; }
-    if(!remarks){ toast("Enter remarks before saving"); document.getElementById("wkEntryRemarks").focus(); return; }
-
-    weeklySeq++;
-    const criteria = { ...wkEntryAnswers };
-    const pct = planned > 0 ? Math.round((completed/planned)*100) : 0;
-    const row = {
-      uid: "wpl-" + weeklySeq,
-      id: "#WPL-" + Math.floor(10000 + Math.random()*89999),
-      mentor, planned, completed, pct,
-      criteria, remarks,
-      date: isoToDMY(dateIso)
-    };
-    recomputeRow("weekly", row);
-    DATA.weekly.unshift(row);
-    recentWeeklyUids.push(row.uid);
-    logActivity("weekly", row.uid);
-    renderRecentWeekly();
-
-    toast("Entry saved for " + mentor + " — moving on to Skill Development.");
-    resetWeeklyEntryForm();
-    navigateTo("skill-entry");
-    document.getElementById("skEntryMentor").value = mentor;
-    renderFlowStrip("skFlowStrip", mentor, "skill");
-  });
-  document.getElementById("wkEntryReset").addEventListener("click", resetWeeklyEntryForm);
 
   // ---------------- skill development entry page ----------------
   let skEntryAnswers = blankAnswers("skill");
@@ -1615,9 +1619,11 @@
   function populateSkillEntryStatics(){
     document.getElementById("skEntryDate").value = todayIso();
     buildQuestionGrid("skEntryCriteria", "skill", skEntryAnswers, updateSkillScore);
-    renderFlowStrip("skFlowStrip", document.getElementById("skEntryMentor").value, "skill");
+    renderFlowStrip("skFlowStrip", readFlowCtx("sk"), "skill");
   }
   function resetSkillEntryForm(){
+    document.getElementById("skEntryCampus").value = "";
+    document.getElementById("skEntryDepartment").value = "";
     document.getElementById("skEntryMentor").value = "";
     document.getElementById("skEntryDate").value = todayIso();
     document.getElementById("skEntrySubject").value = "";
@@ -1625,10 +1631,15 @@
     skEntryAnswers = blankAnswers("skill");
     buildQuestionGrid("skEntryCriteria", "skill", skEntryAnswers, updateSkillScore);
     updateSkillScore();
-    renderFlowStrip("skFlowStrip", "", "skill");
+    renderFlowStrip("skFlowStrip", readFlowCtx("sk"), "skill");
   }
-  document.getElementById("skEntryMentor").addEventListener("input", e => {
-    renderFlowStrip("skFlowStrip", e.target.value, "skill");
+  ["skEntryMentor","skEntryCampus","skEntryDepartment"].forEach(id => {
+    document.getElementById(id).addEventListener("input", () => {
+      renderFlowStrip("skFlowStrip", readFlowCtx("sk"), "skill");
+    });
+    document.getElementById(id).addEventListener("change", () => {
+      renderFlowStrip("skFlowStrip", readFlowCtx("sk"), "skill");
+    });
   });
 
   const recentSkillUids = [];
@@ -1645,7 +1656,7 @@
         <div class="rr-left">
           <div class="cell-avatar" style="background:${avatarColor(r.mentor)};width:24px;height:24px;font-size:9.5px;">${initials(r.mentor)}</div>
           <span class="rr-name">${escapeHtml(r.mentor)}</span>
-          <span class="rr-sub">${escapeHtml(r.subject || "—")} · ${r.date}</span>
+          <span class="rr-sub">${escapeHtml(r.campus || "—")} · ${escapeHtml(r.subject || "—")} · ${r.date}</span>
         </div>
         <span class="pill ${STATUS_MAP[r.status] || 'warn'}">${r.status} · ${r.score}/100</span>
       </div>`;
@@ -1653,13 +1664,16 @@
   }
 
   document.getElementById("skEntrySubmit").addEventListener("click", () => {
+    const campus = document.getElementById("skEntryCampus").value;
+    const department = document.getElementById("skEntryDepartment").value.trim();
     const mentor = document.getElementById("skEntryMentor").value.trim();
     const dateIso = document.getElementById("skEntryDate").value;
     const subject = document.getElementById("skEntrySubject").value.trim();
     const remarks = document.getElementById("skEntryRemarks").value.trim();
 
+    if(!campus){ toast("Choose a campus before saving"); document.getElementById("skEntryCampus").focus(); return; }
+    if(!department){ toast("Enter a department before saving"); document.getElementById("skEntryDepartment").focus(); return; }
     if(!mentor){ toast("Enter a mentor name before saving"); document.getElementById("skEntryMentor").focus(); return; }
-    if(!stageDone("weekly", mentor)){ toast("Complete this mentor's Weekly Plan entry first"); document.getElementById("skEntryMentor").focus(); return; }
     if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("skEntryDate").focus(); return; }
     if(!subject){ toast("Enter a skill development subject before saving"); document.getElementById("skEntrySubject").focus(); return; }
     if(!remarks){ toast("Enter remarks before saving"); document.getElementById("skEntryRemarks").focus(); return; }
@@ -1669,7 +1683,7 @@
     const row = {
       uid: "skl-" + skillSeq,
       id: "#SKL-" + Math.floor(10000 + Math.random()*89999),
-      mentor, subject,
+      mentor, campus, department, subject,
       criteria, remarks,
       date: isoToDMY(dateIso)
     };
@@ -1683,7 +1697,9 @@
     resetSkillEntryForm();
     navigateTo("academic-entry");
     document.getElementById("acEntryMentor").value = mentor;
-    renderFlowStrip("acFlowStrip", mentor, "academic");
+    document.getElementById("acEntryCampus").value = campus;
+    document.getElementById("acEntryDepartment").value = department;
+    renderFlowStrip("acFlowStrip", { mentor, campus, department }, "academic");
   });
   document.getElementById("skEntryReset").addEventListener("click", resetSkillEntryForm);
 
@@ -1699,9 +1715,11 @@
   function populateAcademicEntryStatics(){
     document.getElementById("acEntryDate").value = todayIso();
     buildQuestionGrid("acEntryCriteria", "academic", acEntryAnswers, updateAcademicScore);
-    renderFlowStrip("acFlowStrip", document.getElementById("acEntryMentor").value, "academic");
+    renderFlowStrip("acFlowStrip", readFlowCtx("ac"), "academic");
   }
   function resetAcademicEntryForm(){
+    document.getElementById("acEntryCampus").value = "";
+    document.getElementById("acEntryDepartment").value = "";
     document.getElementById("acEntryMentor").value = "";
     document.getElementById("acEntryDate").value = todayIso();
     document.getElementById("acEntrySubject").value = "";
@@ -1711,10 +1729,15 @@
     acEntryAnswers = blankAnswers("academic");
     buildQuestionGrid("acEntryCriteria", "academic", acEntryAnswers, updateAcademicScore);
     updateAcademicScore();
-    renderFlowStrip("acFlowStrip", "", "academic");
+    renderFlowStrip("acFlowStrip", readFlowCtx("ac"), "academic");
   }
-  document.getElementById("acEntryMentor").addEventListener("input", e => {
-    renderFlowStrip("acFlowStrip", e.target.value, "academic");
+  ["acEntryMentor","acEntryCampus","acEntryDepartment"].forEach(id => {
+    document.getElementById(id).addEventListener("input", () => {
+      renderFlowStrip("acFlowStrip", readFlowCtx("ac"), "academic");
+    });
+    document.getElementById(id).addEventListener("change", () => {
+      renderFlowStrip("acFlowStrip", readFlowCtx("ac"), "academic");
+    });
   });
 
   const recentAcademicUids = [];
@@ -1731,7 +1754,7 @@
         <div class="rr-left">
           <div class="cell-avatar" style="background:${avatarColor(r.mentor)};width:24px;height:24px;font-size:9.5px;">${initials(r.mentor)}</div>
           <span class="rr-name">${escapeHtml(r.mentor)}</span>
-          <span class="rr-sub">${escapeHtml(r.subject ? (r.subject + " · ") : "")}${escapeHtml(r.task || "—")} · ${r.date}</span>
+          <span class="rr-sub">${escapeHtml(r.campus || "—")} · ${escapeHtml(r.subject ? (r.subject + " · ") : "")}${escapeHtml(r.task || "—")} · ${r.date}</span>
         </div>
         <span class="pill ${STATUS_MAP[r.status] || 'warn'}">${r.status} · ${r.score}/100</span>
       </div>`;
@@ -1739,6 +1762,8 @@
   }
 
   document.getElementById("acEntrySubmit").addEventListener("click", () => {
+    const campus = document.getElementById("acEntryCampus").value;
+    const department = document.getElementById("acEntryDepartment").value.trim();
     const mentor = document.getElementById("acEntryMentor").value.trim();
     const dateIso = document.getElementById("acEntryDate").value;
     const subject = document.getElementById("acEntrySubject").value.trim();
@@ -1746,8 +1771,9 @@
     const task = document.getElementById("acEntryTask").value.trim();
     const remarks = document.getElementById("acEntryRemarks").value.trim();
 
+    if(!campus){ toast("Choose a campus before saving"); document.getElementById("acEntryCampus").focus(); return; }
+    if(!department){ toast("Enter a department before saving"); document.getElementById("acEntryDepartment").focus(); return; }
     if(!mentor){ toast("Enter a mentor name before saving"); document.getElementById("acEntryMentor").focus(); return; }
-    if(!stageDone("weekly", mentor)){ toast("Complete this mentor's Weekly Plan entry first"); document.getElementById("acEntryMentor").focus(); return; }
     if(!stageDone("skill", mentor)){ toast("Complete this mentor's Skill Development entry first"); document.getElementById("acEntryMentor").focus(); return; }
     if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("acEntryDate").focus(); return; }
     if(!subject){ toast("Enter the academic subject before saving"); document.getElementById("acEntrySubject").focus(); return; }
@@ -1759,7 +1785,7 @@
     const row = {
       uid: "acd-" + academicSeq,
       id: "#ACD-" + Math.floor(10000 + Math.random()*89999),
-      mentor, subject, type, task,
+      mentor, campus, department, subject, type, task,
       criteria, remarks,
       date: isoToDMY(dateIso)
     };
@@ -1773,7 +1799,9 @@
     resetAcademicEntryForm();
     navigateTo("attendance-entry");
     document.getElementById("atEntryMentor").value = mentor;
-    renderFlowStrip("atFlowStrip", mentor, "attendance");
+    document.getElementById("atEntryCampus").value = campus;
+    document.getElementById("atEntryDepartment").value = department;
+    renderFlowStrip("atFlowStrip", { mentor, campus, department }, "attendance");
   });
   document.getElementById("acEntryReset").addEventListener("click", resetAcademicEntryForm);
 
@@ -1789,9 +1817,11 @@
   function populateAttendanceEntryStatics(){
     document.getElementById("atEntryDate").value = todayIso();
     buildQuestionGrid("atEntryCriteria", "attendance", atEntryAnswers, updateAttendanceScore);
-    renderFlowStrip("atFlowStrip", document.getElementById("atEntryMentor").value, "attendance");
+    renderFlowStrip("atFlowStrip", readFlowCtx("at"), "attendance");
   }
   function resetAttendanceEntryForm(){
+    document.getElementById("atEntryCampus").value = "";
+    document.getElementById("atEntryDepartment").value = "";
     document.getElementById("atEntryMentor").value = "";
     document.getElementById("atEntryDate").value = todayIso();
     document.getElementById("atEntryHeld").value = "";
@@ -1800,10 +1830,15 @@
     atEntryAnswers = blankAnswers("attendance");
     buildQuestionGrid("atEntryCriteria", "attendance", atEntryAnswers, updateAttendanceScore);
     updateAttendanceScore();
-    renderFlowStrip("atFlowStrip", "", "attendance");
+    renderFlowStrip("atFlowStrip", readFlowCtx("at"), "attendance");
   }
-  document.getElementById("atEntryMentor").addEventListener("input", e => {
-    renderFlowStrip("atFlowStrip", e.target.value, "attendance");
+  ["atEntryMentor","atEntryCampus","atEntryDepartment"].forEach(id => {
+    document.getElementById(id).addEventListener("input", () => {
+      renderFlowStrip("atFlowStrip", readFlowCtx("at"), "attendance");
+    });
+    document.getElementById(id).addEventListener("change", () => {
+      renderFlowStrip("atFlowStrip", readFlowCtx("at"), "attendance");
+    });
   });
 
   const recentAttendanceUids = [];
@@ -1820,14 +1855,14 @@
         <div class="rr-left">
           <div class="cell-avatar" style="background:${avatarColor(r.mentor)};width:24px;height:24px;font-size:9.5px;">${initials(r.mentor)}</div>
           <span class="rr-name">${escapeHtml(r.mentor)}</span>
-          <span class="rr-sub">${r.attended}/${r.held} classes · ${r.date}</span>
+          <span class="rr-sub">${escapeHtml(r.campus || "—")} · ${r.attended}/${r.held} classes · ${r.date}</span>
         </div>
         <span class="pill ${STATUS_MAP[r.status] || 'warn'}">${r.status} · ${r.score}/100</span>
       </div>`;
     }).join("");
   }
 
-  // Queue of mentors who finished Weekly->Skill->Academic->Attendance and are waiting to be audited
+  // Queue of mentors who finished Skill->Academic->Attendance and are waiting to be audited
   let pendingAuditQueue = [];
   function enqueueForAudit(mentor){
     const n = normMentor(mentor);
@@ -1837,7 +1872,7 @@
     const n = normMentor(mentor);
     pendingAuditQueue = pendingAuditQueue.filter(m => normMentor(m) !== n);
   }
-  function startAuditQueue(){
+  function startAuditQueue(campus, department){
     if(pendingAuditQueue.length === 0){
       toast("No mentors pending Internal Audit right now.");
       navigateTo("dashboard");
@@ -1846,18 +1881,23 @@
     const next = pendingAuditQueue[0];
     navigateTo("audit-entry");
     document.getElementById("adEntryMentor").value = next;
-    renderFlowStrip("adFlowStrip", next, "audit");
+    if(campus) document.getElementById("adEntryCampus").value = campus;
+    if(department) document.getElementById("adEntryDepartment").value = department;
+    renderFlowStrip("adFlowStrip", { mentor: next, campus: campus || "", department: department || "" }, "audit");
   }
 
   document.getElementById("atEntrySubmit").addEventListener("click", () => {
+    const campus = document.getElementById("atEntryCampus").value;
+    const department = document.getElementById("atEntryDepartment").value.trim();
     const mentor = document.getElementById("atEntryMentor").value.trim();
     const dateIso = document.getElementById("atEntryDate").value;
     const heldRaw = document.getElementById("atEntryHeld").value;
     const attendedRaw = document.getElementById("atEntryAttended").value;
     const remarks = document.getElementById("atEntryRemarks").value.trim();
 
+    if(!campus){ toast("Choose a campus before saving"); document.getElementById("atEntryCampus").focus(); return; }
+    if(!department){ toast("Enter a department before saving"); document.getElementById("atEntryDepartment").focus(); return; }
     if(!mentor){ toast("Enter a mentor name before saving"); document.getElementById("atEntryMentor").focus(); return; }
-    if(!stageDone("weekly", mentor)){ toast("Complete this mentor's Weekly Plan entry first"); document.getElementById("atEntryMentor").focus(); return; }
     if(!stageDone("skill", mentor)){ toast("Complete this mentor's Skill Development entry first"); document.getElementById("atEntryMentor").focus(); return; }
     if(!stageDone("academic", mentor)){ toast("Complete this mentor's Academic Task entry first"); document.getElementById("atEntryMentor").focus(); return; }
     if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("atEntryDate").focus(); return; }
@@ -1874,7 +1914,7 @@
     const row = {
       uid: "atd-" + attendanceSeq,
       id: "#ATD-" + Math.floor(10000 + Math.random()*89999),
-      mentor, held, attended, pct,
+      mentor, campus, department, held, attended, pct,
       criteria, remarks,
       date: isoToDMY(dateIso)
     };
@@ -1890,14 +1930,14 @@
     // Instead of auto-jumping to audit, ask whether there's another mentor to review first.
     showModal(
       "Attendance completed for " + mentor,
-      "Weekly Plan, Skill Development, Academic Tasks and Attendance are all done for " + mentor + ". Is there another mentor to review today, or should we move on to Internal Audit?",
+      "Skill Development, Academic Tasks and Attendance are all done for " + mentor + ". Is there another mentor to review today, or should we move on to Internal Audit?",
       [
         { label: "Add Another Mentor", onClick: () => {
             resetMarkFlowForm();
             navigateTo("mark-flow");
           } },
         { label: "Proceed to Internal Audit", primary: true, onClick: () => {
-            startAuditQueue();
+            startAuditQueue(campus, department);
           } }
       ]
     );
@@ -1922,10 +1962,15 @@
     grid.querySelectorAll("select").forEach(sel => {
       sel.className = "audit-select st-" + stKey(sel.value);
     });
-    renderFlowStrip("adFlowStrip", document.getElementById("adEntryMentor").value, "audit");
+    renderFlowStrip("adFlowStrip", readFlowCtx("ad"), "audit");
   }
-  document.getElementById("adEntryMentor").addEventListener("input", e => {
-    renderFlowStrip("adFlowStrip", e.target.value, "audit");
+  ["adEntryMentor","adEntryCampus","adEntryDepartment"].forEach(id => {
+    document.getElementById(id).addEventListener("input", () => {
+      renderFlowStrip("adFlowStrip", readFlowCtx("ad"), "audit");
+    });
+    document.getElementById(id).addEventListener("change", () => {
+      renderFlowStrip("adFlowStrip", readFlowCtx("ad"), "audit");
+    });
   });
 
   function updateAuditEntryOverall(){
@@ -1945,6 +1990,8 @@
   });
 
   function resetAuditEntryForm(){
+    document.getElementById("adEntryCampus").value = "";
+    document.getElementById("adEntryDepartment").value = "";
     document.getElementById("adEntryMentor").value = "";
     document.getElementById("adEntryDate").value = todayIso();
     document.getElementById("adEntryAuditor").value = "";
@@ -1968,7 +2015,7 @@
         <div class="rr-left">
           <div class="cell-avatar" style="background:${avatarColor(r.mentor)};width:24px;height:24px;font-size:9.5px;">${initials(r.mentor)}</div>
           <span class="rr-name">${escapeHtml(r.mentor)}</span>
-          <span class="rr-sub">${r.date} · audited by ${escapeHtml(r.auditor)}</span>
+          <span class="rr-sub">${escapeHtml(r.campus || "—")} · ${r.date} · audited by ${escapeHtml(r.auditor)}</span>
         </div>
         <span class="pill ${STATUS_MAP[r.overall] || 'warn'}">${r.overall}</span>
       </div>`;
@@ -1976,13 +2023,16 @@
   }
 
   document.getElementById("adEntrySubmit").addEventListener("click", () => {
+    const campus = document.getElementById("adEntryCampus").value;
+    const department = document.getElementById("adEntryDepartment").value.trim();
     const mentor = document.getElementById("adEntryMentor").value.trim();
     const dateIso = document.getElementById("adEntryDate").value;
     const auditor = document.getElementById("adEntryAuditor").value.trim();
     const notes = document.getElementById("adEntryNotes").value.trim();
 
+    if(!campus){ toast("Choose a campus before saving"); document.getElementById("adEntryCampus").focus(); return; }
+    if(!department){ toast("Enter a department before saving"); document.getElementById("adEntryDepartment").focus(); return; }
     if(!mentor){ toast("Enter the campus manager being audited"); document.getElementById("adEntryMentor").focus(); return; }
-    if(!stageDone("weekly", mentor)){ toast("This campus manager's Weekly Plan hasn't been completed yet"); document.getElementById("adEntryMentor").focus(); return; }
     if(!stageDone("skill", mentor)){ toast("This campus manager's Skill Development hasn't been completed yet"); document.getElementById("adEntryMentor").focus(); return; }
     if(!stageDone("academic", mentor)){ toast("This campus manager's Academic Tasks haven't been completed yet"); document.getElementById("adEntryMentor").focus(); return; }
     if(!stageDone("attendance", mentor)){ toast("This campus manager's Attendance hasn't been completed yet"); document.getElementById("adEntryMentor").focus(); return; }
@@ -1994,7 +2044,7 @@
     const row = {
       uid: "aud-" + auditSeq,
       id: "#AUD-" + Math.floor(10000 + Math.random()*89999),
-      mentor, auditor,
+      mentor, campus, department, auditor,
       weeklyPlan: entryAudit.weeklyPlan,
       skillDev: entryAudit.skillDev,
       academic: entryAudit.academic,
@@ -2017,13 +2067,13 @@
         "Up next: " + nextMentor + ". Continue straight into their Internal Audit?",
         [
           { label: "Go to Reports", onClick: () => { navigateTo("reports", "audit"); } },
-          { label: "Continue to " + nextMentor, primary: true, onClick: () => { startAuditQueue(); } }
+          { label: "Continue to " + nextMentor, primary: true, onClick: () => { startAuditQueue(campus, department); } }
         ]
       );
     } else {
       showModal(
         "Review complete",
-        "Internal Audit saved for " + mentor + ". Every mentor in today's review has now been through Weekly Plan, Skill Development, Academic Tasks, Attendance and Internal Audit.",
+        "Internal Audit saved for " + mentor + ". Every mentor in today's review has now been through Skill Development, Academic Tasks, Attendance and Internal Audit.",
         [
           { label: "Return to Dashboard", primary: true, onClick: () => { navigateTo("dashboard"); } }
         ]
@@ -2036,29 +2086,28 @@
   const PAGE_TITLES = {
     "reports": "Report & Audit Logs",
     "mark-flow": "Record Audit",
-    "weekly-entry": "Weekly Plan Entry",
     "skill-entry": "Skill Development Entry",
     "academic-entry": "Academic Task Entry",
     "attendance-entry": "Attendance Entry",
     "audit-entry": "Internal Audit Entry",
     "dashboard": "Dashboard"
   };
-  const PAGE_IDS = ["reports","mark-flow","weekly-entry","skill-entry","academic-entry","attendance-entry","audit-entry","dashboard"];
+  const PAGE_IDS = ["reports","mark-flow","skill-entry","academic-entry","attendance-entry","audit-entry","dashboard"];
 
   // Sidebar navigation holds the two standalone destinations, Dashboard and
-  // Reports & Logs. The mentor review flow (Weekly Plan -> Skill Dev ->
-  // Academic -> Attendance -> Internal Audit) is a separate track: it only
-  // opens when "Record Audit" is clicked, landing on a flow overview that shows
-  // all four stages (plus Internal Audit once they're done) and lets you jump
-  // into any of them, or via the flow strip inside an entry page once that
-  // flow has been started.
+  // Reports & Logs. The mentor review flow (Skill Dev -> Academic ->
+  // Attendance -> Internal Audit) is a separate track: it only
+  // opens when "Record Audit" is clicked, landing on a flow overview that asks
+  // for Campus, Department and Mentor Name, shows all three stages (plus
+  // Internal Audit once they're done) and lets you jump into any of them, or
+  // via the flow strip inside an entry page once that flow has been started.
   const SIDEBAR_NAV = [
     { page: "dashboard", label: "Dashboard",
       icon: '<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>' },
-    { page: "reports",   label: "Reports & Logs", tab: "weekly",
+    { page: "reports",   label: "Reports & Logs", tab: "skill",
       icon: '<path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/>' }
   ];
-  const ENTRY_PAGES = ["weekly-entry","skill-entry","academic-entry","attendance-entry","audit-entry"];
+  const ENTRY_PAGES = ["skill-entry","academic-entry","attendance-entry","audit-entry"];
   let currentPage = "dashboard";
 
   function renderSidebarNav(){
@@ -2099,45 +2148,60 @@
     }
     if(page === "mark-flow"){
       showPage("mark-flow");
-      renderFlowStrip("mfFlowStrip", document.getElementById("mfEntryMentor").value, "audit");
+      renderFlowStrip("mfFlowStrip", readFlowCtx("mf"), "audit");
       return;
     }
     if(ENTRY_PAGES.includes(page)){
       showPage(page);
-      // refresh flow strip for whichever entry page is opened, using its current mentor value
-      if(page === "weekly-entry") renderFlowStrip("wkFlowStrip", document.getElementById("wkEntryMentor").value, "weekly");
-      if(page === "skill-entry") renderFlowStrip("skFlowStrip", document.getElementById("skEntryMentor").value, "skill");
-      if(page === "academic-entry") renderFlowStrip("acFlowStrip", document.getElementById("acEntryMentor").value, "academic");
-      if(page === "attendance-entry") renderFlowStrip("atFlowStrip", document.getElementById("atEntryMentor").value, "attendance");
-      if(page === "audit-entry") renderFlowStrip("adFlowStrip", document.getElementById("adEntryMentor").value, "audit");
+      // refresh flow strip for whichever entry page is opened, using its current field values
+      if(page === "skill-entry") renderFlowStrip("skFlowStrip", readFlowCtx("sk"), "skill");
+      if(page === "academic-entry") renderFlowStrip("acFlowStrip", readFlowCtx("ac"), "academic");
+      if(page === "attendance-entry") renderFlowStrip("atFlowStrip", readFlowCtx("at"), "attendance");
+      if(page === "audit-entry") renderFlowStrip("adFlowStrip", readFlowCtx("ad"), "audit");
       return;
     }
   }
 
   // "Record Audit" is the single entry point into the review flow. Clicking it
-  // opens a flow overview asking for the mentor's name; clicking Continue
-  // jumps straight to whichever stage that mentor still needs — Weekly Plan
-  // first for a brand-new mentor, or further along if they're resuming.
+  // opens a flow overview asking for Campus, Department and Mentor Name;
+  // clicking Continue jumps straight to whichever stage that mentor still
+  // needs — Skill Development first for a brand-new mentor, or further along
+  // if they're resuming.
   function resetMarkFlowForm(){
+    document.getElementById("mfEntryCampus").value = "";
+    document.getElementById("mfEntryDepartment").value = "";
     document.getElementById("mfEntryMentor").value = "";
-    renderFlowStrip("mfFlowStrip", "", "audit");
+    renderFlowStrip("mfFlowStrip", { mentor: "", campus: "", department: "" }, "audit");
   }
-  document.getElementById("mfEntryMentor").addEventListener("input", e => {
-    renderFlowStrip("mfFlowStrip", e.target.value, "audit");
+  ["mfEntryMentor","mfEntryCampus","mfEntryDepartment"].forEach(id => {
+    document.getElementById(id).addEventListener("input", () => {
+      renderFlowStrip("mfFlowStrip", readFlowCtx("mf"), "audit");
+    });
+    document.getElementById(id).addEventListener("change", () => {
+      renderFlowStrip("mfFlowStrip", readFlowCtx("mf"), "audit");
+    });
   });
   document.getElementById("markTaskBtn").addEventListener("click", () => {
     resetMarkFlowForm();
     navigateTo("mark-flow");
   });
   document.getElementById("mfEntryContinue").addEventListener("click", () => {
+    const campus = document.getElementById("mfEntryCampus").value;
+    const department = document.getElementById("mfEntryDepartment").value.trim();
     const mentor = document.getElementById("mfEntryMentor").value.trim();
+    if(!campus){ toast("Choose a campus to continue"); document.getElementById("mfEntryCampus").focus(); return; }
+    if(!department){ toast("Enter a department to continue"); document.getElementById("mfEntryDepartment").focus(); return; }
     if(!mentor){ toast("Enter a mentor name to continue"); document.getElementById("mfEntryMentor").focus(); return; }
     const stage = firstIncompleteStage(mentor);
     const page = FLOW_PAGE_MAP[stage];
     navigateTo(page);
     const field = document.getElementById(FLOW_MENTOR_FIELD[stage]);
     if(field) field.value = mentor;
-    renderFlowStrip(FLOW_STRIP_ID[stage], mentor, stage);
+    const cField = document.getElementById(FLOW_CAMPUS_FIELD[stage]);
+    if(cField) cField.value = campus;
+    const dField = document.getElementById(FLOW_DEPARTMENT_FIELD[stage]);
+    if(dField) dField.value = department;
+    renderFlowStrip(FLOW_STRIP_ID[stage], { mentor, campus, department }, stage);
     if(stage === "audit") enqueueForAudit(mentor);
   });
 
@@ -2147,8 +2211,6 @@
   }
 
   const DOMAIN_META = {
-    weekly: { label: "Weekly Plans", tab: "weekly",
-      icon: '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>' },
     skill: { label: "Skill Development", tab: "skill",
       icon: '<circle cx="12" cy="8" r="7"/><path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12"/>' },
     academic: { label: "Academic Tasks", tab: "academic",
@@ -2156,7 +2218,7 @@
     attendance: { label: "Attendance", tab: "attendance",
       icon: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>' }
   };
-  const SCORED_DOMAINS = ["weekly","skill","academic","attendance"];
+  const SCORED_DOMAINS = ["skill","academic","attendance"];
 
   function domainSummary(domain){
     const rows = DATA[domain];
@@ -2244,7 +2306,7 @@
         <div class="dash-hero-card">
           <span class="dash-hero-label">Avg. Genuineness Score</span>
           <span class="dash-hero-value" style="color:${overallAvg >= 80 ? 'var(--green-ink2)' : overallAvg >= 50 ? 'var(--amber-ink)' : 'var(--red-ink)'}">${overallAvg}<span class="dash-hero-value-sub">/100</span></span>
-          <span class="dash-hero-caption">weekly, skill, academic &amp; attendance</span>
+          <span class="dash-hero-caption">skill, academic &amp; attendance</span>
         </div>
         <div class="dash-hero-card">
           <span class="dash-hero-label">Flagged For Review</span>
@@ -2290,7 +2352,7 @@
       <div class="dash-section">
         <div class="dash-section-title">Mentor Leaderboard</div>
         <div class="dash-panel">
-          ${leaderboard.length === 0 ? `<div class="recent-empty">No genuineness-scored entries yet. Add entries from Weekly Plans, Skill Development, Academic Tasks, or Attendance to see mentors ranked here.</div>` :
+          ${leaderboard.length === 0 ? `<div class="recent-empty">No genuineness-scored entries yet. Add entries from Skill Development, Academic Tasks, or Attendance to see mentors ranked here.</div>` :
             leaderboard.slice(0,8).map((m,i) => `
               <div class="dash-lb-row">
                 <span class="dash-lb-rank">${i+1}</span>
@@ -2353,7 +2415,6 @@
     });
   }
 
-  populateWeeklyEntryStatics(); updateWeeklyScore(); renderRecentWeekly();
   populateSkillEntryStatics(); updateSkillScore(); renderRecentSkill();
   populateAcademicEntryStatics(); updateAcademicScore(); renderRecentAcademic();
   populateAttendanceEntryStatics(); updateAttendanceScore(); renderRecentAttendance();
