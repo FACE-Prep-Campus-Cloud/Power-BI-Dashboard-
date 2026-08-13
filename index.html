@@ -344,6 +344,22 @@
 .yn-btn.yes.active{ background:var(--green-bg); border-color:var(--green); color:var(--green-ink2); }
 .yn-btn.no.active{ background:var(--red-bg); border-color:var(--red-ink); color:var(--red-ink); }
 .yn-btn:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
+  .criteria-proof{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    margin: -4px 0 4px; padding: 10px 14px;
+    border:1px solid var(--green-tint-border); background:var(--green-tint); border-radius:8px;
+    font-size:12px;
+  }
+  .criteria-proof.hidden{ display:none; }
+  .criteria-proof .proof-label{ font-weight:700; color:var(--green-deep); flex-shrink:0; }
+  .criteria-proof .proof-link-input{
+    flex:1; min-width:160px; border:1px solid var(--green-tint-border); border-radius:6px;
+    padding:6px 10px; font-size:12px; color:var(--ink); background:#fff;
+  }
+  .criteria-proof .proof-link-input:focus-visible{ outline:2px solid var(--green); outline-offset:1px; }
+  .criteria-proof .proof-or{ color:var(--ink-faint); flex-shrink:0; }
+  .criteria-proof .proof-file-input{ font-size:11px; max-width:160px; flex-shrink:0; }
+  .criteria-proof .proof-file-name{ color:var(--green-ink2); font-weight:600; }
   .score-band{
     display:flex; align-items:center; justify-content:space-between; gap:12px;
     border:1px dashed var(--border-color, var(--border)); border-radius:8px; padding:12px 14px; margin-top:18px;
@@ -1185,6 +1201,10 @@
     attendance: { keys: ATTENDANCE_KEYS, short: ATTENDANCE_SHORT, questions: ATTENDANCE_QUESTIONS }
   };
 
+  // Skill Development questions that require proof (a link or an uploaded file)
+  // when the mentor answers "Yes".
+  const SKILL_PROOF_KEYS = ["assignment","assessment"];
+
   function scoreFromAnswers(answers, keys){
     const met = keys.filter(k => answers[k]).length;
     return Math.round((met / keys.length) * 100);
@@ -1197,6 +1217,11 @@
     const c = {};
     CRITERIA_CONFIG[domain].keys.forEach(k => c[k] = false);
     return c;
+  }
+  function blankProof(){
+    const p = {};
+    SKILL_PROOF_KEYS.forEach(k => p[k] = { link: "", fileName: "" });
+    return p;
   }
   function stKey(s){ return s.replace(/\s+/g,""); }
 
@@ -1381,6 +1406,12 @@
     const question = CRITERIA_CONFIG[domain].questions[key];
     return `<button type="button" class="crit-btn ${on ? "on" : "off"}" data-domain="${domain}" data-uid="${r.uid}" data-key="${key}" title="${escapeAttr(question)}" aria-pressed="${on}">${on ? "✓" : "✕"}</button>`;
   }
+  function proofCell(proof){
+    if(!proof) return "—";
+    if(proof.link && proof.link.trim()) return `<a href="${escapeAttr(proof.link.trim())}" target="_blank" rel="noopener noreferrer" style="color:var(--green-ink2);text-decoration:underline;">Open link</a>`;
+    if(proof.fileName) return escapeHtml(proof.fileName);
+    return "—";
+  }
   function auditSelectCell(r, key){
     const val = r[key];
     const opts = AUDIT_STATUSES.map(s => `<option value="${s}" ${s===val?"selected":""}>${s}</option>`).join("");
@@ -1390,9 +1421,10 @@
   const TAB_CONFIG = {
     skill: {
       label: "Skill Development",
-      minWidth: 2020,
+      minWidth: 2220,
       cols: ["Log ID","Mentor Name","Campus","Subject","Skill Subject",
         CRITERIA_SHORT.genuine, CRITERIA_SHORT.weeklyPlan, CRITERIA_SHORT.tracker, CRITERIA_SHORT.assignment, CRITERIA_SHORT.assessment,
+        "Assignment Proof","Assessment Proof",
         "Score","Tasks Assigned","Tasks Completed","Avg Completion %","Remarks","Date of Marking","Status"],
       row(r){ return [
         r.id,
@@ -1402,6 +1434,7 @@
         subjectCell(r),
         criteriaToggle("skill",r,"genuine"), criteriaToggle("skill",r,"weeklyPlan"), criteriaToggle("skill",r,"tracker"),
         criteriaToggle("skill",r,"assignment"), criteriaToggle("skill",r,"assessment"),
+        proofCell(r.proof && r.proof.assignment), proofCell(r.proof && r.proof.assessment),
         barCell(r.score),
         (r.tasksAssigned == null ? "—" : r.tasksAssigned),
         (r.tasksCompleted == null ? "—" : r.tasksCompleted),
@@ -1414,6 +1447,8 @@
         r.criteria.genuine ? "Yes" : "No", r.criteria.weeklyPlan ? "Yes" : "No",
         r.criteria.tracker ? "Yes" : "No", r.criteria.assignment ? "Yes" : "No",
         r.criteria.assessment ? "Yes" : "No",
+        (r.proof && r.proof.assignment ? (r.proof.assignment.link || r.proof.assignment.fileName || "") : ""),
+        (r.proof && r.proof.assessment ? (r.proof.assessment.link || r.proof.assessment.fileName || "") : ""),
         r.score + "/100",
         (r.tasksAssigned == null ? "" : r.tasksAssigned),
         (r.tasksCompleted == null ? "" : r.tasksCompleted),
@@ -1716,6 +1751,83 @@
     };
   }
 
+  // ---------------- skill development question grid (with proof capture) ----------------
+  // Same Yes/No behaviour as buildQuestionGrid, but for the "assignment" and
+  // "assessment" questions, answering "Yes" reveals a proof box asking for a
+  // link or an uploaded file. The Yes answer isn't considered valid at submit
+  // time unless a link or file has been provided.
+  function buildSkillCriteriaGrid(answers, proof, onChange){
+    const cfg = CRITERIA_CONFIG.skill;
+    const grid = document.getElementById("skEntryCriteria");
+
+    grid.innerHTML = cfg.keys.map(k => {
+      const isProofKey = SKILL_PROOF_KEYS.includes(k);
+      const answer = !!answers[k];
+      const rowHtml = `
+        <div class="criteria-row">
+          <span>${cfg.questions[k]}</span>
+          <div class="yn-group" role="group" aria-label="${escapeAttr(cfg.questions[k])}">
+            <button type="button" class="yn-btn yes ${answer ? "active" : ""}" data-key="${k}" data-val="yes" aria-pressed="${answer ? "true" : "false"}">Yes</button>
+            <button type="button" class="yn-btn no ${!answer ? "active" : ""}" data-key="${k}" data-val="no" aria-pressed="${!answer ? "true" : "false"}">No</button>
+          </div>
+        </div>`;
+      if(!isProofKey) return rowHtml;
+
+      const p = proof[k];
+      const proofHtml = `
+        <div class="criteria-proof ${answer ? "" : "hidden"}" data-proof-key="${k}">
+          <span class="proof-label">Proof required:</span>
+          <input type="text" class="proof-link-input" data-key="${k}" placeholder="Paste a link (Drive, GitHub, etc.)" value="${escapeAttr(p.link)}">
+          <span class="proof-or">or</span>
+          <input type="file" class="proof-file-input" data-key="${k}" aria-label="Upload proof file for ${escapeAttr(cfg.short[k])}">
+          ${p.fileName ? `<span class="proof-file-name">${escapeHtml(p.fileName)}</span>` : ""}
+        </div>`;
+      return rowHtml + proofHtml;
+    }).join("");
+
+    grid.onclick = e => {
+      const btn = e.target.closest(".yn-btn");
+      if(!btn) return;
+      const key = btn.dataset.key;
+      const val = btn.dataset.val === "yes";
+      answers[key] = val;
+      grid.querySelectorAll(`.yn-btn[data-key="${key}"]`).forEach(b => {
+        const isActive = (b.dataset.val === "yes") === val;
+        b.classList.toggle("active", isActive);
+        b.setAttribute("aria-pressed", isActive ? "true" : "false");
+      });
+      if(SKILL_PROOF_KEYS.includes(key)){
+        const proofEl = grid.querySelector(`.criteria-proof[data-proof-key="${key}"]`);
+        if(proofEl) proofEl.classList.toggle("hidden", !val);
+      }
+      onChange();
+    };
+
+    grid.oninput = e => {
+      if(e.target.matches(".proof-link-input")){
+        proof[e.target.dataset.key].link = e.target.value;
+      }
+    };
+
+    grid.onchange = e => {
+      if(e.target.matches(".proof-file-input")){
+        const key = e.target.dataset.key;
+        const file = e.target.files && e.target.files[0];
+        proof[key].fileName = file ? file.name : "";
+        const proofEl = grid.querySelector(`.criteria-proof[data-proof-key="${key}"]`);
+        if(proofEl){
+          let nameSpan = proofEl.querySelector(".proof-file-name");
+          if(!nameSpan){
+            nameSpan = document.createElement("span");
+            nameSpan.className = "proof-file-name";
+            proofEl.appendChild(nameSpan);
+          }
+          nameSpan.textContent = proof[key].fileName;
+        }
+      }
+    };
+  }
+
   // ---------------- shared: status-band select wiring ----------------
   function wireStatusSelect(selectId){
     const sel = document.getElementById(selectId);
@@ -1733,6 +1845,7 @@
 
   // ---------------- skill development entry page ----------------
   let skEntryAnswers = blankAnswers("skill");
+  let skEntryProof = blankProof();
   wireStatusSelect("skEntryStatus");
 
   function updateSkillScore(){
@@ -1766,7 +1879,7 @@
 
   function populateSkillEntryStatics(){
     document.getElementById("skEntryDate").value = todayIso();
-    buildQuestionGrid("skEntryCriteria", "skill", skEntryAnswers, updateSkillScore);
+    buildSkillCriteriaGrid(skEntryAnswers, skEntryProof, updateSkillScore);
     renderFlowStrip("skFlowStrip", readFlowCtx("sk"), "skill");
   }
   function resetSkillEntryForm(){
@@ -1783,7 +1896,8 @@
     document.getElementById("skEntryRemarks").value = "";
     resetStatusSelect("skEntryStatus");
     skEntryAnswers = blankAnswers("skill");
-    buildQuestionGrid("skEntryCriteria", "skill", skEntryAnswers, updateSkillScore);
+    skEntryProof = blankProof();
+    buildSkillCriteriaGrid(skEntryAnswers, skEntryProof, updateSkillScore);
     updateSkillScore();
     renderFlowStrip("skFlowStrip", readFlowCtx("sk"), "skill");
   }
@@ -1835,15 +1949,35 @@
     if(!mentor){ toast("Enter a mentor name before saving"); document.getElementById("skEntryMentor").focus(); return; }
     if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("skEntryDate").focus(); return; }
     if(!subject){ toast("Enter a skill development subject before saving"); document.getElementById("skEntrySubject").focus(); return; }
+
+    // Assignment / Assessment marked "Yes" require a proof link or uploaded file.
+    for(const key of SKILL_PROOF_KEYS){
+      if(skEntryAnswers[key]){
+        const p = skEntryProof[key];
+        const hasLink = p.link && p.link.trim();
+        const hasFile = !!p.fileName;
+        if(!hasLink && !hasFile){
+          toast("Submit a link or file as proof for the " + CRITERIA_SHORT[key].toLowerCase());
+          const proofEl = document.querySelector(`#skEntryCriteria .criteria-proof[data-proof-key="${key}"] .proof-link-input`);
+          if(proofEl) proofEl.focus();
+          return;
+        }
+      }
+    }
+
     if(!remarks){ toast("Enter remarks before saving"); document.getElementById("skEntryRemarks").focus(); return; }
 
     skillSeq++;
     const criteria = { ...skEntryAnswers };
+    const proof = {
+      assignment: { ...skEntryProof.assignment },
+      assessment: { ...skEntryProof.assessment }
+    };
     const row = {
       uid: "skl-" + skillSeq,
       id: "#SKL-" + Math.floor(10000 + Math.random()*89999),
       mentor, campus, department, subject,
-      criteria, remarks,
+      criteria, proof, remarks,
       tasksAssigned: tasksAssignedRaw === "" ? null : Math.max(0, parseInt(tasksAssignedRaw,10) || 0),
       tasksCompleted: tasksCompletedRaw === "" ? null : Math.max(0, parseInt(tasksCompletedRaw,10) || 0),
       avgStudentsCompleted: avgStudentsRaw === "" ? null : Math.max(0, parseInt(avgStudentsRaw,10) || 0),
@@ -2398,7 +2532,7 @@
     // the Skill Development genuineness check when that's where we land.
     if(stage === "skill"){
       skEntryAnswers.weeklyPlan = mfWeeklyPlanAnswer;
-      buildQuestionGrid("skEntryCriteria", "skill", skEntryAnswers, updateSkillScore);
+      buildSkillCriteriaGrid(skEntryAnswers, skEntryProof, updateSkillScore);
       updateSkillScore();
     }
     if(stage === "audit") enqueueForAudit(mentor);
