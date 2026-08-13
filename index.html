@@ -653,6 +653,33 @@
           </div>
           <div class="criteria-grid" id="skEntryCriteria"></div>
 
+          <div class="section-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg>
+            Task Completion Details
+          </div>
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="skEntryTasksAssigned">Total number of tasks assigned for the course</label>
+              <input type="number" id="skEntryTasksAssigned" min="0" placeholder="e.g. 25">
+            </div>
+            <div class="form-field">
+              <label for="skEntryTasksCompleted">Total number of tasks completed so far</label>
+              <input type="number" id="skEntryTasksCompleted" min="0" placeholder="e.g. 18">
+            </div>
+            <div class="form-field">
+              <label for="skEntryAvgStudentsCompleted">Average number of students who completed all tasks</label>
+              <input type="number" id="skEntryAvgStudentsCompleted" min="0" placeholder="e.g. 20">
+            </div>
+            <div class="form-field">
+              <label for="skEntryTotalStudents">Total number of students in the class</label>
+              <input type="number" id="skEntryTotalStudents" min="0" placeholder="e.g. 30">
+            </div>
+            <div class="form-field full">
+              <label for="skEntryAvgCompletionPct">Average completion % <span class="lock-note">(auto-calculated)</span></label>
+              <input type="text" id="skEntryAvgCompletionPct" readonly tabindex="-1" value="0%">
+            </div>
+          </div>
+
           <div class="score-band">
             <span class="score-label">Score (auto-calculated from your answers)</span>
             <span class="score-value" id="skEntryScoreValue">0/100</span>
@@ -983,7 +1010,7 @@
       <div class="entry-wrap">
         <div class="entry-card">
           <h2>Record Audit</h2>
-          <p class="entry-sub" id="mfEntrySub">Choose the campus, enter the subject and the mentor's name to start or continue their review. The flow runs in order — Skill Development, Academic Tasks, then Attendance — each step unlocking once the one before it is logged for this mentor. Internal Audit becomes available once all three are complete.</p>
+          <p class="entry-sub" id="mfEntrySub">Choose the campus, department, type, course and the mentor's name to start or continue their review. The flow runs in order — Skill Development, Academic Tasks, then Attendance — each step unlocking once the one before it is logged for this mentor. Internal Audit becomes available once all three are complete.</p>
 
           <div class="form-grid">
             <div class="form-field full">
@@ -1015,7 +1042,7 @@
               </select>
             </div>
             <div class="form-field full">
-              <label for="mfEntryDepartment">Subject</label>
+              <label for="mfEntryDepartment">Department</label>
               <select id="mfEntryDepartment">
                 <option value="">Select Subject</option>
                 <option value="Tamil">Tamil</option>
@@ -1027,8 +1054,27 @@
               </select>
             </div>
             <div class="form-field full">
+              <label for="mfEntryType">Skill / Academic</label>
+              <select id="mfEntryType">
+                <option value="Skill Development">Skill Development</option>
+                <option value="Academic Task">Academic Task</option>
+              </select>
+            </div>
+            <div class="form-field full">
+              <label for="mfEntryCourse">Course Name</label>
+              <input type="text" id="mfEntryCourse" placeholder="Enter course name">
+            </div>
+            <div class="form-field full">
               <label for="mfEntryMentor">Mentor Name</label>
               <input type="text" id="mfEntryMentor" placeholder="Enter mentor name to start or continue their review flow">
+            </div>
+          </div>
+
+          <div class="criteria-row" style="margin-top:16px;">
+            <span>Has the weekly plan been submitted by the mentor?</span>
+            <div class="yn-group" role="group" aria-label="Has the weekly plan been submitted by the mentor?" id="mfWeeklyPlanGroup">
+              <button type="button" class="yn-btn yes" data-val="yes">Yes</button>
+              <button type="button" class="yn-btn no" data-val="no">No</button>
             </div>
           </div>
 
@@ -1202,6 +1248,7 @@
   const FLOW_MENTOR_FIELD = { skill: "skEntryMentor", academic: "acEntryMentor", attendance: "atEntryMentor", audit: "adEntryMentor" };
   const FLOW_CAMPUS_FIELD = { skill: "skEntryCampus", academic: "acEntryCampus", attendance: "atEntryCampus", audit: "adEntryCampus" };
   const FLOW_DEPARTMENT_FIELD = { skill: "skEntryDepartment", academic: "acEntryDepartment", attendance: "atEntryDepartment", audit: "adEntryDepartment" };
+  const FLOW_SUBJECT_FIELD = { skill: "skEntrySubject", academic: "acEntrySubject", attendance: null, audit: null };
   const FLOW_STRIP_ID = { skill: "skFlowStrip", academic: "acFlowStrip", attendance: "atFlowStrip", audit: "adFlowStrip" };
   function normMentor(s){ return (s || "").trim().toLowerCase(); }
   function stageDone(domain, mentorName){
@@ -1343,10 +1390,10 @@
   const TAB_CONFIG = {
     skill: {
       label: "Skill Development",
-      minWidth: 1720,
+      minWidth: 2020,
       cols: ["Log ID","Mentor Name","Campus","Subject","Skill Subject",
         CRITERIA_SHORT.genuine, CRITERIA_SHORT.weeklyPlan, CRITERIA_SHORT.tracker, CRITERIA_SHORT.assignment, CRITERIA_SHORT.assessment,
-        "Score","Remarks","Date of Marking","Status"],
+        "Score","Tasks Assigned","Tasks Completed","Avg Completion %","Remarks","Date of Marking","Status"],
       row(r){ return [
         r.id,
         mentorCell(r.mentor),
@@ -1355,7 +1402,11 @@
         subjectCell(r),
         criteriaToggle("skill",r,"genuine"), criteriaToggle("skill",r,"weeklyPlan"), criteriaToggle("skill",r,"tracker"),
         criteriaToggle("skill",r,"assignment"), criteriaToggle("skill",r,"assessment"),
-        barCell(r.score), remarksCell(r),
+        barCell(r.score),
+        (r.tasksAssigned == null ? "—" : r.tasksAssigned),
+        (r.tasksCompleted == null ? "—" : r.tasksCompleted),
+        (r.avgCompletionPct == null ? "—" : r.avgCompletionPct + "%"),
+        remarksCell(r),
         r.date, pillCell(r.status)
       ]; },
       exportRow(r){ return [
@@ -1363,7 +1414,11 @@
         r.criteria.genuine ? "Yes" : "No", r.criteria.weeklyPlan ? "Yes" : "No",
         r.criteria.tracker ? "Yes" : "No", r.criteria.assignment ? "Yes" : "No",
         r.criteria.assessment ? "Yes" : "No",
-        r.score + "/100", r.remarks || "", r.date, r.status
+        r.score + "/100",
+        (r.tasksAssigned == null ? "" : r.tasksAssigned),
+        (r.tasksCompleted == null ? "" : r.tasksCompleted),
+        (r.avgCompletionPct == null ? "" : r.avgCompletionPct + "%"),
+        r.remarks || "", r.date, r.status
       ]; }
     },
     academic: {
@@ -1686,6 +1741,29 @@
     el.textContent = score + "/100";
     el.style.color = score >= 80 ? "var(--green-ink2)" : score >= 50 ? "var(--amber-ink)" : "var(--red-ink)";
   }
+
+  // Task Completion Details: Average Completion % is derived from the
+  // "average number of students who completed all tasks" over the
+  // "total number of students in the class".
+  function updateSkillCompletionPct(){
+    const studentsEl = document.getElementById("skEntryAvgStudentsCompleted");
+    const totalEl = document.getElementById("skEntryTotalStudents");
+    const pctEl = document.getElementById("skEntryAvgCompletionPct");
+    const students = parseFloat(studentsEl.value);
+    const total = parseFloat(totalEl.value);
+    if(!isNaN(students) && !isNaN(total) && total > 0){
+      const pct = Math.round((students / total) * 100);
+      pctEl.value = pct + "%";
+      pctEl.dataset.value = pct;
+    } else {
+      pctEl.value = "0%";
+      pctEl.dataset.value = "0";
+    }
+  }
+  ["skEntryAvgStudentsCompleted","skEntryTotalStudents"].forEach(id => {
+    document.getElementById(id).addEventListener("input", updateSkillCompletionPct);
+  });
+
   function populateSkillEntryStatics(){
     document.getElementById("skEntryDate").value = todayIso();
     buildQuestionGrid("skEntryCriteria", "skill", skEntryAnswers, updateSkillScore);
@@ -1697,6 +1775,11 @@
     document.getElementById("skEntryMentor").value = "";
     document.getElementById("skEntryDate").value = todayIso();
     document.getElementById("skEntrySubject").value = "";
+    document.getElementById("skEntryTasksAssigned").value = "";
+    document.getElementById("skEntryTasksCompleted").value = "";
+    document.getElementById("skEntryAvgStudentsCompleted").value = "";
+    document.getElementById("skEntryTotalStudents").value = "";
+    updateSkillCompletionPct();
     document.getElementById("skEntryRemarks").value = "";
     resetStatusSelect("skEntryStatus");
     skEntryAnswers = blankAnswers("skill");
@@ -1742,6 +1825,10 @@
     const subject = document.getElementById("skEntrySubject").value.trim();
     const status = document.getElementById("skEntryStatus").value;
     const remarks = document.getElementById("skEntryRemarks").value.trim();
+    const tasksAssignedRaw = document.getElementById("skEntryTasksAssigned").value;
+    const tasksCompletedRaw = document.getElementById("skEntryTasksCompleted").value;
+    const avgStudentsRaw = document.getElementById("skEntryAvgStudentsCompleted").value;
+    const totalStudentsRaw = document.getElementById("skEntryTotalStudents").value;
 
     if(!campus){ toast("Choose a campus before saving"); document.getElementById("skEntryCampus").focus(); return; }
     if(!department){ toast("Select a subject before saving"); document.getElementById("skEntryDepartment").focus(); return; }
@@ -1757,6 +1844,11 @@
       id: "#SKL-" + Math.floor(10000 + Math.random()*89999),
       mentor, campus, department, subject,
       criteria, remarks,
+      tasksAssigned: tasksAssignedRaw === "" ? null : Math.max(0, parseInt(tasksAssignedRaw,10) || 0),
+      tasksCompleted: tasksCompletedRaw === "" ? null : Math.max(0, parseInt(tasksCompletedRaw,10) || 0),
+      avgStudentsCompleted: avgStudentsRaw === "" ? null : Math.max(0, parseInt(avgStudentsRaw,10) || 0),
+      totalStudents: totalStudentsRaw === "" ? null : Math.max(0, parseInt(totalStudentsRaw,10) || 0),
+      avgCompletionPct: parseInt(document.getElementById("skEntryAvgCompletionPct").dataset.value || "0", 10),
       date: isoToDMY(dateIso)
     };
     recomputeRow("skill", row);
@@ -2168,9 +2260,10 @@
   // Reports & Logs. The mentor review flow (Skill Dev -> Academic ->
   // Attendance -> Internal Audit) is a separate track: it only
   // opens when "Record Audit" is clicked, landing on a flow overview that asks
-  // for Campus, Subject and Mentor Name, shows all three stages (plus
-  // Internal Audit once they're done) and lets you jump into any of them, or
-  // via the flow strip inside an entry page once that flow has been started.
+  // for Campus, Department, Type, Course Name, Mentor Name and whether the
+  // weekly plan was submitted, shows all three stages (plus Internal Audit
+  // once they're done) and lets you jump into any of them, or via the flow
+  // strip inside an entry page once that flow has been started.
   const SIDEBAR_NAV = [
     { page: "dashboard", label: "Dashboard",
       icon: '<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>' },
@@ -2233,17 +2326,32 @@
   }
 
   // "Record Audit" is the single entry point into the review flow. Clicking it
-  // opens a flow overview asking for Campus, Subject and Mentor Name;
+  // opens a flow overview asking for Campus, Department, Skill/Academic type,
+  // Course Name, Mentor Name and whether the weekly plan was submitted;
   // clicking Continue jumps straight to whichever stage that mentor still
   // needs — Skill Development first for a brand-new mentor, or further along
   // if they're resuming.
+  let mfWeeklyPlanAnswer = null; // true = Yes, false = No, null = unanswered
+
   function resetMarkFlowForm(){
     document.getElementById("mfEntryCampus").value = "";
     document.getElementById("mfEntryDepartment").value = "";
+    document.getElementById("mfEntryType").value = "Skill Development";
+    document.getElementById("mfEntryCourse").value = "";
     document.getElementById("mfEntryMentor").value = "";
+    mfWeeklyPlanAnswer = null;
+    document.querySelectorAll("#mfWeeklyPlanGroup .yn-btn").forEach(b => b.classList.remove("active"));
     renderFlowStrip("mfFlowStrip", { mentor: "", campus: "", department: "" }, "audit");
   }
-  ["mfEntryMentor","mfEntryCampus","mfEntryDepartment"].forEach(id => {
+  document.getElementById("mfWeeklyPlanGroup").addEventListener("click", e => {
+    const btn = e.target.closest(".yn-btn");
+    if(!btn) return;
+    mfWeeklyPlanAnswer = btn.dataset.val === "yes";
+    document.querySelectorAll("#mfWeeklyPlanGroup .yn-btn").forEach(b => {
+      b.classList.toggle("active", b === btn);
+    });
+  });
+  ["mfEntryMentor","mfEntryCampus","mfEntryDepartment","mfEntryType","mfEntryCourse"].forEach(id => {
     document.getElementById(id).addEventListener("input", () => {
       renderFlowStrip("mfFlowStrip", readFlowCtx("mf"), "audit");
     });
@@ -2258,11 +2366,22 @@
   document.getElementById("mfEntryContinue").addEventListener("click", () => {
     const campus = document.getElementById("mfEntryCampus").value;
     const department = document.getElementById("mfEntryDepartment").value.trim();
+    const type = document.getElementById("mfEntryType").value;
+    const course = document.getElementById("mfEntryCourse").value.trim();
     const mentor = document.getElementById("mfEntryMentor").value.trim();
     if(!campus){ toast("Choose a campus to continue"); document.getElementById("mfEntryCampus").focus(); return; }
-    if(!department){ toast("Select a subject to continue"); document.getElementById("mfEntryDepartment").focus(); return; }
+    if(!department){ toast("Select a department to continue"); document.getElementById("mfEntryDepartment").focus(); return; }
+    if(!course){ toast("Enter the course name to continue"); document.getElementById("mfEntryCourse").focus(); return; }
     if(!mentor){ toast("Enter a mentor name to continue"); document.getElementById("mfEntryMentor").focus(); return; }
-    const stage = firstIncompleteStage(mentor);
+    if(mfWeeklyPlanAnswer === null){ toast("Answer whether the weekly plan was submitted"); return; }
+
+    // Prefer the explicitly chosen Skill/Academic type when that stage's
+    // prerequisites are already satisfied for this mentor; otherwise fall
+    // back to whichever stage is actually next in the sequential flow.
+    let stage = firstIncompleteStage(mentor);
+    if(type === "Academic Task" && stage === "skill" && stageDone("skill", mentor)){
+      stage = "academic";
+    }
     const page = FLOW_PAGE_MAP[stage];
     navigateTo(page);
     const field = document.getElementById(FLOW_MENTOR_FIELD[stage]);
@@ -2271,7 +2390,17 @@
     if(cField) cField.value = campus;
     const dField = document.getElementById(FLOW_DEPARTMENT_FIELD[stage]);
     if(dField) dField.value = department;
+    const subjField = FLOW_SUBJECT_FIELD[stage] ? document.getElementById(FLOW_SUBJECT_FIELD[stage]) : null;
+    if(subjField) subjField.value = course;
     renderFlowStrip(FLOW_STRIP_ID[stage], { mentor, campus, department }, stage);
+
+    // Carry the "weekly plan submitted" answer from the gate straight into
+    // the Skill Development genuineness check when that's where we land.
+    if(stage === "skill"){
+      skEntryAnswers.weeklyPlan = mfWeeklyPlanAnswer;
+      buildQuestionGrid("skEntryCriteria", "skill", skEntryAnswers, updateSkillScore);
+      updateSkillScore();
+    }
     if(stage === "audit") enqueueForAudit(mentor);
   });
 
@@ -2485,7 +2614,7 @@
     });
   }
 
-  populateSkillEntryStatics(); updateSkillScore(); renderRecentSkill();
+  populateSkillEntryStatics(); updateSkillScore(); updateSkillCompletionPct(); renderRecentSkill();
   populateAcademicEntryStatics(); updateAcademicScore(); renderRecentAcademic();
   populateAttendanceEntryStatics(); updateAttendanceScore(); renderRecentAttendance();
   populateAuditEntryStatics(); updateAuditEntryOverall(); renderRecentAudits();
