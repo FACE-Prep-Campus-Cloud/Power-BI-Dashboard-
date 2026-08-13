@@ -522,7 +522,7 @@
     </div>
 
     <div class="sidebar-footer">
-      <div class="sidebar-footer-hint">Use <strong>Record Audit</strong> above the page title to run a mentor through the Skill Development → Academic Tasks → Attendance review flow.</div>
+      <div class="sidebar-footer-hint">Use <strong>Record Audit</strong> above the page title to run a mentor through the Skill Development → Academic Verification → Attendance review flow.</div>
     </div>
   </aside>
 
@@ -543,7 +543,7 @@
     <div id="page-reports" class="hidden">
       <div class="tabs" id="tabs">
         <button class="tab-btn active" data-tab="skill">Skill Development</button>
-        <button class="tab-btn" data-tab="academic">Academic Tasks</button>
+        <button class="tab-btn" data-tab="academic">Academic Verification</button>
         <button class="tab-btn" data-tab="attendance">Attendance</button>
         <button class="tab-btn" data-tab="audit">Internal Audit</button>
       </div>
@@ -588,7 +588,7 @@
       <div class="entry-wrap">
         <div class="entry-card">
           <h2>Skill Development Entry</h2>
-          <p class="entry-sub">Answer the genuineness questions below for this skill development log. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Skill Development. This is step 1 of the review flow — complete it before moving on to Academic Tasks and Attendance for this mentor.</p>
+          <p class="entry-sub">Answer the genuineness questions below for this skill development log. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Skill Development. This is step 1 of the review flow — complete it before moving on to Academic Verification and Attendance for this mentor.</p>
 
           <div class="form-grid">
             <div class="form-field">
@@ -712,12 +712,12 @@
       </div>
     </div>
 
-    <!-- ================= ACADEMIC TASKS ENTRY ================= -->
+    <!-- ================= ACADEMIC VERIFICATION ENTRY ================= -->
     <div id="page-academic-entry" class="hidden">
       <div class="entry-wrap">
         <div class="entry-card">
-          <h2>Academic Task Entry</h2>
-          <p class="entry-sub">Answer the genuineness questions below to verify an academic task submission. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Academic Tasks. This mentor's Skill Development must be completed first — step 2 of the review flow.</p>
+          <h2>Academic Verification Entry</h2>
+          <p class="entry-sub">Answer the genuineness questions below to verify an academic task submission. Each answer is marked, a score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Academic Verification. This mentor's Skill Development must be completed first — step 2 of the review flow.</p>
 
           <div class="form-grid">
             <div class="form-field">
@@ -819,7 +819,7 @@
       <div class="entry-wrap">
         <div class="entry-card">
           <h2>Attendance Entry</h2>
-          <p class="entry-sub">Answer the genuineness questions below to verify an attendance record. Each answer is marked, a verification score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Attendance. This mentor's Skill Development and Academic Tasks must be completed first — step 3 of the review flow.</p>
+          <p class="entry-sub">Answer the genuineness questions below to verify an attendance record. Each answer is marked, a verification score is calculated automatically, and your remarks are saved at the end. The entry appears immediately under Reports &amp; Audit Logs → Attendance. This mentor's Skill Development and Academic Verification must be completed first — step 3 of the review flow.</p>
 
           <div class="form-grid">
             <div class="form-field">
@@ -921,7 +921,7 @@
       <div class="entry-wrap">
         <div class="entry-card">
           <h2>Internal Audit Entry</h2>
-          <p class="entry-sub">Use this when you and another campus manager sit down to review a campus manager's work. This is the final step of the review flow — it unlocks only once Skill Development, Academic Tasks, and Attendance have all been completed for this campus manager. Confirm whether each was genuinely completed, add your audit notes (required), then submit — the record appears immediately under Reports &amp; Audit Logs → Internal Audit so it can be checked again on the next daily review.</p>
+          <p class="entry-sub">Use this when you and another campus manager sit down to review a campus manager's work. This is the final step of the review flow — it unlocks only once Skill Development, Academic Verification, and Attendance have all been completed for this campus manager. Confirm whether each was genuinely completed, add your audit notes (required), then submit — the record appears immediately under Reports &amp; Audit Logs → Internal Audit so it can be checked again on the next daily review.</p>
 
           <div class="form-grid">
             <div class="form-field">
@@ -1010,7 +1010,7 @@
       <div class="entry-wrap">
         <div class="entry-card">
           <h2>Record Audit</h2>
-          <p class="entry-sub" id="mfEntrySub">Choose the campus, department, type, course and the mentor's name to start or continue their review. The flow runs in order — Skill Development, Academic Tasks, then Attendance — each step unlocking once the one before it is logged for this mentor. Internal Audit becomes available once all three are complete.</p>
+          <p class="entry-sub" id="mfEntrySub">Choose the campus, department, type, course and the mentor's name to start or continue their review. The flow runs in order — Skill Development, Academic Verification, then Attendance — each step unlocking once the one before it is logged for this mentor. Internal Audit becomes available once all three are complete.</p>
 
           <div class="form-grid">
             <div class="form-field full">
@@ -1057,7 +1057,7 @@
               <label for="mfEntryType">Skill / Academic</label>
               <select id="mfEntryType">
                 <option value="Skill Development">Skill Development</option>
-                <option value="Academic Task">Academic Task</option>
+                <option value="Academic Verification">Academic Verification</option>
               </select>
             </div>
             <div class="form-field full">
@@ -1205,7 +1205,7 @@
   const AUDIT_LABELS = {
     weeklyPlan: "Consistent Logging Verified",
     skillDev: "Skill Development Completed",
-    academic: "Academic Tasks Completed"
+    academic: "Academic Verification Completed"
   };
   const AUDIT_STATUSES = ["Completed","In Progress","Not Completed"];
 
@@ -1243,7 +1243,7 @@
 
   // ---------------- sequential flow gating helpers ----------------
   const FLOW_ORDER = ["skill","academic","attendance"];
-  const FLOW_LABELS = { skill: "Skill Dev.", academic: "Academic", attendance: "Attendance", audit: "Internal Audit" };
+  const FLOW_LABELS = { skill: "Skill Dev.", academic: "Academic Verification", attendance: "Attendance", audit: "Internal Audit" };
   const FLOW_PAGE_MAP = { skill: "skill-entry", academic: "academic-entry", attendance: "attendance-entry", audit: "audit-entry" };
   const FLOW_MENTOR_FIELD = { skill: "skEntryMentor", academic: "acEntryMentor", attendance: "atEntryMentor", audit: "adEntryMentor" };
   const FLOW_CAMPUS_FIELD = { skill: "skEntryCampus", academic: "acEntryCampus", attendance: "atEntryCampus", audit: "adEntryCampus" };
@@ -1422,7 +1422,7 @@
       ]; }
     },
     academic: {
-      label: "Academic Tasks",
+      label: "Academic Verification",
       minWidth: 1580,
       cols: ["Task ID","Mentor Name","Campus","Subject","Academic Subject",
         ACADEMIC_SHORT.assignmentGenuine, ACADEMIC_SHORT.assessmentGenuine, ACADEMIC_SHORT.beforeDeadline, ACADEMIC_SHORT.studyMaterial,
@@ -1472,7 +1472,7 @@
     audit: {
       label: "Internal Audit",
       minWidth: 1420,
-      cols: ["Audit ID","Mentor Audited","Campus","Subject","Skill Development","Academic Tasks","Consistent Logging","Overall Status","Auditor","Audited On"],
+      cols: ["Audit ID","Mentor Audited","Campus","Subject","Skill Development","Academic Verification","Consistent Logging","Overall Status","Auditor","Audited On"],
       row(r){ return [
         r.id,
         mentorCell(r.mentor),
@@ -1858,7 +1858,7 @@
     logActivity("skill", row.uid);
     renderRecentSkill();
 
-    toast("Entry saved for " + mentor + " — moving on to Academic Tasks.");
+    toast("Entry saved for " + mentor + " — moving on to Academic Verification.");
     resetSkillEntryForm();
     navigateTo("academic-entry");
     document.getElementById("acEntryMentor").value = mentor;
@@ -1868,7 +1868,7 @@
   });
   document.getElementById("skEntryReset").addEventListener("click", resetSkillEntryForm);
 
-  // ---------------- academic task entry page ----------------
+  // ---------------- academic verification entry page ----------------
   let acEntryAnswers = blankAnswers("academic");
   wireStatusSelect("acEntryStatus");
 
@@ -2064,7 +2064,7 @@
     if(!department){ toast("Select a subject before saving"); document.getElementById("atEntryDepartment").focus(); return; }
     if(!mentor){ toast("Enter a mentor name before saving"); document.getElementById("atEntryMentor").focus(); return; }
     if(!stageDone("skill", mentor)){ toast("Complete this mentor's Skill Development entry first"); document.getElementById("atEntryMentor").focus(); return; }
-    if(!stageDone("academic", mentor)){ toast("Complete this mentor's Academic Task entry first"); document.getElementById("atEntryMentor").focus(); return; }
+    if(!stageDone("academic", mentor)){ toast("Complete this mentor's Academic Verification entry first"); document.getElementById("atEntryMentor").focus(); return; }
     if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("atEntryDate").focus(); return; }
     if(below75Raw === ""){ toast("Enter the number of students below 75% attendance"); document.getElementById("atEntryBelow75").focus(); return; }
     const below75 = Math.max(0, parseInt(below75Raw,10) || 0);
@@ -2092,7 +2092,7 @@
     // Instead of auto-jumping to audit, ask whether there's another mentor to review first.
     showModal(
       "Attendance completed for " + mentor,
-      "Skill Development, Academic Tasks and Attendance are all done for " + mentor + ". Is there another mentor to review today, or should we move on to Internal Audit?",
+      "Skill Development, Academic Verification and Attendance are all done for " + mentor + ". Is there another mentor to review today, or should we move on to Internal Audit?",
       [
         { label: "Add Another Mentor", onClick: () => {
             resetMarkFlowForm();
@@ -2196,7 +2196,7 @@
     if(!department){ toast("Select a subject before saving"); document.getElementById("adEntryDepartment").focus(); return; }
     if(!mentor){ toast("Enter the campus manager being audited"); document.getElementById("adEntryMentor").focus(); return; }
     if(!stageDone("skill", mentor)){ toast("This campus manager's Skill Development hasn't been completed yet"); document.getElementById("adEntryMentor").focus(); return; }
-    if(!stageDone("academic", mentor)){ toast("This campus manager's Academic Tasks haven't been completed yet"); document.getElementById("adEntryMentor").focus(); return; }
+    if(!stageDone("academic", mentor)){ toast("This campus manager's Academic Verification hasn't been completed yet"); document.getElementById("adEntryMentor").focus(); return; }
     if(!stageDone("attendance", mentor)){ toast("This campus manager's Attendance hasn't been completed yet"); document.getElementById("adEntryMentor").focus(); return; }
     if(!dateIso){ toast("Choose the date the audit was conducted"); document.getElementById("adEntryDate").focus(); return; }
     if(!auditor){ toast("Enter the auditor (reviewing campus manager)"); document.getElementById("adEntryAuditor").focus(); return; }
@@ -2235,7 +2235,7 @@
     } else {
       showModal(
         "Review complete",
-        "Internal Audit submitted for " + mentor + ". Every mentor in today's review has now been through Skill Development, Academic Tasks, Attendance and Internal Audit.",
+        "Internal Audit submitted for " + mentor + ". Every mentor in today's review has now been through Skill Development, Academic Verification, Attendance and Internal Audit.",
         [
           { label: "Return to Dashboard", primary: true, onClick: () => { navigateTo("dashboard"); } }
         ]
@@ -2249,7 +2249,7 @@
     "reports": "Report & Audit Logs",
     "mark-flow": "Record Audit",
     "skill-entry": "Skill Development Entry",
-    "academic-entry": "Academic Task Entry",
+    "academic-entry": "Academic Verification Entry",
     "attendance-entry": "Attendance Entry",
     "audit-entry": "Internal Audit Entry",
     "dashboard": "Dashboard"
@@ -2257,7 +2257,7 @@
   const PAGE_IDS = ["reports","mark-flow","skill-entry","academic-entry","attendance-entry","audit-entry","dashboard"];
 
   // Sidebar navigation holds the two standalone destinations, Dashboard and
-  // Reports & Logs. The mentor review flow (Skill Dev -> Academic ->
+  // Reports & Logs. The mentor review flow (Skill Dev -> Academic Verification ->
   // Attendance -> Internal Audit) is a separate track: it only
   // opens when "Record Audit" is clicked, landing on a flow overview that asks
   // for Campus, Department, Type, Course Name, Mentor Name and whether the
@@ -2379,7 +2379,7 @@
     // prerequisites are already satisfied for this mentor; otherwise fall
     // back to whichever stage is actually next in the sequential flow.
     let stage = firstIncompleteStage(mentor);
-    if(type === "Academic Task" && stage === "skill" && stageDone("skill", mentor)){
+    if(type === "Academic Verification" && stage === "skill" && stageDone("skill", mentor)){
       stage = "academic";
     }
     const page = FLOW_PAGE_MAP[stage];
@@ -2412,7 +2412,7 @@
   const DOMAIN_META = {
     skill: { label: "Skill Development", tab: "skill",
       icon: '<circle cx="12" cy="8" r="7"/><path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12"/>' },
-    academic: { label: "Academic Tasks", tab: "academic",
+    academic: { label: "Academic Verification", tab: "academic",
       icon: '<path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="m9 14 2 2 4-4"/>' },
     attendance: { label: "Attendance", tab: "attendance",
       icon: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>' }
@@ -2551,7 +2551,7 @@
       <div class="dash-section">
         <div class="dash-section-title">Mentor Leaderboard</div>
         <div class="dash-panel">
-          ${leaderboard.length === 0 ? `<div class="recent-empty">No genuineness-scored entries yet. Add entries from Skill Development, Academic Tasks, or Attendance to see mentors ranked here.</div>` :
+          ${leaderboard.length === 0 ? `<div class="recent-empty">No genuineness-scored entries yet. Add entries from Skill Development, Academic Verification, or Attendance to see mentors ranked here.</div>` :
             leaderboard.slice(0,8).map((m,i) => `
               <div class="dash-lb-row">
                 <span class="dash-lb-rank">${i+1}</span>
