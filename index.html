@@ -1776,10 +1776,10 @@
       const p = proof[k];
       const proofHtml = `
         <div class="criteria-proof ${answer ? "" : "hidden"}" data-proof-key="${k}">
-          <span class="proof-label">Proof required:</span>
+          <span class="proof-label">Attach a link or file:</span>
           <input type="text" class="proof-link-input" data-key="${k}" placeholder="Paste a link (Drive, GitHub, etc.)" value="${escapeAttr(p.link)}">
           <span class="proof-or">or</span>
-          <input type="file" class="proof-file-input" data-key="${k}" aria-label="Upload proof file for ${escapeAttr(cfg.short[k])}">
+          <input type="file" class="proof-file-input" data-key="${k}" aria-label="Upload a file for ${escapeAttr(cfg.short[k])}">
           ${p.fileName ? `<span class="proof-file-name">${escapeHtml(p.fileName)}</span>` : ""}
         </div>`;
       return rowHtml + proofHtml;
@@ -1957,7 +1957,7 @@
         const hasLink = p.link && p.link.trim();
         const hasFile = !!p.fileName;
         if(!hasLink && !hasFile){
-          toast("Submit a link or file as proof for the " + CRITERIA_SHORT[key].toLowerCase());
+          toast("Attach a link or file for the " + CRITERIA_SHORT[key].toLowerCase());
           const proofEl = document.querySelector(`#skEntryCriteria .criteria-proof[data-proof-key="${key}"] .proof-link-input`);
           if(proofEl) proofEl.focus();
           return;
