@@ -636,9 +636,13 @@
               </select>
             </div>
             <div class="form-field">
-              <label for="skEntryDepartment">Subject</label>
+              <label for="skEntryDeptName">Department</label>
+              <input type="text" id="skEntryDeptName" placeholder="Enter department name">
+            </div>
+            <div class="form-field">
+              <label for="skEntryDepartment">Domain</label>
               <select id="skEntryDepartment">
-                <option value="">Select Subject</option>
+                <option value="">Select Domain</option>
                 <option value="Tamil">Tamil</option>
                 <option value="Communication">Communication</option>
                 <option value="Computer Science">Computer Science</option>
@@ -765,9 +769,13 @@
               </select>
             </div>
             <div class="form-field">
-              <label for="acEntryDepartment">Subject</label>
+              <label for="acEntryDeptName">Department</label>
+              <input type="text" id="acEntryDeptName" placeholder="Enter department name">
+            </div>
+            <div class="form-field">
+              <label for="acEntryDepartment">Domain</label>
               <select id="acEntryDepartment">
-                <option value="">Select Subject</option>
+                <option value="">Select Domain</option>
                 <option value="Tamil">Tamil</option>
                 <option value="Communication">Communication</option>
                 <option value="Computer Science">Computer Science</option>
@@ -867,9 +875,13 @@
               </select>
             </div>
             <div class="form-field">
-              <label for="atEntryDepartment">Subject</label>
+              <label for="atEntryDeptName">Department</label>
+              <input type="text" id="atEntryDeptName" placeholder="Enter department name">
+            </div>
+            <div class="form-field">
+              <label for="atEntryDepartment">Domain</label>
               <select id="atEntryDepartment">
-                <option value="">Select Subject</option>
+                <option value="">Select Domain</option>
                 <option value="Tamil">Tamil</option>
                 <option value="Communication">Communication</option>
                 <option value="Computer Science">Computer Science</option>
@@ -969,9 +981,13 @@
               </select>
             </div>
             <div class="form-field">
-              <label for="adEntryDepartment">Subject</label>
+              <label for="adEntryDeptName">Department</label>
+              <input type="text" id="adEntryDeptName" placeholder="Enter department name">
+            </div>
+            <div class="form-field">
+              <label for="adEntryDepartment">Domain</label>
               <select id="adEntryDepartment">
-                <option value="">Select Subject</option>
+                <option value="">Select Domain</option>
                 <option value="Tamil">Tamil</option>
                 <option value="Communication">Communication</option>
                 <option value="Computer Science">Computer Science</option>
@@ -1058,9 +1074,13 @@
               </select>
             </div>
             <div class="form-field full">
-              <label for="mfEntryDepartment">Department</label>
+              <label for="mfEntryDeptName">Department</label>
+              <input type="text" id="mfEntryDeptName" placeholder="Enter department name">
+            </div>
+            <div class="form-field full">
+              <label for="mfEntryDepartment">Domain</label>
               <select id="mfEntryDepartment">
-                <option value="">Select Subject</option>
+                <option value="">Select Domain</option>
                 <option value="Tamil">Tamil</option>
                 <option value="Communication">Communication</option>
                 <option value="Computer Science">Computer Science</option>
@@ -1273,6 +1293,7 @@
   const FLOW_MENTOR_FIELD = { skill: "skEntryMentor", academic: "acEntryMentor", attendance: "atEntryMentor", audit: "adEntryMentor" };
   const FLOW_CAMPUS_FIELD = { skill: "skEntryCampus", academic: "acEntryCampus", attendance: "atEntryCampus", audit: "adEntryCampus" };
   const FLOW_DEPARTMENT_FIELD = { skill: "skEntryDepartment", academic: "acEntryDepartment", attendance: "atEntryDepartment", audit: "adEntryDepartment" };
+  const FLOW_DEPTNAME_FIELD = { skill: "skEntryDeptName", academic: "acEntryDeptName", attendance: "atEntryDeptName", audit: "adEntryDeptName" };
   const FLOW_SUBJECT_FIELD = { skill: "skEntrySubject", academic: "acEntrySubject", attendance: null, audit: null };
   const FLOW_STRIP_ID = { skill: "skFlowStrip", academic: "acFlowStrip", attendance: "atFlowStrip", audit: "adFlowStrip" };
   function normMentor(s){ return (s || "").trim().toLowerCase(); }
@@ -1308,10 +1329,12 @@
     const m = document.getElementById(prefix + "EntryMentor");
     const c = document.getElementById(prefix + "EntryCampus");
     const d = document.getElementById(prefix + "EntryDepartment");
+    const dn = document.getElementById(prefix + "EntryDeptName");
     return {
       mentor: m ? m.value : "",
       campus: c ? c.value : "",
-      department: d ? d.value : ""
+      department: d ? d.value : "",
+      deptName: dn ? dn.value : ""
     };
   }
   // renders the 3/4-step strip. currentDomain is one of FLOW_ORDER or "audit".
@@ -1321,6 +1344,7 @@
     const mentorName = (ctx && ctx.mentor) || "";
     const campusName = (ctx && ctx.campus) || "";
     const departmentName = (ctx && ctx.department) || "";
+    const deptNameValue = (ctx && ctx.deptName) || "";
     const el = document.getElementById(containerId);
     if(!el) return;
     const steps = currentDomain === "audit" ? FLOW_ORDER.concat(["audit"]) : FLOW_ORDER;
@@ -1359,6 +1383,8 @@
           if(cField && campusName) cField.value = campusName;
           const deptField = document.getElementById(FLOW_DEPARTMENT_FIELD[d]);
           if(deptField && departmentName) deptField.value = departmentName;
+          const deptNameField = document.getElementById(FLOW_DEPTNAME_FIELD[d]);
+          if(deptNameField && deptNameValue) deptNameField.value = deptNameValue;
         }
         navigateTo(FLOW_PAGE_MAP[d]);
       });
@@ -1421,8 +1447,8 @@
   const TAB_CONFIG = {
     skill: {
       label: "Skill Development",
-      minWidth: 2220,
-      cols: ["Log ID","Mentor Name","Campus","Subject","Skill Subject",
+      minWidth: 2380,
+      cols: ["Log ID","Mentor Name","Campus","Department","Domain","Skill Subject",
         CRITERIA_SHORT.genuine, CRITERIA_SHORT.weeklyPlan, CRITERIA_SHORT.tracker, CRITERIA_SHORT.assignment, CRITERIA_SHORT.assessment,
         "Assignment Proof","Assessment Proof",
         "Score","Tasks Assigned","Tasks Completed","Avg Completion %","Remarks","Date of Marking","Status"],
@@ -1430,6 +1456,7 @@
         r.id,
         mentorCell(r.mentor),
         escapeHtml(r.campus || "—"),
+        escapeHtml(r.deptName || "—"),
         escapeHtml(r.department || "—"),
         subjectCell(r),
         criteriaToggle("skill",r,"genuine"), criteriaToggle("skill",r,"weeklyPlan"), criteriaToggle("skill",r,"tracker"),
@@ -1443,7 +1470,7 @@
         r.date, pillCell(r.status)
       ]; },
       exportRow(r){ return [
-        r.id, r.mentor, r.campus || "", r.department || "", r.subject,
+        r.id, r.mentor, r.campus || "", r.deptName || "", r.department || "", r.subject,
         r.criteria.genuine ? "Yes" : "No", r.criteria.weeklyPlan ? "Yes" : "No",
         r.criteria.tracker ? "Yes" : "No", r.criteria.assignment ? "Yes" : "No",
         r.criteria.assessment ? "Yes" : "No",
@@ -1458,14 +1485,15 @@
     },
     academic: {
       label: "Academic Verification",
-      minWidth: 1580,
-      cols: ["Task ID","Mentor Name","Campus","Subject","Academic Subject",
+      minWidth: 1740,
+      cols: ["Task ID","Mentor Name","Campus","Department","Domain","Academic Subject",
         ACADEMIC_SHORT.assignmentGenuine, ACADEMIC_SHORT.assessmentGenuine, ACADEMIC_SHORT.beforeDeadline, ACADEMIC_SHORT.studyMaterial,
         "Score","Remarks","Date of Marking","Status"],
       row(r){ return [
         r.id,
         mentorCell(r.mentor),
         escapeHtml(r.campus || "—"),
+        escapeHtml(r.deptName || "—"),
         escapeHtml(r.department || "—"),
         escapeHtml(r.subject || "—"),
         criteriaToggle("academic",r,"assignmentGenuine"), criteriaToggle("academic",r,"assessmentGenuine"),
@@ -1474,7 +1502,7 @@
         r.date, pillCell(r.status)
       ]; },
       exportRow(r){ return [
-        r.id, r.mentor, r.campus || "", r.department || "", r.subject || "",
+        r.id, r.mentor, r.campus || "", r.deptName || "", r.department || "", r.subject || "",
         r.criteria.assignmentGenuine ? "Yes" : "No", r.criteria.assessmentGenuine ? "Yes" : "No",
         r.criteria.beforeDeadline ? "Yes" : "No", r.criteria.studyMaterial ? "Yes" : "No",
         r.score + "/100", r.remarks || "", r.date, r.status
@@ -1482,14 +1510,15 @@
     },
     attendance: {
       label: "Attendance",
-      minWidth: 1600,
-      cols: ["Record ID","Mentor Name","Campus","Subject","Students Below 75%",
+      minWidth: 1760,
+      cols: ["Record ID","Mentor Name","Campus","Department","Domain","Students Below 75%",
         ATTENDANCE_SHORT.markedDaily, ATTENDANCE_SHORT.crossVerified, ATTENDANCE_SHORT.noProxy, ATTENDANCE_SHORT.matchesTracker,
         "Verification Score","Remarks","Date of Marking","Status"],
       row(r){ return [
         r.id,
         mentorCell(r.mentor),
         escapeHtml(r.campus || "—"),
+        escapeHtml(r.deptName || "—"),
         escapeHtml(r.department || "—"),
         r.below75,
         criteriaToggle("attendance",r,"markedDaily"), criteriaToggle("attendance",r,"crossVerified"),
@@ -1498,7 +1527,7 @@
         r.date, pillCell(r.status)
       ]; },
       exportRow(r){ return [
-        r.id, r.mentor, r.campus || "", r.department || "", r.below75,
+        r.id, r.mentor, r.campus || "", r.deptName || "", r.department || "", r.below75,
         r.criteria.markedDaily ? "Yes" : "No", r.criteria.crossVerified ? "Yes" : "No",
         r.criteria.noProxy ? "Yes" : "No", r.criteria.matchesTracker ? "Yes" : "No",
         r.score + "/100", r.remarks || "", r.date, r.status
@@ -1506,12 +1535,13 @@
     },
     audit: {
       label: "Internal Audit",
-      minWidth: 1420,
-      cols: ["Audit ID","Mentor Audited","Campus","Subject","Skill Development","Academic Verification","Consistent Logging","Overall Status","Auditor","Audited On"],
+      minWidth: 1580,
+      cols: ["Audit ID","Mentor Audited","Campus","Department","Domain","Skill Development","Academic Verification","Consistent Logging","Overall Status","Auditor","Audited On"],
       row(r){ return [
         r.id,
         mentorCell(r.mentor),
         escapeHtml(r.campus || "—"),
+        escapeHtml(r.deptName || "—"),
         escapeHtml(r.department || "—"),
         auditSelectCell(r,"skillDev"), auditSelectCell(r,"academic"), auditSelectCell(r,"weeklyPlan"),
         pillCell(r.overall),
@@ -1519,7 +1549,7 @@
         r.date
       ]; },
       exportRow(r){ return [
-        r.id, r.mentor, r.campus || "", r.department || "",
+        r.id, r.mentor, r.campus || "", r.deptName || "", r.department || "",
         r.skillDev, r.academic, r.weeklyPlan, r.overall, r.auditor, r.date
       ]; }
     }
@@ -1884,6 +1914,7 @@
   }
   function resetSkillEntryForm(){
     document.getElementById("skEntryCampus").value = "";
+    document.getElementById("skEntryDeptName").value = "";
     document.getElementById("skEntryDepartment").value = "";
     document.getElementById("skEntryMentor").value = "";
     document.getElementById("skEntryDate").value = todayIso();
@@ -1901,7 +1932,7 @@
     updateSkillScore();
     renderFlowStrip("skFlowStrip", readFlowCtx("sk"), "skill");
   }
-  ["skEntryMentor","skEntryCampus","skEntryDepartment"].forEach(id => {
+  ["skEntryMentor","skEntryCampus","skEntryDepartment","skEntryDeptName"].forEach(id => {
     document.getElementById(id).addEventListener("input", () => {
       renderFlowStrip("skFlowStrip", readFlowCtx("sk"), "skill");
     });
@@ -1933,6 +1964,7 @@
 
   document.getElementById("skEntrySubmit").addEventListener("click", () => {
     const campus = document.getElementById("skEntryCampus").value;
+    const deptName = document.getElementById("skEntryDeptName").value.trim();
     const department = document.getElementById("skEntryDepartment").value.trim();
     const mentor = document.getElementById("skEntryMentor").value.trim();
     const dateIso = document.getElementById("skEntryDate").value;
@@ -1945,7 +1977,8 @@
     const totalStudentsRaw = document.getElementById("skEntryTotalStudents").value;
 
     if(!campus){ toast("Choose a campus before saving"); document.getElementById("skEntryCampus").focus(); return; }
-    if(!department){ toast("Select a subject before saving"); document.getElementById("skEntryDepartment").focus(); return; }
+    if(!deptName){ toast("Enter a department name before saving"); document.getElementById("skEntryDeptName").focus(); return; }
+    if(!department){ toast("Select a domain before saving"); document.getElementById("skEntryDepartment").focus(); return; }
     if(!mentor){ toast("Enter a mentor name before saving"); document.getElementById("skEntryMentor").focus(); return; }
     if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("skEntryDate").focus(); return; }
     if(!subject){ toast("Enter a skill development subject before saving"); document.getElementById("skEntrySubject").focus(); return; }
@@ -1976,7 +2009,7 @@
     const row = {
       uid: "skl-" + skillSeq,
       id: "#SKL-" + Math.floor(10000 + Math.random()*89999),
-      mentor, campus, department, subject,
+      mentor, campus, deptName, department, subject,
       criteria, proof, remarks,
       tasksAssigned: tasksAssignedRaw === "" ? null : Math.max(0, parseInt(tasksAssignedRaw,10) || 0),
       tasksCompleted: tasksCompletedRaw === "" ? null : Math.max(0, parseInt(tasksCompletedRaw,10) || 0),
@@ -1997,8 +2030,9 @@
     navigateTo("academic-entry");
     document.getElementById("acEntryMentor").value = mentor;
     document.getElementById("acEntryCampus").value = campus;
+    document.getElementById("acEntryDeptName").value = deptName;
     document.getElementById("acEntryDepartment").value = department;
-    renderFlowStrip("acFlowStrip", { mentor, campus, department }, "academic");
+    renderFlowStrip("acFlowStrip", { mentor, campus, department, deptName }, "academic");
   });
   document.getElementById("skEntryReset").addEventListener("click", resetSkillEntryForm);
 
@@ -2019,6 +2053,7 @@
   }
   function resetAcademicEntryForm(){
     document.getElementById("acEntryCampus").value = "";
+    document.getElementById("acEntryDeptName").value = "";
     document.getElementById("acEntryDepartment").value = "";
     document.getElementById("acEntryMentor").value = "";
     document.getElementById("acEntryDate").value = todayIso();
@@ -2030,7 +2065,7 @@
     updateAcademicScore();
     renderFlowStrip("acFlowStrip", readFlowCtx("ac"), "academic");
   }
-  ["acEntryMentor","acEntryCampus","acEntryDepartment"].forEach(id => {
+  ["acEntryMentor","acEntryCampus","acEntryDepartment","acEntryDeptName"].forEach(id => {
     document.getElementById(id).addEventListener("input", () => {
       renderFlowStrip("acFlowStrip", readFlowCtx("ac"), "academic");
     });
@@ -2062,6 +2097,7 @@
 
   document.getElementById("acEntrySubmit").addEventListener("click", () => {
     const campus = document.getElementById("acEntryCampus").value;
+    const deptName = document.getElementById("acEntryDeptName").value.trim();
     const department = document.getElementById("acEntryDepartment").value.trim();
     const mentor = document.getElementById("acEntryMentor").value.trim();
     const dateIso = document.getElementById("acEntryDate").value;
@@ -2070,7 +2106,8 @@
     const remarks = document.getElementById("acEntryRemarks").value.trim();
 
     if(!campus){ toast("Choose a campus before saving"); document.getElementById("acEntryCampus").focus(); return; }
-    if(!department){ toast("Select a subject before saving"); document.getElementById("acEntryDepartment").focus(); return; }
+    if(!deptName){ toast("Enter a department name before saving"); document.getElementById("acEntryDeptName").focus(); return; }
+    if(!department){ toast("Select a domain before saving"); document.getElementById("acEntryDepartment").focus(); return; }
     if(!mentor){ toast("Enter a mentor name before saving"); document.getElementById("acEntryMentor").focus(); return; }
     if(!stageDone("skill", mentor)){ toast("Complete this mentor's Skill Development entry first"); document.getElementById("acEntryMentor").focus(); return; }
     if(!dateIso){ toast("Choose the date of marking before saving"); document.getElementById("acEntryDate").focus(); return; }
@@ -2082,7 +2119,7 @@
     const row = {
       uid: "acd-" + academicSeq,
       id: "#ACD-" + Math.floor(10000 + Math.random()*89999),
-      mentor, campus, department, subject,
+      mentor, campus, deptName, department, subject,
       criteria, remarks,
       date: isoToDMY(dateIso)
     };
@@ -2098,8 +2135,9 @@
     navigateTo("attendance-entry");
     document.getElementById("atEntryMentor").value = mentor;
     document.getElementById("atEntryCampus").value = campus;
+    document.getElementById("atEntryDeptName").value = deptName;
     document.getElementById("atEntryDepartment").value = department;
-    renderFlowStrip("atFlowStrip", { mentor, campus, department }, "attendance");
+    renderFlowStrip("atFlowStrip", { mentor, campus, department, deptName }, "attendance");
   });
   document.getElementById("acEntryReset").addEventListener("click", resetAcademicEntryForm);
 
